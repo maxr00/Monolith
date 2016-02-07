@@ -18,6 +18,8 @@ public abstract class Mob extends Entity {
 	public int color;
 	public boolean lockedOnto;
 	
+	public boolean hasBeenSeen;
+	
 	public Projectile.Spell[] spells;
 	
 	public String identifier, name;

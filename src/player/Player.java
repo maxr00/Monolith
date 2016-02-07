@@ -117,10 +117,8 @@ public class Player extends Mob {
 			if(lockedOn!=null)
 				lockedOn.lockedOnto=true;
 		}
+
 		
-		if(lockedOn!=null){
-			
-		}
 		if(cast){
 			castX = 0;	castY = 0; //Default case, unreachable otherwise
 			if(input.runeKeyOff[0]){ castX=-1; castY=-1; }

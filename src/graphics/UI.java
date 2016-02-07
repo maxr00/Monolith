@@ -24,9 +24,10 @@ public class UI {
 	public Align alignment;
 	public Type type;
 	public Sprite[][] sprites;
+	public final Sprite[][] startSprites;
 	public Color[][] colors;
 	public Color defaultColor=Color.white;
-	public Color[][] startColors;
+	public final Color[][] startColors;
 	private int width, height;
 	private final static int pixelOffset=7;
 	
@@ -61,6 +62,8 @@ public class UI {
 		this.type=type;
 		this.alignment=alignment;
 		this.active=active;
+		startSprites=null;
+		startColors=null;
 	}
 	
 	public UI(String path, Align alignment,Type type, boolean active) {
@@ -101,6 +104,7 @@ public class UI {
 				}
 			}
 		}
+		startSprites=sprites;
 		
 		String colPath = path + ".png";
 		int[] pixels = null;
@@ -192,7 +196,7 @@ public class UI {
 		for (int x = 0; x < width; x++) {
 			colors[x][0]=defaultColor;//Color.white;
 		}
-		startColors=colors;
+		//startColors=colors;
 	}
 	public void clearStatus(){sprites=null;width=0;colors=null;}
 

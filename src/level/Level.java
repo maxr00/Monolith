@@ -210,8 +210,10 @@ public class Level {
 			for(int i = mobs.size()-1;i >= 0; i--){
 				if(mobs.get(i)!=null && !mobs.get(i).isRemoved()){
 					for(int s=0;s<getPlayers().size();s++){
-						if(s<shadowMap.length && shadowMap[s]!=null && i<mobs.size() && shadowMap[s][mobs.get(i).x/Game.TILE_SIZE][mobs.get(i).y/Game.TILE_SIZE]==1)
+						if(s<shadowMap.length && shadowMap[s]!=null && i<mobs.size() && shadowMap[s][mobs.get(i).x/Game.TILE_SIZE][mobs.get(i).y/Game.TILE_SIZE]==1){
 							mobs.get(i).render(screen);
+							mobs.get(i).hasBeenSeen=true;
+						}
 						else if(i<mobs.size() && players.get(s).lockedOn==mobs.get(i)){
 								players.get(s).lockedOn.lockedOnto=false;
 								players.get(s).lockedOn=null;

@@ -112,11 +112,13 @@ public class Combat {
 			}
 		}
 		shotsRemaining--;
-		if(shotsRemaining>10){
+		if(shotsRemaining>=10){
 			UI.combatUIDir.sprites[3][0]=Sprite.getSprite(Character.forDigit(shotsRemaining/10, 10));
 			UI.combatUIDir.sprites[4][0]=Sprite.getSprite(Character.forDigit(shotsRemaining%10, 10));
-		}else
+		}else{
 			UI.combatUIDir.sprites[3][0]=Sprite.getSprite(Character.forDigit(shotsRemaining%10, 10));
+			UI.combatUIDir.sprites[4][0]=Sprite.getSprite('-');
+		}
 		if(shotsRemaining<=0)
 			clearSpell();
 	}

@@ -48,8 +48,7 @@ public class BasicEnemy extends Mob {
 	//Return in idle means they wait until idle to return,
 	//Return in lostSight means they go back right after losing sight
 
-	@SuppressWarnings("unused")
-	private int updatesUntilIdle = 120, idleCount = 0, time = 0;
+	private int time = 0;
 	private int pathCount = 0;
 
 	public BasicEnemy(Level lvl, int spawnX, int spawnY, String name, char[][] characters, int health, Pathfinding pathfind, Projectile.Spell[] spells) { //Random Personality
@@ -98,6 +97,9 @@ public class BasicEnemy extends Mob {
 	double minRange=35, maxRange=56, shootRange=100;
 	float xDir, yDir;
 	public void update() {
+		if(!hasBeenSeen)
+			return;
+			
 		time++;
 		
 		if (time % 60 == 0 || target==null) {

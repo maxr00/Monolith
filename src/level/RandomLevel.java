@@ -61,7 +61,7 @@ public class RandomLevel extends Level {
 							if(x+xx<width && x+xx>=0 && y+yy<height && y+yy>=0 && (xx!=0 || yy!=0)){
 								if(roomTiles[x+xx][y+yy]!=null){
 									world+=roomTiles[x+xx][y+yy].border.characters[rng.nextInt(roomTiles[x+xx][y+yy].border.characters.length)];
-									solids+="1"; 
+									solids+="1";
 									colors[x+y*width]=roomTiles[x+xx][y+yy].border.colors[rng.nextInt(roomTiles[x+xx][y+yy].border.colors.length)];
 									border=true;
 								}
@@ -119,8 +119,6 @@ public class RandomLevel extends Level {
 					if(x>=0 && y>=0 && x<roomTiles.length && y<roomTiles[x].length && roomTiles[x][y]!=null)
 						if((x!=width/2 || y!=height/2) && numEnemies>0 && mobChance<Math.random()){
 							numEnemies--;
-							x+=DistBetweenMobs;
-							y+=DistBetweenMobs;
 							if(Game.game.socketServer!=null){
 								Mob mob=new BasicEnemy(Game.game.level,x,y,"George",new char[][]{{(char)(rng.nextInt(94)+33)}},10,Pathfinding.MoveToward,new Spell[]{Spell.Fireball});//(char)(random.nextInt(94)+33));
 								
@@ -128,6 +126,8 @@ public class RandomLevel extends Level {
 								mobPacket.writeData(Game.game.socketServer);
 								
 							}
+							x+=DistBetweenMobs;
+							y+=DistBetweenMobs;
 						}
 				}
 			}
@@ -139,6 +139,10 @@ public class RandomLevel extends Level {
 		int xOff=0,yOff=0;
 		int attempts=0;
 		boolean skip=false;
+		
+		int doorSizeX=0, doorSizeY=0; 
+		int doorX=0, doorY=0;
+		
 		while(true){
 			if(Math.random()<0.5){
 				//Top/Bottom expansion
@@ -155,8 +159,36 @@ public class RandomLevel extends Level {
 				nY=0;
 				if(Math.random()<0.5){//Top
 					nY=-nH;
+					if( canFit(2,1,nX+xStart,yStart-1)){
+						doorSizeX=2;
+						doorSizeY=1;
+						doorX=nX+xStart;
+						doorY=yStart-1;
+						nY--;
+					}else{
+						attempts++;
+						if(attempts>9999){
+							skip=true;
+							break;
+						}
+						continue;
+					}
 				}else{//Bottom
 					nY=h;
+					if( canFit(2,1,nX+xStart,nY+yStart)){
+						doorSizeX=2;
+						doorSizeY=1;
+						doorX=nX+xStart;
+						doorY=nY+yStart;
+						nY++;
+					}else{
+						attempts++;
+						if(attempts>9999){
+							skip=true;
+							break;
+						}
+						continue;
+					}
 				}
 			}else{
 				//L/R expansion
@@ -173,11 +205,39 @@ public class RandomLevel extends Level {
 				nY=rng.nextInt(h-1);
 				if(Math.random()<0.5){//L
 					nX=-nW;
+					if( canFit(1,2,xStart-1,nY+yStart)){
+						doorSizeX=1;
+						doorSizeY=2;
+						doorX=xStart-1;
+						doorY=nY+yStart;
+						nX--;
+					}else{
+						attempts++;
+						if(attempts>9999){
+							skip=true;
+							break;
+						}
+						continue;
+					}
 				}else{//R
 					nX=w;
+					if(canFit(1,2,nX+xStart,nY+yStart)){
+						doorSizeX=1;
+						doorSizeY=2;
+						doorX=nX+xStart;//-xOff;
+						doorY=nY+yStart;//-yOff;
+						nX++;
+					}else{
+						attempts++;
+						if(attempts>9999){
+							skip=true;
+							break;
+						}
+						continue;
+					}
 				}
 			}
-			if(canFit(nW,nH,nX+xStart,nY+yStart)){
+			if(canFit(nW+2,nH+2,nX+xStart-xOff-1,nY+yStart-yOff-1)){
 				break;
 			}else{
 				attempts++;
@@ -187,8 +247,23 @@ public class RandomLevel extends Level {
 				}
 			}
 		}
-		if(!skip)
-			generate(nW,nH,nX+xStart,nY+yStart,RTile.Stone);//RTile.tiles()[rng.nextInt(RTile.tiles().length)]);
+		if(!skip){
+			addDoor(doorSizeX,doorSizeY,doorX,doorY,RTile.Dirt);
+			generate(nW,nH,nX+xStart-xOff,nY+yStart-yOff,RTile.Stone);//RTile.tiles()[rng.nextInt(RTile.tiles().length)]);
+		}
+	}
+	
+	private void addDoor(int w,int h,int xStart,int yStart,RTile type){
+		roomCount++;
+		if(roomCount>maxRooms)
+			return;
+		
+		for(int x=xStart;x<w+xStart;x++){
+			for(int y=yStart;y<h+yStart;y++){
+				if(x>=0 && y>=0 && x<roomTiles.length && y<roomTiles[x].length)
+					roomTiles[x][y]=type;
+			}
+		}
 	}
 	
 	private boolean canFit(int w, int h, int xStart, int yStart) {
