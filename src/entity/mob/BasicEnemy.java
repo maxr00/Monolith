@@ -77,7 +77,7 @@ public class BasicEnemy extends Mob {
 				}
 			}
 		}
-		identifier=chars+random.nextInt();
+		identifier="mob-"+chars+random.nextInt();
 		
 		if (hasBlemishes) {
 			int pixel = 0;
@@ -168,7 +168,6 @@ public class BasicEnemy extends Mob {
 								deltaY=1;
 							}
 						}
-						System.out.println("D " + deltaX +"," +deltaY);
 					}else{
 						if(ax<ay){
 							if(dx<0)
@@ -181,7 +180,6 @@ public class BasicEnemy extends Mob {
 							if(dy>0)
 								deltaY=-1;
 						}
-						System.out.println("V " + deltaX +"," +deltaY);
 					}
 					
 					move(deltaX * Game.TILE_SIZE, deltaY * Game.TILE_SIZE);
@@ -239,7 +237,7 @@ public class BasicEnemy extends Mob {
 		}
 		if(xDir!=0 || yDir!=0){
 			Projectile.Spell s=spells[(int)(Math.random()*spells.length)];
-			Packet03Projectile projPacket = new Packet03Projectile(x, y, xDir, yDir, s.name(),1,null);
+			Packet03Projectile projPacket = new Packet03Projectile(x, y, xDir, yDir, s.name(),0.5f,null);
 			projPacket.writeData(Game.game.socketClient);
 		}
 	}

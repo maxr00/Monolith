@@ -210,11 +210,11 @@ public class Level {
 			for(int i = mobs.size()-1;i >= 0; i--){
 				if(mobs.get(i)!=null && !mobs.get(i).isRemoved()){
 					for(int s=0;s<getPlayers().size();s++){
-						if(i<shadowMap.length && shadowMap[i]!=null && shadowMap[s][mobs.get(i).x/Game.TILE_SIZE][mobs.get(i).y/Game.TILE_SIZE]==1)
+						if(s<shadowMap.length && shadowMap[s]!=null && i<mobs.size() && shadowMap[s][mobs.get(i).x/Game.TILE_SIZE][mobs.get(i).y/Game.TILE_SIZE]==1)
 							mobs.get(i).render(screen);
-						else if(players.get(s).lockedOn==mobs.get(i)){
-							players.get(s).lockedOn.lockedOnto=false;
-							players.get(s).lockedOn=null;
+						else if(i<mobs.size() && players.get(s).lockedOn==mobs.get(i)){
+								players.get(s).lockedOn.lockedOnto=false;
+								players.get(s).lockedOn=null;
 						}
 					}
 				}else
@@ -223,10 +223,10 @@ public class Level {
 		}
 		for(int i = entities.size()-1;i >= 0; i--){
 			if(entities.get(i)!=null && !entities.get(i).isRemoved()){
-				//for(int s=0;s<getPlayers().size();s++){
-					//if(i<shadowMap.length && shadowMap[i]!=null && shadowMap[s][entities.get(i).x/Game.TILE_SIZE][entities.get(i).y/Game.TILE_SIZE]==1)
+				for(int s=0;s<getPlayers().size();s++){
+					if(s<shadowMap.length && shadowMap[s]!=null && shadowMap[s][entities.get(i).x/Game.TILE_SIZE][entities.get(i).y/Game.TILE_SIZE]==1)
 						entities.get(i).render(screen);
-				//}
+				}
 			}else
 				entities.remove(i);
 		}
@@ -387,7 +387,8 @@ public class Level {
 	    height = resistanceMap[0].length;
 	    lightMap = new float[width][height];
 	    
-	    lightMap[startx][starty] = 1;//force;//light the starting cell
+	    if(startx>0 && starty>0)
+	    	lightMap[startx][starty] = 1;//force;//light the starting cell
 	    for (Direction d : Direction.DIAGONALS) {
 	        castLight(1, 1.0f, 0.0f, 0, d.deltaX, d.deltaY, 0);
 	        castLight(1, 1.0f, 0.0f, d.deltaX, 0, 0, d.deltaY);
@@ -440,40 +441,6 @@ public class Level {
 	        }
 	    }
 	}
-	/* Render ALL tiles on screen
-	public void render(int xScroll, int yScroll, Screen screen) {
-		
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				Tile tile = getTile(x, y);
-				if (tile != null){
-					tile.notOnScreen();
-				}
-			}
-		}
-		
-		screen.setOffset(xScroll, yScroll);
-		//Corner Pins (x0=Top Left Tile)
-		int x0 = xScroll / TILE_SIZE;
-		int x1 = (xScroll + screen.width) / TILE_SIZE +1; //+1 to make it render everything on screen if tile is slightly off screen
-		int y0 = yScroll / TILE_SIZE;
-		int y1 = (yScroll + screen.height) / TILE_SIZE +1;
-
-		for (int y = y0; y < y1; y++) {
-			for (int x = x0; x < x1; x++) {
-				Tile tile = getTile(x, y);
-				if (tile != null){
-					tile.render(x * TILE_SIZE, y * TILE_SIZE, screen);
-					tile.renderLight(x * TILE_SIZE, y * TILE_SIZE, screen);
-				}
-			}
-		}
-		for(int i = 0;i < mobs.size(); i++){
-			if(mobs.get(i)!=null && !mobs.get(i).isRemoved())
-				mobs.get(i).render(screen);
-		}
-	}
-	 */
 
 	public void removePlayerMP(String username) {
 		int index=0;

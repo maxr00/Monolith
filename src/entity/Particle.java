@@ -53,6 +53,8 @@ public class Particle extends Entity {
 	}
 
 	public Particle(int x, int y, int scale, int life, float speed, int amt, Level level, Color[] colors, RenderType renderType) {
+		this.x=x;
+		this.y=y;
 		for (int i = 0; i < amt; i++) {
 			particles.add(new Particle(x, y, scale, life, speed, colors[(int)(Math.random()*colors.length)],level,renderType,255));
 		}
@@ -60,6 +62,8 @@ public class Particle extends Entity {
 	}
 	
 	public Particle(int x, int y, int scale, int life, float speed, int amt, Level level, Color[] colors, RenderType renderType,int alpha) {
+		this.x=x;
+		this.y=y;
 		for (int i = 0; i < amt; i++) {
 			particles.add(new Particle(x, y, scale, life, speed, colors[(int)(Math.random()*colors.length)],level,renderType,alpha) );
 		}
@@ -112,10 +116,7 @@ public class Particle extends Entity {
 	public void render(Screen screen){
 		screen.newAdditive();
 		for(int i=0;i<particles.size();i++){
-			if(renderType==RenderType.Additive){
-				particles.get(i).renderPixel(screen);
-			}else
-				particles.get(i).renderPixel(screen);
+			particles.get(i).renderPixel(screen);
 		}
 		screen.displayAdditive();
 	}

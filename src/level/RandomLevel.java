@@ -5,6 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import entity.Projectile.Spell;
+import entity.mob.BasicEnemy;
+import entity.mob.Mob;
+import entity.mob.BasicEnemy.Pathfinding;
+import game.Game;
+import net.packet.Packet04AddMob;
+
 public class RandomLevel extends Level {
 
 	private static final Random rng = new Random();
@@ -14,10 +21,9 @@ public class RandomLevel extends Level {
 	
 	public RandomLevel(int width, int height) {
 		super(width,height);
-		generateLevel();
 	}
 	
-	public void generateLevel() {
+ 	public void generateLevel() {
 		int[][] colorBlemishes = LevelLight.getPossibleBlemishes(100);
 		
 		//Generation happens here
@@ -63,7 +69,7 @@ public class RandomLevel extends Level {
 						}
 					}
 					if(!border){
-						world+=" ";
+						world+="%";
 						solids+="1";
 						colors[x+y*width]=Color.white;
 					}
@@ -78,18 +84,22 @@ public class RandomLevel extends Level {
 					if(world.charAt(x+y*width - whiteSpace)=='\n'){//if is next line
 						whiteSpace += width - x - 1;
 						break;
-					}else if(!Character.isWhitespace(world.charAt(x+y*width - whiteSpace)))//if not space
+					}else //if(!Character.isWhitespace(world.charAt(x+y*width - whiteSpace)))//if not space
 						tiles[x+y*width] = new Tile(world.charAt(x+y*width - whiteSpace),solids.charAt(x+y*width-whiteSpace)=='1',colors[x+y*width].getRGB(),colorBlemishes[rng.nextInt(colorBlemishes.length)]);
 				}else break;
 			}
 		}
+		
 		levelLight.generateLevel(colors);
 		levelLight.setTilesLight(tiles);
 	}
 	
 	//Includes hallways
 	int roomCount=0, maxRooms=50;
+	float enemyTileRatio=1/75f, mobChance=0.33f;
+	int DistBetweenMobs=5;
 	boolean hallway=false;
+	
 	private void generate(int w,int h,int xStart,int yStart, RTile type){
 		roomCount++;
 		if(roomCount>maxRooms)
@@ -101,6 +111,27 @@ public class RandomLevel extends Level {
 					roomTiles[x][y]=type;
 			}
 		}
+		
+		int numEnemies=(int)(enemyTileRatio*(w*h));
+		if(numEnemies>0)
+			for(int x=xStart;x<w+xStart;x++){
+				for(int y=yStart;y<h+yStart;y++){
+					if(x>=0 && y>=0 && x<roomTiles.length && y<roomTiles[x].length && roomTiles[x][y]!=null)
+						if((x!=width/2 || y!=height/2) && numEnemies>0 && mobChance<Math.random()){
+							numEnemies--;
+							x+=DistBetweenMobs;
+							y+=DistBetweenMobs;
+							if(Game.game.socketServer!=null){
+								Mob mob=new BasicEnemy(Game.game.level,x,y,"George",new char[][]{{(char)(rng.nextInt(94)+33)}},10,Pathfinding.MoveToward,new Spell[]{Spell.Fireball});//(char)(random.nextInt(94)+33));
+								
+								Packet04AddMob mobPacket = new Packet04AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
+								mobPacket.writeData(Game.game.socketServer);
+								
+							}
+						}
+				}
+			}
+		
 		
 		hallway=!hallway;
 		int nW, nH;

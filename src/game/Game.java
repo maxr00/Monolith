@@ -76,10 +76,10 @@ public class Game extends Canvas implements Runnable {
 		windowHandler = new WindowHandler(this);
 		mouse = new MouseHandler();
 		
-		level = new RandomLevel(100,100); //new Level(1000, 1000, "res/levels/level1/level1");
 		//player = new Player(keyboard, level,30,20);
 		//level.player = player;
 		//screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+		
 		
 		
 		if(JOptionPane.showConfirmDialog(this, "Do you want to run the server")==0){
@@ -89,7 +89,8 @@ public class Game extends Canvas implements Runnable {
 		socketClient = new GameClient(this, "localhost");
 		socketClient.start();
 		
-		
+		level = new RandomLevel(100,100); //new Level(1000, 1000, "res/levels/level1/level1");
+		((RandomLevel)level).generateLevel();
 		player = new PlayerMP(keyboard,mouse,screen, level,50,50, JOptionPane.showInputDialog(frame,"Please enter a username"),new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256)).getRGB(), null, -1);
 		screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
 		
@@ -97,10 +98,10 @@ public class Game extends Canvas implements Runnable {
 		
 		//Mobs handled by server
 		if(socketServer!=null){
-			Mob mob=new BasicEnemy(level,20,10,"George",new char[][]{{(char)(random.nextInt(94)+33)}},10,Pathfinding.MoveToward,new Spell[]{Spell.Fireball});//(char)(random.nextInt(94)+33));
+			//Mob mob=new BasicEnemy(level,20,10,"George",new char[][]{{(char)(random.nextInt(94)+33)}},10,Pathfinding.MoveToward,new Spell[]{Spell.Fireball});//(char)(random.nextInt(94)+33));
 			
-			Packet04AddMob mobPacket = new Packet04AddMob(mob.x/TILE_SIZE,mob.y/TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
-			mobPacket.writeData(socketServer);
+			//Packet04AddMob mobPacket = new Packet04AddMob(mob.x/TILE_SIZE,mob.y/TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
+			//mobPacket.writeData(socketServer);
 		}
 		
 		Packet00Login loginPacket = new Packet00Login(player.getUsername(),player.x,player.y,player.color);

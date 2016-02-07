@@ -26,6 +26,7 @@ public class Screen {
 	public void renderSprite(int xPos, int yPos, Sprite sprite){
 		xPos -= xOffset; //Minus because otherwise movement would be reversed
 		yPos -= yOffset;
+		if(sprite==null) return;
 		for (int y = 0; y < sprite.HEIGHT; y++) {
 			int ya = yPos + y;
 			if(ya < -sprite.HEIGHT || ya >= height) break;

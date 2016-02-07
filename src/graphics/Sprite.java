@@ -143,6 +143,7 @@ public class Sprite {
 	public static Sprite getSprite(char character){
 		Sprite sprite = null;
 		switch(character){
+			case ' ': sprite = null; 	 break;
 			case 'a': sprite = Sprite.a; break;
 			case 'b': sprite = Sprite.b; break;
 			case 'c': sprite = Sprite.c; break;

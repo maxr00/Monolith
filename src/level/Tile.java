@@ -20,8 +20,6 @@ public class Tile {
 		
 		colorBlemishes = blemishes;
 		sprite = Sprite.getSprite(character);
-		if(sprite==null)
-			System.out.println(character);
 	}
 	
 	public void render(int x, int y, Screen screen) {
@@ -31,13 +29,13 @@ public class Tile {
 	}
 
 	public void renderLight(int x, int y, Screen screen) {
-		if(render){
+		if(render && sprite!=null){
 			screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, tint, colorBlemishes);
 		}
 	}
 	
 	public void renderLight(int x, int y, Screen screen, int manualColor) {
-		if(render){
+		if(render && sprite!=null){
 			screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, manualColor, colorBlemishes);
 		}
 	}

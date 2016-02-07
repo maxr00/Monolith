@@ -80,48 +80,47 @@ public class Player extends Mob {
 			cast=true;//!cast;
 		if(input.clearSpell)
 			cast=false;
-			if(moveTime>15){
-				if (input.right){ inputX=1; moveTime=0;}
-				if (input.left){ inputX=-1; moveTime=0;}
-				if (input.down){ inputY=1; moveTime=0;}
-				if (input.up){ inputY=-1; moveTime=0;}
-			}
+		if(moveTime>15){
+			if (input.right){ inputX=1; moveTime=0;}
+			if (input.left){ inputX=-1; moveTime=0;}
+			if (input.down){ inputY=1; moveTime=0;}
+			if (input.up){ inputY=-1; moveTime=0;}
+		}
 
-			if(!cast){
-				for(int i=0;i<9;i++)
-					if(input.runeKeyOn[i]) Combat.combatPressRune(i);
-				Combat.notHeldCast();
-			}
+		if(!cast){
+			for(int i=0;i<9;i++)
+				if(input.runeKeyOn[i]) Combat.combatPressRune(i);
+			Combat.notHeldCast();
+		}
+		
+		if(input.clearSpell){
+			Combat.clearSpell();
+			damage(1,0,0);
+		}
+		
+		if (inputX != 0 || inputY != 0){
+			move(inputX*Game.TILE_SIZE, inputY*Game.TILE_SIZE);
 			
-			if(input.clearSpell){
-				Combat.clearSpell();
-				damage(1,0,0);
-			}
-			
-			if (inputX != 0 || inputY != 0){
-				move(inputX*Game.TILE_SIZE, inputY*Game.TILE_SIZE);
-				
-				Packet02Move packet = new Packet02Move(getUsername(),x,y);
-				packet.writeData(Game.game.socketClient);
-			}
-			
-			if(input.onToggleLock){
-				System.out.println("HEY THERE");
-				Mob close = null; double dist=Integer.MAX_VALUE;
-				for(Mob m : level.mobs){
-					if(level.getDistance(m.vector, vector)<dist){
-						close = m;
-						dist = level.getDistance(m.vector, vector);
-					}
+			Packet02Move packet = new Packet02Move(getUsername(),x,y);
+			packet.writeData(Game.game.socketClient);
+		}
+		
+		if(input.onToggleLock && lockedOn==null){
+			Mob close = null; double dist=Integer.MAX_VALUE;
+			for(Mob m : level.mobs){
+				if(level.getDistance(m.vector, vector)<dist){
+					close = m;
+					dist = level.getDistance(m.vector, vector);
 				}
-				lockedOn = close;
-				if(lockedOn!=null)
-					lockedOn.lockedOnto=true;
 			}
+			lockedOn = close;
+			if(lockedOn!=null)
+				lockedOn.lockedOnto=true;
+		}
+		
+		if(lockedOn!=null){
 			
-			if(lockedOn!=null){
-				
-			}
+		}
 		if(cast){
 			castX = 0;	castY = 0; //Default case, unreachable otherwise
 			if(input.runeKeyOff[0]){ castX=-1; castY=-1; }
@@ -207,6 +206,8 @@ public class Player extends Mob {
 		int x=(mouse.x/Game.scale +(this.x - screen.width/2)) /Game.TILE_SIZE;
 		int y=(mouse.y/Game.scale +(this.y - screen.height/2)) /Game.TILE_SIZE;
 		if(level.getMobOn(x, y)!=null){
+			if(lockedOn!=null)
+				lockedOn.lockedOnto=false;
 			UI.statusUI.setStatus(level.getMobOn(x, y).getStatus());
 			if(mouse.isPressed && level.getMobOn(x, y)!=this){
 				lockedOn=level.getMobOn(x, y);
