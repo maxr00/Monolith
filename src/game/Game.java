@@ -13,9 +13,6 @@ import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import entity.Projectile.Spell;
-import entity.mob.BasicEnemy;
-import entity.mob.BasicEnemy.Pathfinding;
 import entity.mob.Mob;
 import graphics.Screen;
 import input.Keyboard;
@@ -26,8 +23,8 @@ import level.RandomLevel;
 import net.GameClient;
 import net.GameServer;
 import net.PlayerMP;
-import net.packet.Packet00Login;
-import net.packet.Packet04AddMob;
+import net.packet.Packet10Login;
+import net.packet.Packet19RequestLevel;
 import player.Player;
 
 public class Game extends Canvas implements Runnable {
@@ -42,7 +39,7 @@ public class Game extends Canvas implements Runnable {
 	
 	public static Game game;
 	
-	private static String title = "Project Monolith v0.0";
+	private static String title = "Project Monolith v0.05";
 
 	private Thread gameThread;
 	public JFrame frame;
@@ -89,10 +86,35 @@ public class Game extends Canvas implements Runnable {
 		socketClient = new GameClient(this, "localhost");
 		socketClient.start();
 		
-		level = new RandomLevel(100,100); //new Level(1000, 1000, "res/levels/level1/level1");
-		((RandomLevel)level).generateLevel();
-		player = new PlayerMP(keyboard,mouse,screen, level,50,50, JOptionPane.showInputDialog(frame,"Please enter a username"),new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256)).getRGB(), null, -1);
-		screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+		
+		int playerStartX=50;
+		int playerStartY=50;
+		String username=JOptionPane.showInputDialog(frame,"Please enter a username");
+		Color playerCol=new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256));
+		
+		
+		//Make Level and send to clients
+		if(socketServer!=null){
+			level = new RandomLevel(100,100); //new Level(1000, 1000, "res/levels/level1/level1");
+			((RandomLevel)level).generateLevel();
+			
+			
+			player = new PlayerMP(keyboard,mouse,screen, level,playerStartX,playerStartY,username,playerCol.getRGB(), null, -1);
+			screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+		}else{
+			//new Packet19RequestLevel().writeData(socketClient);
+		}
+		
+		Packet10Login loginPacket = new Packet10Login(username,playerStartX*TILE_SIZE,playerStartY*TILE_SIZE,playerCol.getRGB());
+		if(socketServer!=null){
+			socketServer.addConnection((PlayerMP)player,loginPacket);
+		}
+		loginPacket.writeData(socketClient);
+		
+		if(socketServer==null){
+			player = new PlayerMP(keyboard,mouse,screen, level,playerStartX,playerStartY,username,playerCol.getRGB(), null, -1);
+			screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+		}
 		
 		level.addPlayer((PlayerMP)player);
 		
@@ -104,11 +126,6 @@ public class Game extends Canvas implements Runnable {
 			//mobPacket.writeData(socketServer);
 		}
 		
-		Packet00Login loginPacket = new Packet00Login(player.getUsername(),player.x,player.y,player.color);
-		if(socketServer!=null){
-			socketServer.addConnection((PlayerMP)player,loginPacket);
-		}
-		loginPacket.writeData(socketClient);
 		
 		addKeyListener(keyboard);
 		addMouseListener(mouse);

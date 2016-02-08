@@ -3,20 +3,24 @@ package net.packet;
 import net.GameClient;
 import net.GameServer;
 
-public class Packet06RemoveMob extends Packet {
+public class Packet16RemoveMob extends Packet {
 	
 	private String identifier;
 	
 	//Recieved a packet
-	public Packet06RemoveMob(byte[] data) {
-		super(06);
+	public Packet16RemoveMob(byte[] data) {
+		super(16);
 		String[] dataArray = readData(data).split(",");
-		this.identifier=dataArray[0];
+		try{
+			this.identifier=dataArray[0];
+		}catch(ArrayIndexOutOfBoundsException e){
+			System.out.println("PACKET OUT OF BOUNDS");
+		}
 	}
 	
 	//Creating a packet
-	public Packet06RemoveMob(String identifier){
-		super(06);
+	public Packet16RemoveMob(String identifier){
+		super(16);
 		this.identifier=identifier;
 	}
 	
@@ -31,7 +35,7 @@ public class Packet06RemoveMob extends Packet {
 	}	
 	
 	public byte[] getData(){
-		return ("06"+identifier).getBytes();
+		return ("16"+identifier).getBytes();
 	}
 	
 	public String getID(){

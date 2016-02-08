@@ -7,10 +7,10 @@ import java.util.Random;
 
 import entity.Projectile.Spell;
 import entity.mob.BasicEnemy;
-import entity.mob.Mob;
 import entity.mob.BasicEnemy.Pathfinding;
+import entity.mob.Mob;
 import game.Game;
-import net.packet.Packet04AddMob;
+import net.packet.Packet14AddMob;
 
 public class RandomLevel extends Level {
 
@@ -35,9 +35,9 @@ public class RandomLevel extends Level {
 		//EMPTY CODE
 		//
 		
-		String world="";
-		String solids="";//0 or 1
-		Color[] colors = null;
+		world="";
+		solids="";//0 or 1
+		colors = null;
 		
 		colors=new Color[width*height];
 		
@@ -69,7 +69,7 @@ public class RandomLevel extends Level {
 						}
 					}
 					if(!border){
-						world+="%";
+						world+=" ";
 						solids+="1";
 						colors[x+y*width]=Color.white;
 					}
@@ -122,7 +122,7 @@ public class RandomLevel extends Level {
 							if(Game.game.socketServer!=null){
 								Mob mob=new BasicEnemy(Game.game.level,x,y,"George",new char[][]{{(char)(rng.nextInt(94)+33)}},10,Pathfinding.MoveToward,new Spell[]{Spell.Fireball});//(char)(random.nextInt(94)+33));
 								
-								Packet04AddMob mobPacket = new Packet04AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
+								Packet14AddMob mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
 								mobPacket.writeData(Game.game.socketServer);
 								
 							}

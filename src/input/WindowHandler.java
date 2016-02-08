@@ -4,7 +4,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import game.Game;
-import net.packet.Packet01Disconnect;
+import net.packet.Packet11Disconnect;
 
 public class WindowHandler implements WindowListener{
 
@@ -22,7 +22,7 @@ public class WindowHandler implements WindowListener{
 	}
 
 	public void windowClosing(WindowEvent event) {
-		Packet01Disconnect packet = new Packet01Disconnect(this.game.player.getUsername());
+		Packet11Disconnect packet = new Packet11Disconnect(this.game.player.getUsername());
 		packet.writeData(this.game.socketClient);
 	}
 

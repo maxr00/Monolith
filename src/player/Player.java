@@ -12,9 +12,7 @@ import graphics.UI;
 import input.Keyboard;
 import input.MouseHandler;
 import level.Level;
-import net.PlayerMP;
-import net.packet.Packet02Move;
-import util.Vector2i;
+import net.packet.Packet12Move;
 
 public class Player extends Mob {
 
@@ -101,7 +99,7 @@ public class Player extends Mob {
 		if (inputX != 0 || inputY != 0){
 			move(inputX*Game.TILE_SIZE, inputY*Game.TILE_SIZE);
 			
-			Packet02Move packet = new Packet02Move(getUsername(),x,y);
+			Packet12Move packet = new Packet12Move(getUsername(),x,y);
 			packet.writeData(Game.game.socketClient);
 		}
 		

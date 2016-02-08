@@ -8,7 +8,7 @@ import game.Game;
 import graphics.Screen;
 import graphics.Sprite;
 import graphics.UI;
-import net.packet.Packet03Projectile;
+import net.packet.Packet13Projectile;
 
 public class Combat {
 	
@@ -105,7 +105,7 @@ public class Combat {
 			if(castSpell!=null){
 				//Since a projectile packet is sent, creating a projectile now makes 2 projectiles for the client.
 				//new Projectile(player.x + Game.TILE_SIZE/2, player.y + Game.TILE_SIZE/2, xDir, yDir, SpellToProjectile(castSpell),castSpell.getDamagePercent(heldCount),player.level);
-				Packet03Projectile packet = new Packet03Projectile(player.x, player.y, (float)xDir, (float)yDir, SpellToProjectile(castSpell).name(),castSpell.getDamagePercent(heldCount),player.lockedOn==null ? "null" : player.lockedOn.identifier);
+				Packet13Projectile packet = new Packet13Projectile(player.x, player.y, (float)xDir, (float)yDir, SpellToProjectile(castSpell).name(),castSpell.getDamagePercent(heldCount),player.lockedOn==null ? "null" : player.lockedOn.identifier);
 				packet.writeData(Game.game.socketClient);
 			}else{
 				new Particle(player.x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE), player.y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,120,0.2f,50,player.level,new Color[]{Color.gray,Color.darkGray},Particle.RenderType.Sprite);

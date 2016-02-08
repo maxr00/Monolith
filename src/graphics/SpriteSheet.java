@@ -12,7 +12,7 @@ public class SpriteSheet {
 	public final int WIDTH, HEIGHT;
 	public int[] pixels;
 
-	public static SpriteSheet font = new SpriteSheet("res/textures/font.png", 182, 28);
+	public static SpriteSheet font = new SpriteSheet("/textures/font.png", 182, 28);
 
 	public SpriteSheet(String path, int width, int height) {
 		//System.out.println(new File("res/textures/font.png").exists());
@@ -25,7 +25,7 @@ public class SpriteSheet {
 
 	private void load() {
 		try {
-			BufferedImage image = ImageIO.read(new File(path));//SpriteSheet.class.getResource(path)
+			BufferedImage image = ImageIO.read(this.getClass().getResource(path));//new File(path))
 			int w = image.getWidth();
 			int h = image.getHeight();
 			//System.out.println(image);

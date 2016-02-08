@@ -3,7 +3,7 @@ package net.packet;
 import net.GameClient;
 import net.GameServer;
 
-public class Packet03Projectile extends Packet {
+public class Packet13Projectile extends Packet {
 	
 	private String spell, mobID;
 	private int x,y;
@@ -11,21 +11,25 @@ public class Packet03Projectile extends Packet {
 	private float damagePercent;
 	
 	//Recieved a packet
-	public Packet03Projectile(byte[] data) {
-		super(03);
+	public Packet13Projectile(byte[] data) {
+		super(13);
 		String[] dataArray = readData(data).split(",");
-		this.x=Integer.parseInt(dataArray[0]);
-		this.y=Integer.parseInt(dataArray[1]);
-		this.xDir=Float.parseFloat(dataArray[2]);
-		this.yDir=Float.parseFloat(dataArray[3]);
-		this.spell=dataArray[4];
-		this.damagePercent=Float.parseFloat(dataArray[5]);
-		this.mobID=dataArray[6];
+		try{
+			this.x=Integer.parseInt(dataArray[0]);
+			this.y=Integer.parseInt(dataArray[1]);
+			this.xDir=Float.parseFloat(dataArray[2]);
+			this.yDir=Float.parseFloat(dataArray[3]);
+			this.spell=dataArray[4];
+			this.damagePercent=Float.parseFloat(dataArray[5]);
+			this.mobID=dataArray[6];
+		}catch(ArrayIndexOutOfBoundsException e){
+			System.out.println("PACKET OUT OF BOUNDS");
+		}
 	}
 	
 	//Creating a packet
-	public Packet03Projectile(int x,int y, float xDir, float yDir, String spell, float damagePercent, String mobID){
-		super(03);
+	public Packet13Projectile(int x,int y, float xDir, float yDir, String spell, float damagePercent, String mobID){
+		super(13);
 		this.x = x;
 		this.y = y;
 		this.xDir=xDir;
@@ -46,7 +50,7 @@ public class Packet03Projectile extends Packet {
 	}	
 	
 	public byte[] getData(){
-		return ("03" + x+","+y +"," +xDir +"," +yDir +"," +spell +"," +damagePercent+","+mobID).getBytes();
+		return ("13" + x+","+y +"," +xDir +"," +yDir +"," +spell +"," +damagePercent+","+mobID).getBytes();
 	}
 
 	public int getX(){return x;}

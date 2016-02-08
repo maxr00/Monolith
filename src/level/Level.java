@@ -32,6 +32,9 @@ public class Level {
 	
 	public String path;
 	
+	public String world, solids;
+	public Color[] colors;
+	
 	private float[][] lightMap;
 	private int[][][] shadowMap = null;
 	
@@ -40,7 +43,7 @@ public class Level {
 		this.height = height;
 		this.path = path;
 		tiles = new Tile[width * height];
-		levelLight = new LevelLight(width,height,path);
+		levelLight = new LevelLight(width,height);
 		generateLevel(path);
 	}
 	
@@ -48,7 +51,36 @@ public class Level {
 		this.width = width;
 		this.height = height;
 		tiles = new Tile[width * height];
-		levelLight = new LevelLight(width,height,path);
+		levelLight = new LevelLight(width,height);
+	}
+	
+	public Level(int width, int height, String world, String solids){
+		this.width = width;
+		this.height = height;
+		this.world=world;
+		this.solids=solids;
+		tiles = new Tile[width * height];
+		levelLight = new LevelLight(width,height);
+	}
+	
+	public void setColor(int[] colors){
+		int[][] colorBlemishes = LevelLight.getPossibleBlemishes(100);
+		
+		int whiteSpace = 0;
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				if(world.length()>x+y*width-whiteSpace && solids.length()>x+y*width-whiteSpace){
+					if(world.charAt(x+y*width - whiteSpace)=='\n'){//if is next line
+						whiteSpace += width - x - 1;
+						break;
+					}else //if(!Character.isWhitespace(world.charAt(x+y*width - whiteSpace)))//if not space
+						tiles[x+y*width] = new Tile(world.charAt(x+y*width - whiteSpace),solids.charAt(x+y*width-whiteSpace)=='1',colors[x+y*width],colorBlemishes[random.nextInt(colorBlemishes.length)]);
+				}else break;
+			}
+		}
+		
+		levelLight.generateLevel(colors);
+		levelLight.setTilesLight(tiles);
 	}
 	
 	public void generateLevel(String path) {
@@ -163,6 +195,7 @@ public class Level {
 		int y1 = (yScroll + screen.height) / TILE_SIZE +1;
 
 		//Vector2i pv = new Vector2i(player.x/Game.TILE_SIZE,player.y/Game.TILE_SIZE);
+		if(shadowMap!=null)
 		synchronized(shadowMap){
 			for (int y = y0; y < y1; y++) {
 				for (int x = x0; x < x1; x++) {

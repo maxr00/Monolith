@@ -18,7 +18,7 @@ public class LevelLight {
 	public int[] tiles;
 	private final Random random = new Random();
 	
-	public LevelLight(int w, int h, String path){
+	public LevelLight(int w, int h){
 		width = w;
 		height = h;
 		tiles = new int[w*h];
@@ -32,7 +32,7 @@ public class LevelLight {
 		 
 		BufferedImage fileImg = null;
 				//new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		try{   fileImg = ImageIO.read(new File(path));   }catch (IOException e) {e.printStackTrace();}
+		try{   fileImg = ImageIO.read(this.getClass().getResource(path));   }catch (IOException e) {e.printStackTrace();} //new File(path)
 		
 		BufferedImage bufImg = fileImg;
 		BufferedImage img = new BufferedImage(bufImg.getWidth(), bufImg.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -59,6 +59,12 @@ public class LevelLight {
 	public void generateLevel(Color[] cols){
 		for(int i=0; i<tiles.length;i++){
 			tiles[i]=cols[i].getRGB();
+		}
+	}
+	
+	public void generateLevel(int[] cols){
+		for(int i=0; i<tiles.length;i++){
+			tiles[i]=cols[i];
 		}
 	}
 	

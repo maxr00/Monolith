@@ -11,8 +11,8 @@ import graphics.Screen;
 import graphics.Sprite;
 import level.Level;
 import net.PlayerMP;
-import net.packet.Packet03Projectile;
-import net.packet.Packet05MobUpdate;
+import net.packet.Packet13Projectile;
+import net.packet.Packet15MobUpdate;
 import util.Node;
 import util.Vector2i;
 
@@ -133,7 +133,7 @@ public class BasicEnemy extends Mob {
 				if(dist>maxRange || dist<minRange){
 					move(deltaX * Game.TILE_SIZE, deltaY * Game.TILE_SIZE);
 				}
-				Packet05MobUpdate packet=new Packet05MobUpdate(x,y,Health,identifier);
+				Packet15MobUpdate packet=new Packet15MobUpdate(x,y,Health,identifier);
 				packet.writeData(Game.game.socketClient);
 				
 			}
@@ -188,7 +188,7 @@ public class BasicEnemy extends Mob {
 				}else if(level.getDistance(vector, target)>shootRange)
 					move(deltaX * Game.TILE_SIZE, deltaY * Game.TILE_SIZE);
 				
-				Packet05MobUpdate packet=new Packet05MobUpdate(x,y,Health,identifier);
+				Packet15MobUpdate packet=new Packet15MobUpdate(x,y,Health,identifier);
 				packet.writeData(Game.game.socketClient);
 			}
 			if (time % 150 == 0) {
@@ -239,7 +239,7 @@ public class BasicEnemy extends Mob {
 		}
 		if(xDir!=0 || yDir!=0){
 			Projectile.Spell s=spells[(int)(Math.random()*spells.length)];
-			Packet03Projectile projPacket = new Packet03Projectile(x, y, xDir, yDir, s.name(),0.5f,null);
+			Packet13Projectile projPacket = new Packet13Projectile(x, y, xDir, yDir, s.name(),0.5f,null);
 			projPacket.writeData(Game.game.socketClient);
 		}
 	}
@@ -291,7 +291,7 @@ public class BasicEnemy extends Mob {
 			new Particle(x + Game.TILE_SIZE/2 + xDir*Game.TILE_SIZE,y + Game.TILE_SIZE/2 + yDir*Game.TILE_SIZE,1,600,0.1f,particlesPerDamage*damage,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
 		
 		
-		Packet05MobUpdate packet=new Packet05MobUpdate(x,y,Health,identifier);
+		Packet15MobUpdate packet=new Packet15MobUpdate(x,y,Health,identifier);
 		packet.writeData(Game.game.socketClient);
 	}
 

@@ -8,14 +8,18 @@ import java.net.InetAddress;
 import entity.Projectile;
 import entity.mob.Mob;
 import game.Game;
+import level.Level;
 import net.packet.Packet;
-import net.packet.Packet00Login;
-import net.packet.Packet01Disconnect;
-import net.packet.Packet02Move;
-import net.packet.Packet03Projectile;
-import net.packet.Packet04AddMob;
-import net.packet.Packet05MobUpdate;
-import net.packet.Packet06RemoveMob;
+import net.packet.Packet10Login;
+import net.packet.Packet11Disconnect;
+import net.packet.Packet12Move;
+import net.packet.Packet13Projectile;
+import net.packet.Packet14AddMob;
+import net.packet.Packet15MobUpdate;
+import net.packet.Packet16RemoveMob;
+import net.packet.Packet17LoadLevel;
+import net.packet.Packet18LevelColors;
+import net.packet.Packet19RequestLevel;
 
 public class GameClient extends Thread{
 	
@@ -33,7 +37,7 @@ public class GameClient extends Thread{
 	
 	public void run() {
 		while(true){
-			byte[] data = new byte[1024]; //Increase size if needed?
+			byte[] data = new byte[8192*10]; //Increase size if needed?
 				DatagramPacket packet = new DatagramPacket(data, data.length);
 				try {
 					socket.receive(packet);
@@ -54,44 +58,68 @@ public class GameClient extends Thread{
 	 private void parsePacket(byte[] data, InetAddress address, int port) {
 		 String message = new String(data).trim();
 		 Packet.PacketType type = Packet.lookupPacket(message.substring(0, 2));
+		 
+		 System.out.println("Client recieved "+type);
+		 
 		 Packet packet = null;
 		 switch (type) {
 		 default:
 		 case INVALID:
 			 break;
 		 case LOGIN:
-			 packet = new Packet00Login(data);
-			 handleLogin((Packet00Login)packet, address, port);
+			 packet = new Packet10Login(data);
+			 handleLogin((Packet10Login)packet, address, port);
 			 break;
 		 case DISCONNECT:
-			 packet = new Packet01Disconnect(data);
-			 System.out.println("["+address.getHostAddress()+":"+port+"] "+((Packet01Disconnect) packet).getUsername()+" has left the world...");
-			 game.level.removePlayerMP(((Packet01Disconnect)packet).getUsername());
+			 packet = new Packet11Disconnect(data);
+			 System.out.println("["+address.getHostAddress()+":"+port+"] "+((Packet11Disconnect) packet).getUsername()+" has left the world...");
+			 game.level.removePlayerMP(((Packet11Disconnect)packet).getUsername());
 			 break;
 		 case MOVE:
-			 packet=new Packet02Move(data);
-			 this.handleMove((Packet02Move)packet);
+			 packet=new Packet12Move(data);
+			 this.handleMove((Packet12Move)packet);
 			 break;
 		 case PROJECTILE:
-			 packet = new Packet03Projectile(data);
-			 handleProjectile((Packet03Projectile)packet);
+			 packet = new Packet13Projectile(data);
+			 handleProjectile((Packet13Projectile)packet);
 			 break;
 		 case ADDMOB:
-			 packet = new Packet04AddMob(data);
-			 handleAddMob((Packet04AddMob)packet);
+			 packet = new Packet14AddMob(data);
+			 handleAddMob((Packet14AddMob)packet);
 			 break;
 		 case MOBUPDATE:
-			 packet = new Packet05MobUpdate(data);
-			 handleMobUpdate((Packet05MobUpdate)packet);
+			 packet = new Packet15MobUpdate(data);
+			 handleMobUpdate((Packet15MobUpdate)packet);
 			 break;
 		 case REMOVEMOB:
-			 packet = new Packet06RemoveMob(data);
-			 handleRemoveMob((Packet06RemoveMob)packet);
+			 packet = new Packet16RemoveMob(data);
+			 handleRemoveMob((Packet16RemoveMob)packet);
+			 break;
+		 case LOADLEVEL:
+			 packet = new Packet17LoadLevel(data);
+			 handleLoadLevel((Packet17LoadLevel)packet);
+			 break;
+		 case LEVELCOLORS:
+			 packet = new Packet18LevelColors(data);
+			 handleLoadLevelColors((Packet18LevelColors)packet);
+			 break;
+		 case REQUESTLEVEL:
+			 System.out.println("CLIENT RECIEVED REQUEST PACKET. IMPOSSIBLE RESULT");
+			 //packet = new Packet09RequestLevel(data);
+			 //packet.writeData(this);
 			 break;
 		 }
 	 }
 	 
-	 private void handleRemoveMob(Packet06RemoveMob packet){
+	 private void handleLoadLevelColors(Packet18LevelColors packet) {
+		 Game.game.level.setColor(packet.getColors());
+	}
+
+	private void handleLoadLevel(Packet17LoadLevel packet) {
+		Game.game.level=new Level(packet.getWidth(),packet.getHeight(),packet.getWorld(),packet.getSolids());//,packet.getColors());
+	}
+
+	private void handleRemoveMob(Packet16RemoveMob packet){
 		 for(Mob mob : game.level.mobs){
 			 if(mob.identifier.equals(packet.getID())){
 				 mob.remove();
@@ -100,7 +128,7 @@ public class GameClient extends Thread{
 		 }
 	 }
 	 
-	 private void handleMobUpdate(Packet05MobUpdate packet){
+	 private void handleMobUpdate(Packet15MobUpdate packet){
 		 for(Mob mob : game.level.mobs){
 			 if(mob.identifier.equals(packet.getID())){
 				 mob.moveTo(packet.getX(), packet.getY());
@@ -110,23 +138,30 @@ public class GameClient extends Thread{
 		 }
 	 }
 	 
-	 private void handleAddMob(Packet04AddMob packet){
+	 private void handleAddMob(Packet14AddMob packet){
 		 System.out.println("GAMECLIENT.JAVA: Mob: " +packet.getCharacters()[0][0]);
 		 new MobMP(game.level,packet.getX(),packet.getY(),packet.getCharacters(),packet.getHealth(),packet.getID());
 	 }
 	 
-	 private void handleProjectile(Packet03Projectile packet){
+	 private void handleProjectile(Packet13Projectile packet){
 		 new Projectile(packet.getX(),packet.getY(),packet.getxDir(),packet.getyDir(),Projectile.Spell.getSpell(packet.getSpell()),packet.getDamagePercent(),game.level.getMob(packet.getMobID()),game.level);
 	 }
 	 
-	private void handleLogin(Packet00Login packet, InetAddress address, int port){
+	private void handleLogin(Packet10Login packet, InetAddress address, int port){
 		System.out.println("[" + address.getHostAddress() + ":" + port + "] " + packet.getUsername() + " has joined the game...");
 		
+		if(game.level==null){
+			new Packet19RequestLevel().writeData(this);
+			while(game.level==null){
+				System.out.println("WAIT, NO LEVEL");
+			}
+		}
+		
         PlayerMP player = new PlayerMP(game.level, packet.getX()/Game.TILE_SIZE, packet.getY()/Game.TILE_SIZE, packet.getUsername(),packet.getColor(), address, port);
-        game.level.addPlayer(player);
+       	game.level.addPlayer(player);
 	}
 	
-	private void handleMove(Packet02Move packet) {
+	private void handleMove(Packet12Move packet) {
 		game.level.movePlayer(packet.getUsername(), packet.getX(), packet.getY());
 	}
 	

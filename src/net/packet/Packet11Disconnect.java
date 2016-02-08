@@ -3,17 +3,17 @@ package net.packet;
 import net.GameClient;
 import net.GameServer;
 
-public class Packet01Disconnect extends Packet {
+public class Packet11Disconnect extends Packet {
 	
 	private String username;
 
-	public Packet01Disconnect(byte[] data) {
-		super(01);
+	public Packet11Disconnect(byte[] data) {
+		super(11);
 		this.username = readData(data);
 	}
 	
-	public Packet01Disconnect(String username){
-		super(01);
+	public Packet11Disconnect(String username){
+		super(11);
 		this.username = username;
 	}
 	
@@ -26,7 +26,7 @@ public class Packet01Disconnect extends Packet {
 	}	
 	
 	public byte[] getData(){
-		return ("01" + this.username).getBytes();
+		return ("11" + this.username).getBytes();
 	}
 
 	public String getUsername() {

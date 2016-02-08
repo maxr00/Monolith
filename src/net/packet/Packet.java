@@ -7,13 +7,16 @@ public abstract class Packet {
 	
 	public static enum PacketType{
 		INVALID(-1),
-		LOGIN(00),
-		DISCONNECT(01),
-		MOVE(02),
-		PROJECTILE(03),
-		ADDMOB(04),
-		MOBUPDATE(05),
-		REMOVEMOB(06),
+		LOGIN(10),
+		DISCONNECT(11),
+		MOVE(12),
+		PROJECTILE(13),
+		ADDMOB(14),
+		MOBUPDATE(15),
+		REMOVEMOB(16),
+		LOADLEVEL(17),
+		LEVELCOLORS(18),
+		REQUESTLEVEL(19),
 		;
 		private int packetId;
 		private PacketType(int packetId){

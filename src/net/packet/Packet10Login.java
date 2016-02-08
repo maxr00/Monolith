@@ -3,24 +3,28 @@ package net.packet;
 import net.GameClient;
 import net.GameServer;
 
-public class Packet00Login extends Packet {
+public class Packet10Login extends Packet {
 	
 	private String username;
 	private int x,y,color;
 	
 	//Recieved a packet
-	public Packet00Login(byte[] data) {
-		super(00);
+	public Packet10Login(byte[] data) {
+		super(10);
 		String[] dataArray = readData(data).split(",");
-		this.username = dataArray[0];
-		this.x=Integer.parseInt(dataArray[1]);
-		this.y=Integer.parseInt(dataArray[2]);
-		this.color=Integer.parseInt(dataArray[3]);
+		try{
+			this.username = dataArray[0];
+			this.x=Integer.parseInt(dataArray[1]);
+			this.y=Integer.parseInt(dataArray[2]);
+			this.color=Integer.parseInt(dataArray[3]);
+		}catch(ArrayIndexOutOfBoundsException e){
+			System.out.println("PACKET OUT OF BOUNDS");
+		}
 	}
 	
 	//Creating a packet
-	public Packet00Login(String username, int x, int y, int color){
-		super(00);
+	public Packet10Login(String username, int x, int y, int color){
+		super(10);
 		this.username = username;
 		this.x = x;
 		this.y = y;
@@ -38,7 +42,7 @@ public class Packet00Login extends Packet {
 	}	
 	
 	public byte[] getData(){
-		return ("00" + this.username+","+x+","+y+","+color).getBytes();
+		return ("10" + this.username+","+x+","+y+","+color).getBytes();
 	}
 
 	public String getUsername() {
