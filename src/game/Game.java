@@ -98,6 +98,7 @@ public class Game extends Canvas implements Runnable {
 			level = new RandomLevel(100,100); //new Level(1000, 1000, "res/levels/level1/level1");
 			((RandomLevel)level).generateLevel();
 			
+			System.out.println(level +"   This is lvl");
 			
 			player = new PlayerMP(keyboard,mouse,screen, level,playerStartX,playerStartY,username,playerCol.getRGB(), null, -1);
 			screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);

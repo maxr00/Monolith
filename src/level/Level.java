@@ -73,8 +73,9 @@ public class Level {
 					if(world.charAt(x+y*width - whiteSpace)=='\n'){//if is next line
 						whiteSpace += width - x - 1;
 						break;
-					}else //if(!Character.isWhitespace(world.charAt(x+y*width - whiteSpace)))//if not space
+					}else{ //if(!Character.isWhitespace(world.charAt(x+y*width - whiteSpace)))//if not space 						  new Color(150,150,150).getRGB()
 						tiles[x+y*width] = new Tile(world.charAt(x+y*width - whiteSpace),solids.charAt(x+y*width-whiteSpace)=='1',colors[x+y*width],colorBlemishes[random.nextInt(colorBlemishes.length)]);
+					}
 				}else break;
 			}
 		}
@@ -111,8 +112,10 @@ public class Level {
 					if(world.charAt(x+y*width - whiteSpace)=='\n'){//if is next line
 						whiteSpace += width - x - 1;
 						break;
-					}else if(!Character.isWhitespace(world.charAt(x+y*width - whiteSpace)))//if not space 						  new Color(150,150,150).getRGB()
+					}else{ //if(!Character.isWhitespace(world.charAt(x+y*width - whiteSpace)))//if not space 						  new Color(150,150,150).getRGB()
 						tiles[x+y*width] = new Tile(world.charAt(x+y*width - whiteSpace),solids.charAt(x+y*width-whiteSpace)=='1',new Color(150,150,150).getRGB(),colorBlemishes[random.nextInt(colorBlemishes.length)]);
+						System.out.println("Tile created  " +tiles[x+y*width]);
+					}
 				}else break;
 			}
 		}
@@ -195,11 +198,13 @@ public class Level {
 		int y1 = (yScroll + screen.height) / TILE_SIZE +1;
 
 		//Vector2i pv = new Vector2i(player.x/Game.TILE_SIZE,player.y/Game.TILE_SIZE);
-		if(shadowMap!=null)
 		synchronized(shadowMap){
 			for (int y = y0; y < y1; y++) {
 				for (int x = x0; x < x1; x++) {
 					Tile tile = getTile(x, y);
+//
+//					System.out.println(x+"," +y +" : " +tile);
+//
 					if (tile != null){
 						for(int i=0;i<getPlayers().size();i++){
 							if(tile.hasBeenSeen || (i<shadowMap.length && shadowMap[i]!=null && shadowMap[i][x][y]==1))

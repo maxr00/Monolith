@@ -26,12 +26,12 @@ public class Packet14AddMob extends Packet {
 			characters=new char[w][h];
 			for(int y=0;y<h;y++){
 				for(int x=0;x<w;x++){
-					characters[x][y] = dataArray[6+y].split("|")[x].charAt(0);
+					characters[x][y] = dataArray[6+y].split("/")[x].charAt(0);
 				}
 			}
-			spells=new Spell[dataArray[7].split("|").length];
+			spells=new Spell[dataArray[7+h].split("/").length];
 			for(int i=0;i<spells.length;i++){
-				spells[i]=Spell.getSpell(dataArray[7].split("|")[i]);
+				spells[i]=Spell.getSpell(dataArray[7+h].split("/")[i]);
 			}
 		}catch(ArrayIndexOutOfBoundsException e){
 			System.out.println("PACKET OUT OF BOUNDS");
@@ -63,12 +63,12 @@ public class Packet14AddMob extends Packet {
 		String s="", s1="";
 		for(int x=0;x<characters.length;x++){
 			for(int y=0;y<characters[x].length;y++){
-				s+= ""+characters[x][y]+"|";
+				s+= ""+characters[x][y]+"/";
 			}
 			s+=",";
 		}
 		for(Spell spell : spells){
-			s1+=spell.name()+"|";
+			s1+=spell.name()+"/";
 		}
 		return ("14"+x+","+y+","+health+","+identifier +"," +characters.length +"," +characters[0].length +","+s+","+s1).getBytes();
 	}

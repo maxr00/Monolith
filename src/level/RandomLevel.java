@@ -120,7 +120,10 @@ public class RandomLevel extends Level {
 						if((x!=width/2 || y!=height/2) && numEnemies>0 && mobChance<Math.random()){
 							numEnemies--;
 							if(Game.game.socketServer!=null){
-								Mob mob=new BasicEnemy(Game.game.level,x,y,"George",new char[][]{{(char)(rng.nextInt(94)+33)}},10,Pathfinding.MoveToward,new Spell[]{Spell.Fireball});//(char)(random.nextInt(94)+33));
+								int character=rng.nextInt(94)+33;
+								//No commas (44 in ASCII)!
+								while(character==44 || character==124){character=rng.nextInt(94)+33;}
+								Mob mob=new BasicEnemy(Game.game.level,x,y,"George",new char[][]{{(char)(character)}},10,Pathfinding.MoveToward,new Spell[]{Spell.Fireball});//(char)(random.nextInt(94)+33));
 								
 								Packet14AddMob mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
 								mobPacket.writeData(Game.game.socketServer);

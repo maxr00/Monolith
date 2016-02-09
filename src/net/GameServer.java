@@ -55,9 +55,6 @@ public class GameServer extends Thread{
     private void parsePacket(byte[] data, InetAddress address, int port) {
         String message = new String(data).trim();
         PacketType type = Packet.lookupPacket(message.substring(0, 2));
-
-        System.out.println("Server recieved "+type);
-		 
         Packet packet = null;
         switch (type) {
         default:
@@ -144,17 +141,37 @@ public class GameServer extends Thread{
     private void handleLogin(Packet10Login packet, InetAddress address, int port){
     	System.out.println("[" + address.getHostAddress() + ":" + port + "] "
                 + packet.getUsername() + " has connected...");
-    	
+
     	Level lvl=Game.game.level;
         int[] cols=new int[lvl.colors.length];
 		for(int i=0;i<lvl.colors.length;i++){
 			cols[i]=lvl.colors[i].getRGB();
+		}
+		ArrayList<Mob> mobBackup = null;
+		if(game.level!=null){
+			mobBackup = game.level.mobs;
 		}
         Packet17LoadLevel levelPacket=new Packet17LoadLevel(lvl.width,lvl.height,lvl.world,lvl.solids);//cols
         sendData(levelPacket.getData(),address,port);
     	
         Packet18LevelColors colorPacket=new Packet18LevelColors(cols);
         sendData(colorPacket.getData(),address,port);
+        
+        //Send existing mobs to connecting player
+        Packet14AddMob mobPacket;
+        if(game.level.mobs.size()>0){
+	        for(Mob mob : game.level.mobs){
+	        	mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
+	        	sendData(mobPacket.getData(),address,port);
+	        }
+        }else{
+        	if(mobBackup!=null){
+        		for(Mob mob : mobBackup){
+        			mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
+        			sendData(mobPacket.getData(),address,port);
+        		}
+        	}
+        }
         
         PlayerMP player = new PlayerMP(game.level, packet.getX()/Game.TILE_SIZE, packet.getY()/Game.TILE_SIZE, packet.getUsername(),packet.getColor(), address, port);
         this.addConnection(player, packet);
@@ -211,13 +228,6 @@ public class GameServer extends Thread{
                 // Send new player all players already connected
                 packet = new Packet10Login(p.getUsername(),p.x,p.y,p.color);
                 sendData(packet.getData(), player.ipAddress, player.port);
-                
-                //Send existing mobs to connecting player
-                Packet14AddMob mobPacket;
-                for(Mob mob : game.level.mobs){
-                	mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
-                	sendData(mobPacket.getData(),player.ipAddress,player.port);
-                }
                 
             }
         }

@@ -15,8 +15,10 @@ public class Packet17LoadLevel extends Packet {
 		try{
 			this.width=Integer.parseInt(dataArray[0]);
 			this.height=Integer.parseInt(dataArray[1]);
-			this.world = dataArray[2];
-			this.solids = dataArray[3];
+			this.solids = dataArray[2];
+			this.world = dataArray[3];
+			for(int i=4;i<dataArray.length;i++)//Incase world contains any ,s
+				this.world += ","+dataArray[i];
 		}catch(ArrayIndexOutOfBoundsException e){
 			System.out.println("PACKET OUT OF BOUNDS");
 		}
@@ -42,7 +44,7 @@ public class Packet17LoadLevel extends Packet {
 	}	
 	
 	public byte[] getData(){
-		return ("17" + width+","+height+","+world+","+solids).getBytes();
+		return ("17" + width+","+height+","+solids+","+world).getBytes();
 	}
 
 	public String getWorld() {

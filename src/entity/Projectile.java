@@ -31,7 +31,9 @@ public class Projectile extends Entity{
 		public float life;
 		Spell(Sprite s, Color col, int d, int spd, float l){sprite=s; color=col; damage=d; speed=spd; life=l;}
 		
-		public static Spell getSpell(String name){return Spell.valueOf(name);}
+		public static Spell getSpell(String name){
+			return Spell.valueOf(name);
+		}
 	}
 	
 	public Projectile(int x,int y, float xDir, float yDir, Spell spell, float damagePercent, Mob target, Level level){

@@ -58,9 +58,6 @@ public class GameClient extends Thread{
 	 private void parsePacket(byte[] data, InetAddress address, int port) {
 		 String message = new String(data).trim();
 		 Packet.PacketType type = Packet.lookupPacket(message.substring(0, 2));
-		 
-		 System.out.println("Client recieved "+type);
-		 
 		 Packet packet = null;
 		 switch (type) {
 		 default:
@@ -105,8 +102,6 @@ public class GameClient extends Thread{
 			 break;
 		 case REQUESTLEVEL:
 			 System.out.println("CLIENT RECIEVED REQUEST PACKET. IMPOSSIBLE RESULT");
-			 //packet = new Packet09RequestLevel(data);
-			 //packet.writeData(this);
 			 break;
 		 }
 	 }
@@ -117,6 +112,7 @@ public class GameClient extends Thread{
 
 	private void handleLoadLevel(Packet17LoadLevel packet) {
 		Game.game.level=new Level(packet.getWidth(),packet.getHeight(),packet.getWorld(),packet.getSolids());//,packet.getColors());
+		Game.game.level.addPlayer((PlayerMP)Game.game.player);
 	}
 
 	private void handleRemoveMob(Packet16RemoveMob packet){
@@ -139,7 +135,6 @@ public class GameClient extends Thread{
 	 }
 	 
 	 private void handleAddMob(Packet14AddMob packet){
-		 System.out.println("GAMECLIENT.JAVA: Mob: " +packet.getCharacters()[0][0]);
 		 new MobMP(game.level,packet.getX(),packet.getY(),packet.getCharacters(),packet.getHealth(),packet.getID());
 	 }
 	 
