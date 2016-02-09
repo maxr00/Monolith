@@ -20,7 +20,7 @@ public class Packet17LoadLevel extends Packet {
 			for(int i=4;i<dataArray.length;i++)//Incase world contains any ,s
 				this.world += ","+dataArray[i];
 		}catch(ArrayIndexOutOfBoundsException e){
-			System.out.println("PACKET OUT OF BOUNDS");
+			System.out.println("LOAD LEVEL PACKET OUT OF BOUNDS");
 		}
 	}
 	

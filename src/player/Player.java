@@ -93,7 +93,6 @@ public class Player extends Mob {
 		
 		if(input.clearSpell){
 			Combat.clearSpell();
-			damage(1,0,0);
 		}
 		
 		if (inputX != 0 || inputY != 0){
@@ -106,7 +105,7 @@ public class Player extends Mob {
 		if(input.onToggleLock && lockedOn==null){
 			Mob close = null; double dist=Integer.MAX_VALUE;
 			for(Mob m : level.mobs){
-				if(level.getDistance(m.vector, vector)<dist){
+				if(m.isSeen && level.getDistance(m.vector, vector)<dist){
 					close = m;
 					dist = level.getDistance(m.vector, vector);
 				}
@@ -114,6 +113,10 @@ public class Player extends Mob {
 			lockedOn = close;
 			if(lockedOn!=null)
 				lockedOn.lockedOnto=true;
+		}else 
+		if(input.onToggleLock && lockedOn!=null){
+			lockedOn.lockedOnto=false;
+			lockedOn=null;
 		}
 
 		

@@ -34,7 +34,8 @@ public class Packet14AddMob extends Packet {
 				spells[i]=Spell.getSpell(dataArray[7+h].split("/")[i]);
 			}
 		}catch(ArrayIndexOutOfBoundsException e){
-			System.out.println("PACKET OUT OF BOUNDS");
+			System.out.println("ADD MOB PACKET OUT OF BOUNDS");
+			e.printStackTrace();
 		}
 	}
 	

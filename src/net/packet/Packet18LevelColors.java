@@ -18,7 +18,7 @@ public class Packet18LevelColors extends Packet {
 				colors[i]=Integer.parseInt(c[i]);
 			}
 		}catch(ArrayIndexOutOfBoundsException e){
-			System.out.println("PACKET OUT OF BOUNDS");
+			System.out.println("LEVEL COLOR PACKET OUT OF BOUNDS");
 		}
 	}
 	

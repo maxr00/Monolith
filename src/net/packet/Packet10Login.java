@@ -18,7 +18,7 @@ public class Packet10Login extends Packet {
 			this.y=Integer.parseInt(dataArray[2]);
 			this.color=Integer.parseInt(dataArray[3]);
 		}catch(ArrayIndexOutOfBoundsException e){
-			System.out.println("PACKET OUT OF BOUNDS");
+			System.out.println("LOGIN PACKET OUT OF BOUNDS");
 		}
 	}
 	

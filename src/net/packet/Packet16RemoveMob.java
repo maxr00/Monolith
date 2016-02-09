@@ -14,7 +14,7 @@ public class Packet16RemoveMob extends Packet {
 		try{
 			this.identifier=dataArray[0];
 		}catch(ArrayIndexOutOfBoundsException e){
-			System.out.println("PACKET OUT OF BOUNDS");
+			System.out.println("REMOVE MOB PACKET OUT OF BOUNDS");
 		}
 	}
 	

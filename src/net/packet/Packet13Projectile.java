@@ -23,7 +23,7 @@ public class Packet13Projectile extends Packet {
 			this.damagePercent=Float.parseFloat(dataArray[5]);
 			this.mobID=dataArray[6];
 		}catch(ArrayIndexOutOfBoundsException e){
-			System.out.println("PACKET OUT OF BOUNDS");
+			System.out.println("PROJECTILE PACKET OUT OF BOUNDS");
 		}
 	}
 	

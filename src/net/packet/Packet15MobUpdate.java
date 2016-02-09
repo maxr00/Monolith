@@ -18,7 +18,7 @@ public class Packet15MobUpdate extends Packet {
 			this.health=Integer.parseInt(dataArray[2]);
 			this.identifier=dataArray[3];
 		}catch(ArrayIndexOutOfBoundsException e){
-			System.out.println("PACKET OUT OF BOUNDS");
+			System.out.println("MOB UPDATE PACKET OUT OF BOUNDS");
 		}
 	}
 	

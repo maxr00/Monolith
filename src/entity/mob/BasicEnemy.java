@@ -191,7 +191,7 @@ public class BasicEnemy extends Mob {
 				Packet15MobUpdate packet=new Packet15MobUpdate(x,y,Health,identifier);
 				packet.writeData(Game.game.socketClient);
 			}
-			if (time % 150 == 0) {
+			if (time % 100 == 0) {
 				if(level.getDistance(vector, target)<=shootRange)
 					shoot();
 			}

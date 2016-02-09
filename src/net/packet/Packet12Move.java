@@ -17,7 +17,7 @@ public class Packet12Move extends Packet {
 			this.x=Integer.parseInt(dataArray[1]);
 			this.y=Integer.parseInt(dataArray[2]);
 		}catch(ArrayIndexOutOfBoundsException e){
-			System.out.println("PACKET OUT OF BOUNDS");
+			System.out.println("MOVE PACKET OUT OF BOUNDS");
 		}
 	}
 	

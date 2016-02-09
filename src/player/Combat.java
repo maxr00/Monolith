@@ -149,7 +149,7 @@ public class Combat {
 	
 	public static enum Spell{
 		Fireball	(new int[]{1,0,0,0,0,0,0,0,0}, 1f, 	 3),
-		Lightning	(new int[]{0,1,0,0,0,0,0,0,0}, 0.5f, 60),
+		Lightning	(new int[]{0,1,0,0,0,0,0,0,0}, 0.5f, 6),
 		Waterball	(new int[]{0,0,0,0,0,0,0,0,1}, 0.5f, 7)
 		;
 		static Spell[] SpellList={Fireball, Lightning, Waterball};

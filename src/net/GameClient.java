@@ -146,9 +146,9 @@ public class GameClient extends Thread{
 		System.out.println("[" + address.getHostAddress() + ":" + port + "] " + packet.getUsername() + " has joined the game...");
 		
 		if(game.level==null){
+			System.out.println("WAIT, NO LEVEL");
 			new Packet19RequestLevel().writeData(this);
 			while(game.level==null){
-				System.out.println("WAIT, NO LEVEL");
 			}
 		}
 		
