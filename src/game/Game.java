@@ -111,7 +111,7 @@ public class Game extends Canvas implements Runnable {
 		loginPacket.writeData(socketClient);
 		
 		if(socketServer==null){
-			while(level==null){}
+			//while(level==null){}
 			player = new PlayerMP(keyboard,mouse,screen, level,playerStartX,playerStartY,username,playerCol.getRGB(), null, -1);
 			screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
 		}

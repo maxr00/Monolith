@@ -160,7 +160,7 @@ public class Level {
 		for(int i = mobs.size()-1;i >= 0; i--){
 			if(mobs.get(i)!=null && !mobs.get(i).isRemoved()){
 				doMobUpdate=true;
-				for(PlayerMP p : getPlayers()){					
+				for(PlayerMP p : getPlayers()){
 					if(getDistance(mobs.get(i).vector,p.vector)>mobs.get(i).updateRange){
 						doMobUpdate=false;
 						break;

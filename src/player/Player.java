@@ -13,6 +13,7 @@ import input.Keyboard;
 import input.MouseHandler;
 import level.Level;
 import net.packet.Packet12Move;
+import net.packet.Packet19RequestLevel;
 
 public class Player extends Mob {
 
@@ -64,8 +65,13 @@ public class Player extends Mob {
 				}
 			}
 		}
-		if(in!=null)
+		if(in!=null){
 			Combat.player = this;
+			if(level==null){
+				new Packet19RequestLevel();
+				while(level==null){}
+			}
+		}
 		move(spawnX*Game.TILE_SIZE,spawnY*Game.TILE_SIZE);
 	}
 

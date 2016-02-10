@@ -143,7 +143,6 @@ public class GameServer extends Thread{
                 + packet.getUsername() + " has connected...");
 
     	if(!packet.getUsername().equals(game.player.getUsername())){
-    		System.out.println("HERE!!");
     		Level lvl=Game.game.level;
     		int[] cols=new int[lvl.colors.length];
     		for(int i=0;i<lvl.colors.length;i++){

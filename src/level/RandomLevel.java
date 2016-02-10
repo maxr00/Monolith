@@ -122,7 +122,7 @@ public class RandomLevel extends Level {
 							if(Game.game.socketServer!=null){
 								int character=rng.nextInt(94)+33;
 								//No commas (44 in ASCII) or |s (124 in ASCII, causes problems sometimes)!
-								while(character==44 || character==124){character=rng.nextInt(94)+33;}
+								while((char)character==',' || (char)character=='|' || (char)character=='/'){character=rng.nextInt(94)+33;}
 								Mob mob=new BasicEnemy(Game.game.level,x,y,"George",new char[][]{{(char)(character)}},10,Pathfinding.MoveToward,new Spell[]{Spell.Fireball});//(char)(random.nextInt(94)+33));
 								
 								Packet14AddMob mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);

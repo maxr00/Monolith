@@ -112,6 +112,7 @@ public class GameClient extends Thread{
 
 	private void handleLoadLevel(Packet17LoadLevel packet) {
 		Game.game.level=new Level(packet.getWidth(),packet.getHeight(),packet.getWorld(),packet.getSolids());//,packet.getColors());
+		//Game.game.player.level=Game.game.level;
 		Game.game.level.addPlayer((PlayerMP)Game.game.player);
 	}
 
