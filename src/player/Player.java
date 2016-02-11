@@ -12,6 +12,7 @@ import graphics.UI;
 import input.Keyboard;
 import input.MouseHandler;
 import level.Level;
+import net.PlayerMP;
 import net.packet.Packet12Move;
 import net.packet.Packet19RequestLevel;
 
@@ -35,12 +36,13 @@ public class Player extends Mob {
 		username = name;
 		this.name=username;
 		
+		identifier = "Player-"+username;
+		
 		this.color=color;//Color.yellow;
 		
 		input = in;
 		this.mouse=mouse;
 		this.screen=screen;
-		level = lvl;
 		
 		sprites=new Sprite[1][1];
 		sprites[0][0] = Sprite._at;
@@ -67,17 +69,25 @@ public class Player extends Mob {
 		}
 		if(in!=null){
 			Combat.player = this;
-			if(level==null){
-				new Packet19RequestLevel();
-				while(level==null){}
-			}
 		}
+		if(lvl!=null){
+			joinLevel(lvl,spawnX,spawnY);
+		}else
+			System.out.println(username+" spawned with no level!");
+	}
+	
+	public void joinLevel(Level lvl,int spawnX,int spawnY){
+		level = lvl;
 		move(spawnX*Game.TILE_SIZE,spawnY*Game.TILE_SIZE);
+		level.addPlayer((PlayerMP)this);
 	}
 
 	private int moveTime=0;
 	boolean cast;
 	public void update() {
+		if(level==null)
+			return;
+		
 		moveTime++;
 		inputX = 0;	inputY = 0;
 		if(input.onCastSpell)
@@ -208,6 +218,7 @@ public class Player extends Mob {
 	}
 
 	public void handleStatus(Screen screen) {
+		if(level==null) return;
 		int x=(mouse.x/Game.scale +(this.x - screen.width/2)) /Game.TILE_SIZE;
 		int y=(mouse.y/Game.scale +(this.y - screen.height/2)) /Game.TILE_SIZE;
 		if(level.getMobOn(x, y)!=null){

@@ -27,8 +27,12 @@ public class RandomLevel extends Level {
 		int[][] colorBlemishes = LevelLight.getPossibleBlemishes(100);
 		
 		//Generation happens here
-		roomTiles=new RTile[width][height];
-		generate(10,10,width/2-5,height/2-5,RTile.Dirt);
+		while(roomCount<minRooms){
+			roomCount=0;
+			mobs=new ArrayList<Mob>();
+			roomTiles=new RTile[width][height];
+			generate(10,10,width/2-5,height/2-5,RTile.Dirt);
+		}
 		
 		//Find place for exit
 		//
@@ -95,7 +99,7 @@ public class RandomLevel extends Level {
 	}
 	
 	//Includes hallways
-	int roomCount=0, maxRooms=50;
+	int roomCount=0, maxRooms=50, minRooms=40;
 	float enemyTileRatio=1/75f, mobChance=0.33f;
 	int DistBetweenMobs=5;
 	boolean hallway=false;

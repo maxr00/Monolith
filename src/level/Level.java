@@ -61,6 +61,7 @@ public class Level {
 		this.solids=solids;
 		tiles = new Tile[width * height];
 		levelLight = new LevelLight(width,height);
+		shadowMap = new int[getPlayers().size()][][];
 	}
 	
 	public void setColor(int[] colors){
@@ -82,6 +83,7 @@ public class Level {
 		
 		levelLight.generateLevel(colors);
 		levelLight.setTilesLight(tiles);
+		shadowMap = new int[getPlayers().size()][][];
 	}
 	
 	public void generateLevel(String path) {
@@ -114,13 +116,13 @@ public class Level {
 						break;
 					}else{ //if(!Character.isWhitespace(world.charAt(x+y*width - whiteSpace)))//if not space 						  new Color(150,150,150).getRGB()
 						tiles[x+y*width] = new Tile(world.charAt(x+y*width - whiteSpace),solids.charAt(x+y*width-whiteSpace)=='1',new Color(150,150,150).getRGB(),colorBlemishes[random.nextInt(colorBlemishes.length)]);
-						System.out.println("Tile created  " +tiles[x+y*width]);
 					}
 				}else break;
 			}
 		}
 		levelLight.generateLevel(path);
 		levelLight.setTilesLight(tiles);
+		shadowMap = new int[getPlayers().size()][][];
 	}
 
 	int time=0;
@@ -159,10 +161,10 @@ public class Level {
 		}
 		for(int i = mobs.size()-1;i >= 0; i--){
 			if(mobs.get(i)!=null && !mobs.get(i).isRemoved()){
-				doMobUpdate=true;
+				doMobUpdate=false;
 				for(PlayerMP p : getPlayers()){
-					if(getDistance(mobs.get(i).vector,p.vector)>mobs.get(i).updateRange){
-						doMobUpdate=false;
+					if(getDistance(mobs.get(i).vector,p.vector)<mobs.get(i).updateRange){
+						doMobUpdate=true;
 						break;
 					}
 				}
@@ -202,9 +204,6 @@ public class Level {
 			for (int y = y0; y < y1; y++) {
 				for (int x = x0; x < x1; x++) {
 					Tile tile = getTile(x, y);
-//
-//					System.out.println(x+"," +y +" : " +tile);
-//
 					if (tile != null){
 						for(int i=0;i<getPlayers().size();i++){
 							if(tile.hasBeenSeen || (i<shadowMap.length && shadowMap[i]!=null && shadowMap[i][x][y]==1))
@@ -319,6 +318,13 @@ public class Level {
 			if(mobs.get(i)!=null && !mobs.get(i).isRemoved()){
 				if(mobs.get(i).identifier.equals(id)){
 					return mobs.get(i);
+				}
+			}
+		}
+		for(int i = 0;i < getPlayers().size(); i++){
+			if(getPlayers().get(i)!=null && !getPlayers().get(i).isRemoved()){
+				if(getPlayers().get(i).identifier.equals(id)){
+					return getPlayers().get(i);
 				}
 			}
 		}

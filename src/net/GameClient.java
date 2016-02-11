@@ -148,13 +148,9 @@ public class GameClient extends Thread{
 		
 		if(game.level==null){
 			System.out.println("WAIT, NO LEVEL");
-			new Packet19RequestLevel().writeData(this);
-			while(game.level==null){
-			}
 		}
 		
-        PlayerMP player = new PlayerMP(game.level, packet.getX()/Game.TILE_SIZE, packet.getY()/Game.TILE_SIZE, packet.getUsername(),packet.getColor(), address, port);
-       	game.level.addPlayer(player);
+        new PlayerMP(game.level, packet.getX()/Game.TILE_SIZE, packet.getY()/Game.TILE_SIZE, packet.getUsername(),packet.getColor(), address, port);
 	}
 	
 	private void handleMove(Packet12Move packet) {

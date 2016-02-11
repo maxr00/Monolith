@@ -19,6 +19,7 @@ import util.Vector2i;
 public class BasicEnemy extends Mob {
 
 	private Vector2i target;
+	private Mob targetMob;
 	private int[][][] colorBlemishes;
 	private boolean hasBlemishes = false;
 	private final Random random = new Random();
@@ -99,18 +100,21 @@ public class BasicEnemy extends Mob {
 	public void update() {
 		if(!hasBeenSeen)
 			return;
-			
+
 		time++;
 		
 		if (time % 60 == 0 || target==null) {
 			Vector2i close = null; double dist=Integer.MAX_VALUE;
+			Mob closeM=null;
 			for(PlayerMP p : level.players){
 				if(level.getDistance(p.vector, vector)<dist){
 					close = p.vector;
+					closeM = p;
 					dist = level.getDistance(p.vector, vector);
 				}
 			}
 			target = close;
+			targetMob = closeM;
 		}
 		
 		switch (pathfind) {
@@ -152,7 +156,7 @@ public class BasicEnemy extends Mob {
 					deltaX=-deltaX;
 					deltaY=-deltaY;
 				}
-				
+				/*
 				if(!hasShot() && level.getDistance(vector, target)<=shootRange){//No shot, and inside shooting range, try to find a shot!
 					int dx=x-target.getX(), dy=y-target.getY();
 					int ax=Math.abs(dx), ay=Math.abs(dy);
@@ -187,13 +191,45 @@ public class BasicEnemy extends Mob {
 					move(deltaX * Game.TILE_SIZE, deltaY * Game.TILE_SIZE);
 				}else if(level.getDistance(vector, target)>shootRange)
 					move(deltaX * Game.TILE_SIZE, deltaY * Game.TILE_SIZE);
+				*/
 				
+				move(deltaX * Game.TILE_SIZE, deltaY * Game.TILE_SIZE);
 				Packet15MobUpdate packet=new Packet15MobUpdate(x,y,Health,identifier);
 				packet.writeData(Game.game.socketClient);
 			}
-			if (time % 100 == 0) {
-				if(level.getDistance(vector, target)<=shootRange)
-					shoot();
+			if (time % 140 == 0) {
+				if(level.getDistance(vector, target)<=shootRange){
+					xDir=0;
+					yDir=0;
+					if(x!=target.getX()){
+						if(x<target.getX()){
+							if(x<target.getX()-14)
+								xDir=1;
+							else xDir = 0;
+						}
+						else if(x>target.getX()){
+							if(x>target.getX()+14)
+								xDir=-1;
+							else xDir = 0;
+						}
+					}
+					if(y!=target.getY()){
+						if(y<target.getY()){
+							if(y<target.getY()-14)
+								yDir=1;
+							else yDir = 0;
+						}else if(y<target.getY()){
+							if(y>target.getY()+14)
+								yDir=-1;
+							else yDir = 0;
+						}
+					}
+					if(xDir!=0 || yDir!=0){
+						Projectile.Spell s=spells[(int)(Math.random()*spells.length)];
+						Packet13Projectile projPacket = new Packet13Projectile(x, y, xDir, yDir, s.name(),0.5f,targetMob.identifier);
+						projPacket.writeData(Game.game.socketClient);
+					}
+				}
 			}
 			break;
 		}

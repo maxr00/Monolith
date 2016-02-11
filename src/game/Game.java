@@ -87,21 +87,19 @@ public class Game extends Canvas implements Runnable {
 		socketClient.start();
 		
 		
+		//Load Level//
+		
 		int playerStartX=50;
 		int playerStartY=50;
 		String username=JOptionPane.showInputDialog(frame,"Please enter a username");
 		Color playerCol=new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256));
 		
-		
-		//Make Level and send to clients
 		if(socketServer!=null){
-			level = new RandomLevel(100,100); //new Level(1000, 1000, "res/levels/level1/level1");
+			level = new RandomLevel(100,100);
 			((RandomLevel)level).generateLevel();
 			
 			player = new PlayerMP(keyboard,mouse,screen, level,playerStartX,playerStartY,username,playerCol.getRGB(), null, -1);
 			screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
-		}else{
-			//new Packet19RequestLevel().writeData(socketClient);
 		}
 		
 		Packet10Login loginPacket = new Packet10Login(username,playerStartX*TILE_SIZE,playerStartY*TILE_SIZE,playerCol.getRGB());
@@ -111,21 +109,12 @@ public class Game extends Canvas implements Runnable {
 		loginPacket.writeData(socketClient);
 		
 		if(socketServer==null){
-			//while(level==null){}
 			player = new PlayerMP(keyboard,mouse,screen, level,playerStartX,playerStartY,username,playerCol.getRGB(), null, -1);
 			screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
 		}
 		
-		level.addPlayer((PlayerMP)player);
 		
-		//Mobs handled by server
-		if(socketServer!=null){
-			//Mob mob=new BasicEnemy(level,20,10,"George",new char[][]{{(char)(random.nextInt(94)+33)}},10,Pathfinding.MoveToward,new Spell[]{Spell.Fireball});//(char)(random.nextInt(94)+33));
-			
-			//Packet04AddMob mobPacket = new Packet04AddMob(mob.x/TILE_SIZE,mob.y/TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
-			//mobPacket.writeData(socketServer);
-		}
-		
+		//End Load Level//
 		
 		addKeyListener(keyboard);
 		addMouseListener(mouse);
@@ -188,8 +177,10 @@ public class Game extends Canvas implements Runnable {
 			screen.activateRainbowEffect();
 		}
 		
-		level.update();
-		player.handleStatus(screen);
+		if(level!=null)
+			level.update();
+		if(player!=null)
+			player.handleStatus(screen);
 		
 		screen.update();
 	}
@@ -214,7 +205,9 @@ public class Game extends Canvas implements Runnable {
 			xScroll = player.x - screen.width/2;
 			yScroll = player.y - screen.height/2;
 		}
-		level.render(xScroll, yScroll, screen);
+		if(level!=null){
+			level.render(xScroll, yScroll, screen);
+		}
 		if(player!=null)
 			player.render(screen);
 		
