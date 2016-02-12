@@ -135,22 +135,35 @@ public class Level {
 				tiles[i].update();
 		}
 		
-		if(time%15==0 && getPlayers().size()>0){
-			for(int i=0;i<getPlayers().size();i++){
-				float[][] lm = calculateFOV(getPlayers().get(i).x/Game.TILE_SIZE,getPlayers().get(i).y/Game.TILE_SIZE,1000);
-				
-				synchronized(shadowMap){
-					if(shadowMap[i]==null){
-						shadowMap[i]=new int[width][height];
-					}
-					for(int y=0;y<height;y++){
-						for(int x=0;x<width;x++){
-							if(shadowMap!=null && shadowMap[i]!=null)
-								shadowMap[i][x][y]=(int)lm[x][y];
+		if(time%15==0){
+			if(getPlayers().size()>0){
+				for(int i=0;i<getPlayers().size();i++){
+					float[][] lm = calculateFOV(getPlayers().get(i).x/Game.TILE_SIZE,getPlayers().get(i).y/Game.TILE_SIZE,1000);
+					
+					synchronized(shadowMap){
+						if(shadowMap[i]==null){
+							shadowMap[i]=new int[width][height];
+						}
+						for(int y=0;y<height;y++){
+							for(int x=0;x<width;x++){
+								if(shadowMap!=null && shadowMap[i]!=null)
+									shadowMap[i][x][y]=(int)lm[x][y];
+							}
 						}
 					}
+					
 				}
-				
+			}else{
+				if(shadowMap==null || shadowMap.length<=0)
+					shadowMap=new int[1][][];
+				if(shadowMap[0]==null){
+					shadowMap[0]=new int[width][height];
+				}
+				for(int y=0;y<height;y++){
+					for(int x=0;x<width;x++){
+						shadowMap[0][x][y]=1;
+					}
+				}
 			}
 		}
 		for(int i = getPlayers().size()-1;i >= 0; i--){
@@ -200,18 +213,23 @@ public class Level {
 		int y1 = (yScroll + screen.height) / TILE_SIZE +1;
 
 		//Vector2i pv = new Vector2i(player.x/Game.TILE_SIZE,player.y/Game.TILE_SIZE);
+		if(shadowMap!=null)
 		synchronized(shadowMap){
 			for (int y = y0; y < y1; y++) {
 				for (int x = x0; x < x1; x++) {
 					Tile tile = getTile(x, y);
 					if (tile != null){
-						for(int i=0;i<getPlayers().size();i++){
-							if(tile.hasBeenSeen || (i<shadowMap.length && shadowMap[i]!=null && shadowMap[i][x][y]==1))
-								tile.render(x * TILE_SIZE, y * TILE_SIZE, screen);
-							if(i<shadowMap.length && shadowMap[i]!=null && shadowMap[i][x][y]==1){
-								//tile.renderLight(x * TILE_SIZE, y * TILE_SIZE, screen);
-								tile.hasBeenSeen=true;
+						if(getPlayers().size()>0){
+							for(int i=0;i<getPlayers().size();i++){
+								if(tile.hasBeenSeen || (i<shadowMap.length && shadowMap[i]!=null && shadowMap[i][x][y]==1))
+									tile.render(x * TILE_SIZE, y * TILE_SIZE, screen);
+								if(i<shadowMap.length && shadowMap[i]!=null && shadowMap[i][x][y]==1){
+									//tile.renderLight(x * TILE_SIZE, y * TILE_SIZE, screen);
+									tile.hasBeenSeen=true;
+								}
 							}
+						}else{
+							tile.render(x * TILE_SIZE, y * TILE_SIZE, screen);
 						}
 					}
 				}
@@ -221,44 +239,54 @@ public class Level {
 					Tile tile = getTile(x, y);
 					if (tile != null){
 						boolean renderGray = true;
-						for(int i=0;i<getPlayers().size();i++){
-							if(i<shadowMap.length && shadowMap[i]!=null && shadowMap[i][x][y]==1){
-								tile.renderLight(x * TILE_SIZE, y * TILE_SIZE, screen);
-								tile.hasBeenSeen=true;
-								renderGray=false;
+						
+						if(getPlayers().size()>0){
+							for(int i=0;i<getPlayers().size();i++){
+								if(i<shadowMap.length && shadowMap[i]!=null && shadowMap[i][x][y]==1){
+									tile.renderLight(x * TILE_SIZE, y * TILE_SIZE, screen);
+									tile.hasBeenSeen=true;
+									renderGray=false;
+								}
 							}
+							if(tile.hasBeenSeen && renderGray){
+								tile.doRender(true);
+								tile.renderLight(x * TILE_SIZE, y * TILE_SIZE, screen, new Color(0,0,0).getRGB());
+							}
+						}else{
+							tile.renderLight(x * TILE_SIZE, y * TILE_SIZE, screen);
 						}
-						if(tile.hasBeenSeen && renderGray){
-							tile.doRender(true);
-							tile.renderLight(x * TILE_SIZE, y * TILE_SIZE, screen, new Color(0,0,0).getRGB());
-						}
+						
 					}
 				}
 			}
 			for(int i = getPlayers().size()-1;i >= 0; i--){
 				if(getPlayers().get(i)!=null && !getPlayers().get(i).isRemoved()){
-					for(int s=0;s<getPlayers().size();s++){
-						if(i<shadowMap.length && i>0 && getPlayers().get(i)!=null && shadowMap[i]!=null && shadowMap[s][getPlayers().get(i).x/Game.TILE_SIZE][getPlayers().get(i).y/Game.TILE_SIZE]==1)
+					//for(int s=0;s<getPlayers().size();s++){
+					//	if(i<shadowMap.length && i>0 && getPlayers().get(i)!=null && shadowMap[i]!=null && shadowMap[s][getPlayers().get(i).x/Game.TILE_SIZE][getPlayers().get(i).y/Game.TILE_SIZE]==1)
 							getPlayers().get(i).render(screen);
-					}
+					//}
 				}else
 					getPlayers().remove(i);
 			}
 			for(int i = mobs.size()-1;i >= 0; i--){
 				if(mobs.get(i)!=null && !mobs.get(i).isRemoved()){
 					boolean wasSeen=false;
-					for(int s=0;s<getPlayers().size();s++){
-						if(s<shadowMap.length && shadowMap[s]!=null && i<mobs.size() && shadowMap[s][mobs.get(i).x/Game.TILE_SIZE][mobs.get(i).y/Game.TILE_SIZE]==1){
-							mobs.get(i).render(screen);
-							mobs.get(i).hasBeenSeen=true;
-							wasSeen=true;
-						}
-						else{
-							if(i<mobs.size() && players.get(s).lockedOn==mobs.get(i)){
-								players.get(s).lockedOn.lockedOnto=false;
-								players.get(s).lockedOn=null;
+					if(getPlayers().size()>0){
+						for(int s=0;s<getPlayers().size();s++){
+							if(s<shadowMap.length && shadowMap[s]!=null && i<mobs.size() && shadowMap[s][mobs.get(i).x/Game.TILE_SIZE][mobs.get(i).y/Game.TILE_SIZE]==1){
+								mobs.get(i).render(screen);
+								mobs.get(i).hasBeenSeen=true;
+								wasSeen=true;
+							}
+							else{
+								if(i<mobs.size() && players.get(s).lockedOn==mobs.get(i)){
+									players.get(s).lockedOn.lockedOnto=false;
+									players.get(s).lockedOn=null;
+								}
 							}
 						}
+					}else{
+						mobs.get(i).render(screen);
 					}
 					mobs.get(i).isSeen=wasSeen;
 				}else
@@ -267,9 +295,13 @@ public class Level {
 		}
 		for(int i = entities.size()-1;i >= 0; i--){
 			if(entities.get(i)!=null && !entities.get(i).isRemoved()){
-				for(int s=0;s<getPlayers().size();s++){
-					if(s<shadowMap.length && shadowMap[s]!=null && shadowMap[s][entities.get(i).x/Game.TILE_SIZE][entities.get(i).y/Game.TILE_SIZE]==1)
-						entities.get(i).render(screen);
+				if(getPlayers().size()>0){
+					for(int s=0;s<getPlayers().size();s++){
+						if(s<shadowMap.length && shadowMap[s]!=null && shadowMap[s][entities.get(i).x/Game.TILE_SIZE][entities.get(i).y/Game.TILE_SIZE]==1)
+							entities.get(i).render(screen);
+					}
+				}else{
+					entities.get(i).render(screen);
 				}
 			}else
 				entities.remove(i);

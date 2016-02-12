@@ -22,8 +22,10 @@ public class WindowHandler implements WindowListener{
 	}
 
 	public void windowClosing(WindowEvent event) {
-		Packet11Disconnect packet = new Packet11Disconnect(this.game.player.getUsername());
-		packet.writeData(this.game.socketClient);
+		if(Game.game.socketServer==null){
+			Packet11Disconnect packet = new Packet11Disconnect(this.game.player.getUsername());
+			packet.writeData(this.game.socketClient);
+		}
 	}
 
 	public void windowDeactivated(WindowEvent event) {

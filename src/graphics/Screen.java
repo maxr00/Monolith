@@ -183,7 +183,6 @@ public class Screen {
 		
 		//Camera smoothing
 		if(targetXOffset!=xOffset){
-			
 			if(xOffset<targetXOffset) xOffset+=cameraSpeed;
 			if(xOffset>targetXOffset) xOffset-=cameraSpeed;
 		}

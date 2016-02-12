@@ -116,7 +116,7 @@ public class RandomLevel extends Level {
 			}
 		}
 		
-		int numEnemies=(int)(enemyTileRatio*(w*h));
+		int numEnemies=roomCount!=1 ? (int)(enemyTileRatio*(w*h)) : 0;
 		if(numEnemies>0)
 			for(int x=xStart;x<w+xStart;x++){
 				for(int y=yStart;y<h+yStart;y++){

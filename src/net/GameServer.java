@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import entity.Projectile;
 import entity.mob.Mob;
 import game.Game;
 import level.Level;
@@ -134,47 +135,33 @@ public class GameServer extends Thread{
     }
     
     private void handleProjectile(Packet13Projectile packet){
-    	//Sends info to all clients (including the server's player)
+    	new Projectile(packet.getX(),packet.getY(),packet.getxDir(),packet.getyDir(),Projectile.Spell.getSpell(packet.getSpell()),packet.getDamagePercent(),game.level.getMob(packet.getMobID()),game.level);
     	packet.writeData(this);
     }
     
     private void handleLogin(Packet10Login packet, InetAddress address, int port){
-    	System.out.println("[" + address.getHostAddress() + ":" + port + "] "
-                + packet.getUsername() + " has connected...");
+    	System.out.println("[" + address.getHostAddress() + ":" + port + "] " + packet.getUsername() + " has connected...");
 
-    	if(!packet.getUsername().equals(game.player.getUsername())){
-    		Level lvl=Game.game.level;
-    		int[] cols=new int[lvl.colors.length];
-    		for(int i=0;i<lvl.colors.length;i++){
-    			cols[i]=lvl.colors[i].getRGB();
-    		}
-    		ArrayList<Mob> mobBackup = null;
-    		if(game.level!=null){
-    			mobBackup = game.level.mobs;
-    		}
-    		Packet17LoadLevel levelPacket=new Packet17LoadLevel(lvl.width,lvl.height,lvl.world,lvl.solids);//cols
-    		sendData(levelPacket.getData(),address,port);
-    		
-    		Packet18LevelColors colorPacket=new Packet18LevelColors(cols);
-    		sendData(colorPacket.getData(),address,port);
-    		
-    		//Send existing mobs to connecting player
-    		Packet14AddMob mobPacket;
-    		if(game.level.mobs.size()>0){
-    			for(Mob mob : game.level.mobs){
-    				mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
-    				sendData(mobPacket.getData(),address,port);
-    			}
-    		}else{
-    			if(mobBackup!=null){
-    				for(Mob mob : mobBackup){
-    					mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
-    					sendData(mobPacket.getData(),address,port);
-    				}
-    			}
-    		}
+    	Level lvl=Game.game.level;
+    	int[] cols=new int[lvl.colors.length];
+    	for(int i=0;i<lvl.colors.length;i++){
+    		cols[i]=lvl.colors[i].getRGB();
+    	}
+
+    	Packet17LoadLevel levelPacket=new Packet17LoadLevel(lvl.width,lvl.height,lvl.world,lvl.solids);//cols
+    	sendData(levelPacket.getData(),address,port);
+    	
+    	Packet18LevelColors colorPacket=new Packet18LevelColors(cols);
+    	sendData(colorPacket.getData(),address,port);
+    	
+    	//Send existing mobs to connecting player
+    	Packet14AddMob mobPacket;
+    	for(Mob mob : game.level.mobs){
+    		mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
+    		sendData(mobPacket.getData(),address,port);
     	}
         
+    	//Create player to handle on server side
         PlayerMP player = new PlayerMP(game.level, packet.getX()/Game.TILE_SIZE, packet.getY()/Game.TILE_SIZE, packet.getUsername(),packet.getColor(), address, port);
         this.addConnection(player, packet);
 	}
@@ -182,8 +169,9 @@ public class GameServer extends Thread{
     private void handleMove(Packet12Move packet) {
 		if(getPlayerMP(packet.getUsername())!=null){
 			int index = getPlayerMPIndex(packet.getUsername());
-			this.connectedPlayers.get(index).x = packet.getX(); 
-			this.connectedPlayers.get(index).y = packet.getY();
+			//this.connectedPlayers.get(index).x = packet.getX(); 
+			//aaathis.connectedPlayers.get(index).y = packet.getY();
+			this.connectedPlayers.get(index).moveTo(packet.getX(), packet.getY());
 			packet.writeData(this);
 		}
 	}
@@ -191,6 +179,7 @@ public class GameServer extends Thread{
 	public void removeConnection(Packet11Disconnect packet) {
     	//PlayerMP player = getPlayerMP(packet.getUsername());
     	this.connectedPlayers.remove(getPlayerMPIndex(packet.getUsername()));
+    	game.level.removePlayerMP(packet.getUsername());
     	packet.writeData(this);
 	}
     
@@ -230,7 +219,6 @@ public class GameServer extends Thread{
                 // Send new player all players already connected
                 packet = new Packet10Login(p.getUsername(),p.x,p.y,p.color);
                 sendData(packet.getData(), player.ipAddress, player.port);
-                
             }
         }
         if (!alreadyConnected) {

@@ -88,6 +88,7 @@ public class Player extends Mob {
 		if(level==null)
 			return;
 		
+		
 		moveTime++;
 		inputX = 0;	inputY = 0;
 		if(input.onCastSpell)
@@ -170,12 +171,13 @@ public class Player extends Mob {
 	public void damage(int damage, float xDir, float yDir){
 		Health-=damage;
 		
-		for(int h=0;h<24;h++){
-			if(Health>h){
-				UI.healthUI.colors[h+7][0]=UI.healthUI.startColors[h+7][0];
-			}else
-				UI.healthUI.colors[h+7][0]=Color.black;
-		}
+		if(input!=null)
+			for(int h=0;h<24;h++){
+				if(Health>h){
+					UI.healthUI.colors[h+7][0]=UI.healthUI.startColors[h+7][0];
+				}else
+					UI.healthUI.colors[h+7][0]=Color.black;
+			}
 		
 		if(Health<=0){
 			removed=true;

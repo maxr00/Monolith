@@ -1,8 +1,12 @@
 package net;
 
+import java.awt.Color;
 import java.net.InetAddress;
 
+import entity.Particle;
+import game.Game;
 import graphics.Screen;
+import graphics.UI;
 import input.Keyboard;
 import input.MouseHandler;
 import level.Level;

@@ -108,12 +108,11 @@ public class GameClient extends Thread{
 	 
 	 private void handleLoadLevelColors(Packet18LevelColors packet) {
 		 Game.game.level.setColor(packet.getColors());
+		 Game.game.joinLevel();
 	}
 
 	private void handleLoadLevel(Packet17LoadLevel packet) {
-		Game.game.level=new Level(packet.getWidth(),packet.getHeight(),packet.getWorld(),packet.getSolids());//,packet.getColors());
-		//Game.game.player.level=Game.game.level;
-		Game.game.level.addPlayer((PlayerMP)Game.game.player);
+		Game.game.level=new Level(packet.getWidth(),packet.getHeight(),packet.getWorld(),packet.getSolids());
 	}
 
 	private void handleRemoveMob(Packet16RemoveMob packet){
@@ -145,10 +144,6 @@ public class GameClient extends Thread{
 	 
 	private void handleLogin(Packet10Login packet, InetAddress address, int port){
 		System.out.println("[" + address.getHostAddress() + ":" + port + "] " + packet.getUsername() + " has joined the game...");
-		
-		if(game.level==null){
-			System.out.println("WAIT, NO LEVEL");
-		}
 		
         new PlayerMP(game.level, packet.getX()/Game.TILE_SIZE, packet.getY()/Game.TILE_SIZE, packet.getUsername(),packet.getColor(), address, port);
 	}

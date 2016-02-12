@@ -72,55 +72,43 @@ public class Game extends Canvas implements Runnable {
 		keyboard = new Keyboard();
 		windowHandler = new WindowHandler(this);
 		mouse = new MouseHandler();
-		
-		//player = new Player(keyboard, level,30,20);
-		//level.player = player;
-		//screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
-		
-		
-		
+
 		if(JOptionPane.showConfirmDialog(this, "Do you want to run the server")==0){
+			//Server Starts
 			socketServer = new GameServer(this);
 			socketServer.start();
-		}
-		socketClient = new GameClient(this, "localhost");
-		socketClient.start();
-		
-		
-		//Load Level//
-		
-		int playerStartX=50;
-		int playerStartY=50;
-		String username=JOptionPane.showInputDialog(frame,"Please enter a username");
-		Color playerCol=new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256));
-		
-		if(socketServer!=null){
+			
 			level = new RandomLevel(100,100);
 			((RandomLevel)level).generateLevel();
 			
-			player = new PlayerMP(keyboard,mouse,screen, level,playerStartX,playerStartY,username,playerCol.getRGB(), null, -1);
-			screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+			socketClient = new GameClient(this, "localhost");
+			socketClient.start();
+		}else{
+			//Client joins
+			socketClient = new GameClient(this, "localhost");
+			socketClient.start();
+			
+			username=JOptionPane.showInputDialog(frame,"Please enter a username");
+			playerCol=new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256));
+			
+			Packet10Login loginPacket = new Packet10Login(username,playerStartX*TILE_SIZE,playerStartY*TILE_SIZE,playerCol.getRGB());
+			loginPacket.writeData(socketClient);
 		}
-		
-		Packet10Login loginPacket = new Packet10Login(username,playerStartX*TILE_SIZE,playerStartY*TILE_SIZE,playerCol.getRGB());
-		if(socketServer!=null){
-			socketServer.addConnection((PlayerMP)player,loginPacket);
-		}
-		loginPacket.writeData(socketClient);
-		
-		if(socketServer==null){
-			player = new PlayerMP(keyboard,mouse,screen, level,playerStartX,playerStartY,username,playerCol.getRGB(), null, -1);
-			screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
-		}
-		
-		
-		//End Load Level//
-		
 		addKeyListener(keyboard);
 		addMouseListener(mouse);
 		addMouseMotionListener(mouse);
 	}
+	int playerStartX=50;
+	int playerStartY=50;
+	String username="";
+	Color playerCol;
+	
+	public void joinLevel(){
+		player = new PlayerMP(keyboard,mouse,screen, level,playerStartX,playerStartY,username,playerCol.getRGB(), null, -1);
+		screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+	}
 
+	
 	public synchronized void start() {
 		isRunning = true;
 		//Begin thread
@@ -173,7 +161,6 @@ public class Game extends Canvas implements Runnable {
 		keyboard.update();
 		mouse.update();
 		if(keyboard.onRefresh){
-			//level.generateLevel("res/levels/level1/level1");
 			screen.activateRainbowEffect();
 		}
 		
@@ -181,12 +168,12 @@ public class Game extends Canvas implements Runnable {
 			level.update();
 		if(player!=null)
 			player.handleStatus(screen);
-		
 		screen.update();
 	}
 
 	int xScroll, yScroll;
 	public void render() {
+		
 		BufferStrategy bufferStrategy = getBufferStrategy(); //Get buffer strategy from canvas
 		if (bufferStrategy == null) { //Called first time through
 			createBufferStrategy(3);
@@ -199,9 +186,9 @@ public class Game extends Canvas implements Runnable {
 		graphics.fillRect(0, 0, getWidth(), getHeight());
 		screen.clear();
 		
-		xScroll=0;
-		yScroll=0;
 		if(player!=null){
+			//xScroll=0;
+			//yScroll=0;
 			xScroll = player.x - screen.width/2;
 			yScroll = player.y - screen.height/2;
 		}
