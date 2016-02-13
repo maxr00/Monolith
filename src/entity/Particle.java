@@ -22,6 +22,7 @@ public class Particle extends Entity {
 	private float xx=0,yy=0, zz=0;
 	private float speed=1;
 	private int scale;
+	private boolean infinite;
 
 	private RenderType renderType;
 	
@@ -45,6 +46,11 @@ public class Particle extends Entity {
 		this.alpha=alpha;
 		this.speed=speed;
 		
+		if(life<=0){
+			this.infinite = true;
+			this.life=-life;
+		}
+		
 		this.life+=random.nextInt(40)-20;
 		
 		xDir = (float)random.nextGaussian();
@@ -52,6 +58,7 @@ public class Particle extends Entity {
 		zz = random.nextFloat() + 2f;
 	}
 
+	//to make permanent particles, make the life negative
 	public Particle(int x, int y, int scale, int life, float speed, int amt, Level level, Color[] colors, RenderType renderType) {
 		this.x=x;
 		this.y=y;
@@ -71,8 +78,10 @@ public class Particle extends Entity {
 	}
 	
 	public boolean updateParticle(){
+		if(life<0 && infinite)	return false;
+		
 		life--;
-		if(life<0){
+		if(life<0 && !infinite){
 			return true;
 		}
 		
@@ -114,7 +123,8 @@ public class Particle extends Entity {
 	}
 	
 	public void render(Screen screen){
-		screen.newAdditive();
+		if(screen.getAdditive()==null)screen.newAdditive();
+		screen.resetAdditive();
 		for(int i=0;i<particles.size();i++){
 			particles.get(i).renderPixel(screen);
 		}

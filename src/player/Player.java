@@ -190,8 +190,8 @@ public class Player extends Mob {
 					}
 				}
 			}
-			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,600,0.3f,particlesPerDamage*damage*2,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
-			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),2,1200,0.1f,5*((takenPos.length+takenPos[0].length)/2),level,new Color[]{Color.lightGray},Particle.RenderType.Sprite);
+			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,-600,0.3f,particlesPerDamage*damage*2,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
+			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),2,-1200,0.1f,5*((takenPos.length+takenPos[0].length)/2),level,new Color[]{Color.lightGray},Particle.RenderType.Sprite);
 		}else
 			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,600,0.1f,particlesPerDamage*damage,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
 	}
@@ -224,11 +224,13 @@ public class Player extends Mob {
 		int x=(mouse.x/Game.scale +(this.x - screen.width/2)) /Game.TILE_SIZE;
 		int y=(mouse.y/Game.scale +(this.y - screen.height/2)) /Game.TILE_SIZE;
 		if(level.getMobOn(x, y)!=null){
-			if(lockedOn!=null)
-				lockedOn.lockedOnto=false;
-			UI.statusUI.setStatus(level.getMobOn(x, y).getStatus());
-			if(mouse.isPressed && level.getMobOn(x, y)!=this){
-				lockedOn=level.getMobOn(x, y);
+			if(level.getMobOn(x, y).isSeen){
+				if(lockedOn!=null)
+					lockedOn.lockedOnto=false;
+				UI.statusUI.setStatus(level.getMobOn(x, y).getStatus());
+				if(mouse.isPressed && level.getMobOn(x, y)!=this){
+					lockedOn=level.getMobOn(x, y);
+				}
 			}
 		}else{
 			UI.statusUI.clearStatus();

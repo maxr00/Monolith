@@ -23,6 +23,39 @@ public class RandomLevel extends Level {
 		super(width,height);
 	}
 	
+	public static enum RTile{
+		Wall_OUTOFBOUNDS(new char[]{'#','%','$'},new Color[]{Color.black},true),
+		Wall_Stone(new char[]{'H','M','#'},new Color[]{Color.darkGray},true),
+		Wall_Grass(new char[]{'W','w','v','V'},new Color[]{new Color(0x8ae75e)},true),
+		
+	Stone(new char[]{',','.','`',' ','\'',':',' ',' '},new Color[]{Color.gray},Wall_Stone),
+	Dirt(new char[]{'\\',';',':','=','!','#',']','['},new Color[]{new Color(0x8f6b38)},Wall_Grass),
+	;
+	public static RTile[] tiles(){
+		List<RTile> tileList = new ArrayList<RTile>();
+		for(RTile t : RTile.values())
+			if(t.border!=null)
+				tileList.add(t);
+		RTile[] tiles = tileList.toArray(new RTile[tileList.size()]);
+		return tiles;
+	}
+	char[] characters;
+	Color[] colors;
+	RTile border;
+	boolean isWall;
+	RTile(char[] characters, Color[] colors, RTile border){
+		this.characters=characters;
+		this.colors=colors;
+		this.border=border;
+	}
+	RTile(char[] characters, Color[] colors, boolean isWall){
+		this.characters=characters;
+		this.colors=colors;
+		isWall=true;
+		border=null;
+	}
+}
+	
  	public void generateLevel() {
 		int[][] colorBlemishes = LevelLight.getPossibleBlemishes(100);
 		
@@ -73,6 +106,8 @@ public class RandomLevel extends Level {
 						}
 					}
 					if(!border){
+						//world+=RTile.Wall_OUTOFBOUNDS.characters[rng.nextInt(RTile.Wall_OUTOFBOUNDS.characters.length)];						
+						//colors[x+y*width]=RTile.Wall_OUTOFBOUNDS.colors[rng.nextInt(RTile.Wall_OUTOFBOUNDS.colors.length)];
 						world+=" ";
 						solids+="1";
 						colors[x+y*width]=Color.white;
@@ -100,8 +135,8 @@ public class RandomLevel extends Level {
 	
 	//Includes hallways
 	int roomCount=0, maxRooms=50, minRooms=40;
-	float enemyTileRatio=1/75f, mobChance=0.33f;
-	int DistBetweenMobs=5;
+	float enemyTileRatio=1/75f, mobChance=1/10f;
+	int DistBetweenMobs=3;
 	boolean hallway=false;
 	
 	private void generate(int w,int h,int xStart,int yStart, RTile type){
@@ -121,20 +156,18 @@ public class RandomLevel extends Level {
 			for(int x=xStart;x<w+xStart;x++){
 				for(int y=yStart;y<h+yStart;y++){
 					if(x>=0 && y>=0 && x<roomTiles.length && y<roomTiles[x].length && roomTiles[x][y]!=null)
-						if((x!=width/2 || y!=height/2) && numEnemies>0 && mobChance<Math.random()){
+						if(numEnemies>0 && Math.random()<mobChance){//(x!=width/2 || y!=height/2) &&
 							numEnemies--;
-							if(Game.game.socketServer!=null){
-								int character=rng.nextInt(94)+33;
-								//No commas (44 in ASCII) or |s (124 in ASCII, causes problems sometimes)!
-								while((char)character==',' || (char)character=='|' || (char)character=='/'){character=rng.nextInt(94)+33;}
-								Mob mob=new BasicEnemy(Game.game.level,x,y,"George",new char[][]{{(char)(character)}},10,Pathfinding.MoveToward,new Spell[]{Spell.Fireball});//(char)(random.nextInt(94)+33));
-								
-								Packet14AddMob mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
-								mobPacket.writeData(Game.game.socketServer);
-								
-							}
+							int character=rng.nextInt(94)+33;
+							//No commas or |s (causes problems sometimes)!
+							while((char)character==',' || (char)character=='|' || (char)character=='/'){character=rng.nextInt(94)+33;}
+							Mob mob=new BasicEnemy(Game.game.level,x,y,"George",new char[][]{{(char)(character)}},10,Pathfinding.MoveToward,new Spell[]{Spell.Fireball});//(char)(random.nextInt(94)+33));
+							
+							Packet14AddMob mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
+							mobPacket.writeData(Game.game.socketServer);
+							
 							x+=DistBetweenMobs;
-							y+=DistBetweenMobs;
+							//y+=DistBetweenMobs;
 						}
 				}
 			}
@@ -286,37 +319,6 @@ public class RandomLevel extends Level {
 		}
 		return true;
 	}
-	
-	public static enum RTile{
-			Wall_Stone(new char[]{'H','M','#'},new Color[]{Color.darkGray},true),
-			Wall_Grass(new char[]{'W','w','v','V'},new Color[]{new Color(0x8ae75e)},true),
-			
-		Stone(new char[]{',','.','`',' ','\'',':',' ',' '},new Color[]{Color.gray},Wall_Stone),
-		Dirt(new char[]{'\\',';',':','=','!','#',']','['},new Color[]{new Color(0x8f6b38)},Wall_Grass),
-		;
-		public static RTile[] tiles(){
-			List<RTile> tileList = new ArrayList<RTile>();
-			for(RTile t : RTile.values())
-				if(t.border!=null)
-					tileList.add(t);
-			RTile[] tiles = tileList.toArray(new RTile[tileList.size()]);
-			return tiles;
-		}
-		char[] characters;
-		Color[] colors;
-		RTile border;
-		boolean isWall;
-		RTile(char[] characters, Color[] colors, RTile border){
-			this.characters=characters;
-			this.colors=colors;
-			this.border=border;
-		}
-		RTile(char[] characters, Color[] colors, boolean isWall){
-			this.characters=characters;
-			this.colors=colors;
-			isWall=true;
-			border=null;
-		}
-	}
+
 	
 }

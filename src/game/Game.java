@@ -24,7 +24,6 @@ import net.GameClient;
 import net.GameServer;
 import net.PlayerMP;
 import net.packet.Packet10Login;
-import net.packet.Packet19RequestLevel;
 import player.Player;
 
 public class Game extends Canvas implements Runnable {
@@ -36,6 +35,8 @@ public class Game extends Canvas implements Runnable {
 	public static int height = width / 16 * 9;
 
 	public static int TILE_SIZE=7;
+	
+	private static final int minScale=1, maxScale=4;
 	
 	public static Game game;
 	
@@ -163,6 +164,18 @@ public class Game extends Canvas implements Runnable {
 		if(keyboard.onRefresh){
 			screen.activateRainbowEffect();
 		}
+		if(keyboard.onZoomIn && scale<maxScale){
+			scale++;
+			resetZoom();
+			if(player!=null)
+				screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+		}
+		if(keyboard.onZoomOut && scale>minScale){
+			scale--;
+			resetZoom();
+			if(player!=null)
+				screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+		}
 		
 		if(level!=null)
 			level.update();
@@ -171,6 +184,16 @@ public class Game extends Canvas implements Runnable {
 		screen.update();
 	}
 
+	private void resetZoom(){
+		width = 1200/scale;
+		height = width / 16 * 9;
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB); //Rendered image
+		renderPixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+		Dimension size = new Dimension(width * scale, height * scale);
+		setPreferredSize(size);
+		screen = new Screen(width, height);
+	}
+	
 	int xScroll, yScroll;
 	public void render() {
 		
@@ -202,6 +225,7 @@ public class Game extends Canvas implements Runnable {
 		
 		//UI.combatUI.render(screen);
 		
+		if(renderPixels.length==screen.pixels.length)
 		for (int i = 0; i < renderPixels.length; i++) {
 			if(screen.pixels[i]!=0)
 				renderPixels[i] = screen.pixels[i]; //Copy raw pixels to screen pixels

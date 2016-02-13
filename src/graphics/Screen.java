@@ -79,10 +79,16 @@ public class Screen {
 		}
 	}
 	
-	Color[] additive;
+	Color[] additive, particle;
 	public void newAdditive(){
 		additive=new Color[pixels.length];
 	}
+	public void resetAdditive(){
+		//additive=null;
+		for(int i=0;i<pixels.length;i++)
+			additive[i]=null;
+	}
+	public Color[] getAdditive(){return additive;}
 	public void renderAdditiveLight(int xPos, int yPos, int w, int h, Color color, int alpha){
 		xPos -= xOffset; //Minus because otherwise movement would be reversed
 		yPos -= yOffset;
@@ -96,17 +102,18 @@ public class Screen {
 				if(pixels [xa + ya * width] != 0){
 					additive [xa + ya * width] = color;//blend(color, pixels[xa+ya*width]);
 				}
-				
 			}
 		}
 	}
 	public void displayAdditive(){
-		Color c;
-		for(int i=0;i<pixels.length;i++)
-			if(additive[i]!=null){
-				c=new Color(pixels[i]);
-				pixels[i]=blendColor(new Color(c.getRed(),c.getGreen(),c.getBlue(),255-additive[i].getAlpha()),additive[i]);				
-			}
+		if(additive!=null){
+			Color c;
+			for(int i=0;i<pixels.length;i++)
+				if(additive[i]!=null){
+					c=new Color(pixels[i]);
+					pixels[i]=blendColor(new Color(c.getRed(),c.getGreen(),c.getBlue(),255-additive[i].getAlpha()),additive[i]);				
+				}
+		}
 	}
 	
 	public void renderUI(int xPos, int yPos, Sprite sprite, int color){

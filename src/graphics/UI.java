@@ -3,11 +3,12 @@ package graphics;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -15,9 +16,9 @@ import game.Game;
 
 public class UI {
 	
-	public static UI combatUI = new UI("res/ui/combat",Align.Bottom_Right,Type.Combat, true);
-	public static UI combatUIDir = new UI("res/ui/combatDirection",Align.Bottom_Right,Type.Combat, true);
-	public static UI healthUI = new UI("res/ui/health",Align.Bottom_Left,Type.Health, true);
+	public static UI combatUI = new UI("/ui/combat",Align.Bottom_Right,Type.Combat, true);
+	public static UI combatUIDir = new UI("/ui/combatDirection",Align.Bottom_Right,Type.Combat, true);
+	public static UI healthUI = new UI("/ui/health",Align.Bottom_Left,Type.Health, true);
 	public static UI statusUI = new UI(Align.Top,Type.Status, true);
 	
 	public boolean active;
@@ -74,12 +75,24 @@ public class UI {
 		String uiPath = path + ".txt";
 		int w = 0, h = 0;
 
-		List<String> lines = null;
+		ArrayList<String> lines = new ArrayList<String>();
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(UI.class.getResourceAsStream(uiPath)));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+		
+		/*List<String> lines = null;
 		try {
 			lines = Files.readAllLines(Paths.get(uiPath));
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 
 		h = lines.size();
 		for (String l : lines) {
@@ -108,9 +121,9 @@ public class UI {
 		
 		String colPath = path + ".png";
 		int[] pixels = null;
-		if(new File(colPath).exists()){
+		if(this.getClass().getResource(colPath)!=null){//new File(colPath).exists()){
 			BufferedImage fileImg = null;
-			try{fileImg = ImageIO.read(new File(colPath));}catch (IOException e) {e.printStackTrace();}
+			try{fileImg =ImageIO.read(this.getClass().getResource(colPath));}catch (IOException e) {e.printStackTrace();}
 			BufferedImage bufImg = fileImg;
 			BufferedImage img = new BufferedImage(bufImg.getWidth(), bufImg.getHeight(), BufferedImage.TYPE_INT_RGB);
 			img.getGraphics().drawImage(bufImg, 0, 0, null);
