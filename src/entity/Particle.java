@@ -123,12 +123,14 @@ public class Particle extends Entity {
 	}
 	
 	public void render(Screen screen){
-		if(screen.getAdditive()==null)screen.newAdditive();
-		screen.resetAdditive();
-		for(int i=0;i<particles.size();i++){
-			particles.get(i).renderPixel(screen);
+		if(render){
+			if(screen.getAdditive()==null)screen.newAdditive();
+			screen.resetAdditive();
+			for(int i=0;i<particles.size();i++){
+				particles.get(i).renderPixel(screen);
+			}
+			screen.displayAdditive();
 		}
-		screen.displayAdditive();
 	}
 	
 	public void renderPixel(Screen screen){

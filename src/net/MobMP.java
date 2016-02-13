@@ -8,13 +8,14 @@ import game.Game;
 import graphics.Screen;
 import graphics.Sprite;
 import level.Level;
+import net.packet.Packet16RemoveMob;
 
 public class MobMP extends Mob{
 	
 	private int[][][] colorBlemishes;
 	private boolean hasBlemishes = false;
 	
-	public MobMP(Level lvl, int spawnX, int spawnY, char[][] characters, int health, String id) { //Random Personality
+	public MobMP(Level lvl, int spawnX, int spawnY, char[][] characters, int health, String name, String id) { //Random Personality
 		level = lvl;
 		level.addMob(this);
 		Health = health;
@@ -53,25 +54,30 @@ public class MobMP extends Mob{
 	int particlesPerDamage=400;
 	public void setHealth(int h){
 		if(h<=0){
-			new Particle(x + Game.TILE_SIZE/2,y + Game.TILE_SIZE/2,1,600,0.3f,particlesPerDamage*(h-Health)*2,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
-			new Particle(x + Game.TILE_SIZE/2,y + Game.TILE_SIZE/2,2,1200,0.1f,5*((takenPos.length+takenPos[0].length)/2),level,new Color[]{Color.lightGray},Particle.RenderType.Sprite);
+			Packet16RemoveMob packet=new Packet16RemoveMob(identifier);
+			packet.writeData(Game.game.socketClient);
+			new Particle(x + Game.TILE_SIZE/2,y + Game.TILE_SIZE/2,1,-600,0.3f,particlesPerDamage*(h-Health)*2,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
+			new Particle(x + Game.TILE_SIZE/2,y + Game.TILE_SIZE/2,2,-1200,0.1f,5*((takenPos.length+takenPos[0].length)/2),level,new Color[]{Color.lightGray},Particle.RenderType.Sprite);
 		}
 		Health=h;
 	}
 	
 	public void render(Screen screen) {
-		for (int x = 0; x < sprites.length; x++) {
-			for (int y = 0; y < sprites[x].length; y++) {
-				if (sprites[x][y] != null) {
-					screen.renderSprite(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y]);
-					if (colorBlemishes != null && colorBlemishes[x][y] != null)
-						screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE,
-								sprites[x][y].WIDTH, sprites[x][y].HEIGHT, new Color(112,39,195).getRGB(), colorBlemishes[x][y]);
-					else
-						screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE,
-								sprites[x][y].WIDTH, sprites[x][y].HEIGHT, new Color(112,39,195).getRGB(), null);
+		if(render)
+			for (int x = 0; x < sprites.length; x++) {
+				for (int y = 0; y < sprites[x].length; y++) {
+					if (sprites[x][y] != null) {
+						if(lockedOnto){
+							screen.renderBackground(this.x+x-1, this.y+y-1, Game.TILE_SIZE+2, Game.TILE_SIZE+2, new Color(201,175,40).getRGB());
+							screen.renderBackground(this.x+x, this.y+y, Game.TILE_SIZE, Game.TILE_SIZE, Color.black.getRGB());
+						}
+						screen.renderSprite(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y]);
+						if (colorBlemishes != null && colorBlemishes[x][y] != null)
+							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, new Color(112,39,195).getRGB(), colorBlemishes[x][y]);
+						else
+							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, new Color(112,39,195).getRGB(), null);
+					}
 				}
 			}
-		}
 	}
 }

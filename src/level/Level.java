@@ -203,108 +203,113 @@ public class Level {
 	}
 	
 	//xScroll, yScroll is top left corner
-	public void render(int xScroll, int yScroll, Screen screen) {
+	public void renderUpdate(int xScroll, int yScroll, Screen screen) {
 		
-		screen.setOffset(xScroll, yScroll);
-		//Corner Pins (x0=Top Left Tile)
 		int x0 = xScroll / TILE_SIZE -1;
-		int x1 = (xScroll + screen.width) / TILE_SIZE +1; //+1 to make it render everything on screen if tile is slightly off screen
+		int x1 = (xScroll + screen.width) / TILE_SIZE +1;
 		int y0 = yScroll / TILE_SIZE -1;
 		int y1 = (yScroll + screen.height) / TILE_SIZE +1;
 
-		//Vector2i pv = new Vector2i(player.x/Game.TILE_SIZE,player.y/Game.TILE_SIZE);
 		if(shadowMap!=null)
 		synchronized(shadowMap){
+			
 			for (int y = y0; y < y1; y++) {
 				for (int x = x0; x < x1; x++) {
 					Tile tile = getTile(x, y);
 					if (tile != null){
 						if(getPlayers().size()>0){
 							for(int i=0;i<getPlayers().size();i++){
-								if(tile.hasBeenSeen || (i<shadowMap.length && shadowMap[i]!=null && shadowMap[i][x][y]==1))
-									tile.render(x * TILE_SIZE, y * TILE_SIZE, screen);
 								if(i<shadowMap.length && shadowMap[i]!=null && shadowMap[i][x][y]==1){
-									//tile.renderLight(x * TILE_SIZE, y * TILE_SIZE, screen);
+									tile.doRender(true);
+									tile.doRenderLight(true);
 									tile.hasBeenSeen=true;
+									tile.renderGray=false;
+								}else if(tile.hasBeenSeen){
+									tile.renderGray=true;
+									tile.doRender(true);
+									tile.doRenderLight(true);
+								}else{
+									tile.renderGray=false;
+									tile.doRender(false);
+									tile.doRenderLight(false);
 								}
 							}
 						}else{
-							tile.render(x * TILE_SIZE, y * TILE_SIZE, screen);
+							tile.doRender(true);
 						}
 					}
 				}
 			}
-			for (int y = y0; y < y1; y++) {
-				for (int x = x0; x < x1; x++) {
-					Tile tile = getTile(x, y);
-					if (tile != null){
-						boolean renderGray = true;
-						
-						if(getPlayers().size()>0){
-							for(int i=0;i<getPlayers().size();i++){
-								if(i<shadowMap.length && shadowMap[i]!=null && shadowMap[i][x][y]==1){
-									tile.renderLight(x * TILE_SIZE, y * TILE_SIZE, screen);
-									tile.hasBeenSeen=true;
-									renderGray=false;
-								}
-							}
-							if(tile.hasBeenSeen && renderGray){
-								tile.doRender(true);
-								tile.renderLight(x * TILE_SIZE, y * TILE_SIZE, screen, new Color(0,0,0).getRGB());
-							}
-						}else{
-							tile.renderLight(x * TILE_SIZE, y * TILE_SIZE, screen);
-						}
-						
-					}
-				}
-			}
+			
 			for(int i = getPlayers().size()-1;i >= 0; i--){
-				if(getPlayers().get(i)!=null && !getPlayers().get(i).isRemoved()){
-					//for(int s=0;s<getPlayers().size();s++){
-					//	if(i<shadowMap.length && i>0 && getPlayers().get(i)!=null && shadowMap[i]!=null && shadowMap[s][getPlayers().get(i).x/Game.TILE_SIZE][getPlayers().get(i).y/Game.TILE_SIZE]==1)
-							getPlayers().get(i).render(screen);
-					//}
-				}else
-					getPlayers().remove(i);
+				getPlayers().get(i).doRender(true);
 			}
+			
 			for(int i = mobs.size()-1;i >= 0; i--){
 				if(mobs.get(i)!=null && !mobs.get(i).isRemoved()){
 					boolean wasSeen=false;
 					if(getPlayers().size()>0){
 						for(int s=0;s<getPlayers().size();s++){
 							if(s<shadowMap.length && shadowMap[s]!=null && i<mobs.size() && shadowMap[s][mobs.get(i).x/Game.TILE_SIZE][mobs.get(i).y/Game.TILE_SIZE]==1){
-								mobs.get(i).render(screen);
-								mobs.get(i).hasBeenSeen=true;
 								wasSeen=true;
-							}
-							else{
-								if(i<mobs.size() && players.get(s).lockedOn==mobs.get(i)){
-									players.get(s).lockedOn.lockedOnto=false;
-									players.get(s).lockedOn=null;
+								mobs.get(i).hasBeenSeen=true;
+							}else{
+								if(i<mobs.size() && getPlayers().get(s).lockedOn==mobs.get(i)){
+									getPlayers().get(s).lockedOn.lockedOnto=false;
+									getPlayers().get(s).lockedOn=null;
 								}
 							}
 						}
+						mobs.get(i).isSeen=wasSeen;
+						mobs.get(i).doRender(wasSeen);
 					}else{
-						mobs.get(i).render(screen);
+						mobs.get(i).doRender(true);
 					}
-					mobs.get(i).isSeen=wasSeen;
 				}else
 					mobs.remove(i);
 			}
+			
+			for(int i = entities.size()-1;i >= 0; i--){
+				if(entities.get(i)!=null && !entities.get(i).isRemoved()){
+					if(getPlayers().size()>0){
+						boolean seen=false;
+						for(int s=0;s<getPlayers().size();s++){
+							if(s<shadowMap.length && shadowMap[s]!=null && shadowMap[s][entities.get(i).x/Game.TILE_SIZE][entities.get(i).y/Game.TILE_SIZE]==1)
+								seen=true;
+						}
+						entities.get(i).doRender(seen);
+					}else{
+						entities.get(i).doRender(true);
+					}
+				}else
+					entities.remove(i);
+			}
+			
+		}
+	}
+	
+	public void render(int xScroll, int yScroll, Screen screen) {
+		int x0 = xScroll / TILE_SIZE -1;
+		int x1 = (xScroll + screen.width) / TILE_SIZE +1;
+		int y0 = yScroll / TILE_SIZE -1;
+		int y1 = (yScroll + screen.height) / TILE_SIZE +1;
+		for (int y = y0; y < y1; y++) {
+			for (int x = x0; x < x1; x++) {
+				Tile tile = getTile(x, y);
+				if (tile != null){
+					tile.render(x * TILE_SIZE, y * TILE_SIZE, screen);
+					tile.renderLight(x * TILE_SIZE, y * TILE_SIZE, screen);
+				}
+			}
 		}
 		for(int i = entities.size()-1;i >= 0; i--){
-			if(entities.get(i)!=null && !entities.get(i).isRemoved()){
-				if(getPlayers().size()>0){
-					for(int s=0;s<getPlayers().size();s++){
-						if(s<shadowMap.length && shadowMap[s]!=null && shadowMap[s][entities.get(i).x/Game.TILE_SIZE][entities.get(i).y/Game.TILE_SIZE]==1)
-							entities.get(i).render(screen);
-					}
-				}else{
-					entities.get(i).render(screen);
-				}
-			}else
-				entities.remove(i);
+			entities.get(i).render(screen);
+		}
+		for(int i = mobs.size()-1;i >= 0; i--){
+			mobs.get(i).render(screen);
+		}
+		for(int i = getPlayers().size()-1;i >= 0; i--){
+			getPlayers().get(i).render(screen);
 		}
 	}
 	

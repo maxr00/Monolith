@@ -13,6 +13,7 @@ import level.Level;
 import net.PlayerMP;
 import net.packet.Packet13Projectile;
 import net.packet.Packet15MobUpdate;
+import net.packet.Packet16RemoveMob;
 import util.Node;
 import util.Vector2i;
 
@@ -289,21 +290,22 @@ public class BasicEnemy extends Mob {
 	}
 
 	public void render(Screen screen) {
-		for (int x = 0; x < sprites.length; x++) {
-			for (int y = 0; y < sprites[x].length; y++) {
-				if (sprites[x][y] != null) {
-					if(lockedOnto){
-						screen.renderBackground(this.x+x-1, this.y+y-1, Game.TILE_SIZE+2, Game.TILE_SIZE+2, new Color(201,175,40).getRGB());
-						screen.renderBackground(this.x+x, this.y+y, Game.TILE_SIZE, Game.TILE_SIZE, Color.black.getRGB());
+		if(render)
+			for (int x = 0; x < sprites.length; x++) {
+				for (int y = 0; y < sprites[x].length; y++) {
+					if (sprites[x][y] != null) {
+						if(lockedOnto){
+							screen.renderBackground(this.x+x-1, this.y+y-1, Game.TILE_SIZE+2, Game.TILE_SIZE+2, new Color(201,175,40).getRGB());
+							screen.renderBackground(this.x+x, this.y+y, Game.TILE_SIZE, Game.TILE_SIZE, Color.black.getRGB());
+						}
+						screen.renderSprite(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y]);
+						if (colorBlemishes != null && colorBlemishes[x][y] != null)
+							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, new Color(112,39,195).getRGB(), colorBlemishes[x][y]);
+						else
+							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, new Color(112,39,195).getRGB(), null);
 					}
-					screen.renderSprite(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y]);
-					if (colorBlemishes != null && colorBlemishes[x][y] != null)
-						screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, new Color(112,39,195).getRGB(), colorBlemishes[x][y]);
-					else
-						screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, new Color(112,39,195).getRGB(), null);
 				}
 			}
-		}
 	}
 	
 	int particlesPerDamage=400;
@@ -311,6 +313,9 @@ public class BasicEnemy extends Mob {
 		Health-=damage;
 		if(Health<=0){
 			removed=true;
+			
+			Packet16RemoveMob packet=new Packet16RemoveMob(identifier);
+			packet.writeData(Game.game.socketServer);
 			
 			for(int tx=0;tx<takenPos.length;tx++){
 				for(int ty=0;ty<takenPos[tx].length;ty++){

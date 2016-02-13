@@ -135,7 +135,7 @@ public class GameClient extends Thread{
 	 }
 	 
 	 private void handleAddMob(Packet14AddMob packet){
-		 new MobMP(game.level,packet.getX(),packet.getY(),packet.getCharacters(),packet.getHealth(),packet.getID());
+		 new MobMP(game.level,packet.getX(),packet.getY(),packet.getCharacters(),packet.getHealth(),packet.getName(),packet.getID());
 	 }
 	 
 	 private void handleProjectile(Packet13Projectile packet){

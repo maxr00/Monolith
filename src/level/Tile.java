@@ -1,5 +1,7 @@
 package level;
 
+import java.awt.Color;
+
 import graphics.Screen;
 import graphics.Sprite;
 
@@ -8,7 +10,8 @@ public class Tile {
 	public int tint;
 	private Sprite sprite;
 	private char character;
-	private boolean solid, render=true;
+	private boolean solid;
+	public boolean render=false, renderLight=false, renderGray;
 	public int[] colorBlemishes;
 	public boolean hasBeenSeen;
 	//private final Random random = new Random();
@@ -29,13 +32,16 @@ public class Tile {
 	}
 
 	public void renderLight(int x, int y, Screen screen) {
-		if(render && sprite!=null){
-			screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, tint, colorBlemishes);
+		if(renderLight && sprite!=null){
+			if(renderGray)
+				screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, Color.black.getRGB(), colorBlemishes);
+			else
+				screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, tint, colorBlemishes);
 		}
 	}
 	
 	public void renderLight(int x, int y, Screen screen, int manualColor) {
-		if(render && sprite!=null){
+		if(renderLight && sprite!=null){
 			screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, manualColor, colorBlemishes);
 		}
 	}
@@ -49,6 +55,8 @@ public class Tile {
 	}
 
 	public void doRender(boolean r){ render=r; }
+	
+	public void doRenderLight(boolean r){ renderLight=r; }
 	
 	public Sprite getSprite() {
 		return sprite;

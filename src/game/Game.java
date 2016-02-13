@@ -177,8 +177,10 @@ public class Game extends Canvas implements Runnable {
 				screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
 		}
 		
-		if(level!=null)
+		if(level!=null){
 			level.update();
+			level.renderUpdate(xScroll, yScroll, screen);
+		}
 		if(player!=null)
 			player.handleStatus(screen);
 		screen.update();
@@ -196,6 +198,7 @@ public class Game extends Canvas implements Runnable {
 	
 	int xScroll, yScroll;
 	public void render() {
+		if(socketServer!=null) return;
 		
 		BufferStrategy bufferStrategy = getBufferStrategy(); //Get buffer strategy from canvas
 		if (bufferStrategy == null) { //Called first time through
@@ -215,6 +218,7 @@ public class Game extends Canvas implements Runnable {
 			xScroll = player.x - screen.width/2;
 			yScroll = player.y - screen.height/2;
 		}
+		screen.setOffset(xScroll, yScroll);
 		if(level!=null){
 			level.render(xScroll, yScroll, screen);
 		}

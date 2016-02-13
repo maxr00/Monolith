@@ -8,7 +8,7 @@ public class Packet14AddMob extends Packet {
 	
 	private int x,y, health;
 	private char[][] characters;
-	private String identifier;
+	private String identifier, name;
 	private Spell[] spells;
 	
 	//Recieved a packet
@@ -19,19 +19,20 @@ public class Packet14AddMob extends Packet {
 			this.x=Integer.parseInt(dataArray[0]);
 			this.y=Integer.parseInt(dataArray[1]);
 			this.health=Integer.parseInt(dataArray[2]);
-			this.identifier=dataArray[3];
+			this.name=dataArray[3];
+			this.identifier=dataArray[4];
 			
-			int w=Integer.parseInt(dataArray[4]);
-			int h=Integer.parseInt(dataArray[5]);
+			int w=Integer.parseInt(dataArray[5]);
+			int h=Integer.parseInt(dataArray[6]);
 			characters=new char[w][h];
 			for(int y=0;y<h;y++){
 				for(int x=0;x<w;x++){
-					characters[x][y] = dataArray[6+y].split("/")[x].charAt(0);
+					characters[x][y] = dataArray[7+y].split("/")[x].charAt(0);
 				}
 			}
-			spells=new Spell[dataArray[7+h].split("/").length];
+			spells=new Spell[dataArray[8+h].split("/").length];
 			for(int i=0;i<spells.length;i++){
-				spells[i]=Spell.getSpell(dataArray[7+h].split("/")[i]);
+				spells[i]=Spell.getSpell(dataArray[8+h].split("/")[i]);
 			}
 		}catch(ArrayIndexOutOfBoundsException e){
 			System.out.println("ADD MOB PACKET OUT OF BOUNDS");
@@ -40,11 +41,12 @@ public class Packet14AddMob extends Packet {
 	}
 	
 	//Creating a packet
-	public Packet14AddMob(int x, int y, int health, char[][] characters, Spell[] spells, String identifier){
+	public Packet14AddMob(int x, int y, int health,String name, char[][] characters, Spell[] spells, String identifier){
 		super(14);
 		this.x = x;
 		this.y = y;
 		this.health=health;
+		this.name=name;
 		this.characters=characters;
 		this.spells=spells;
 		this.identifier=identifier;
@@ -71,7 +73,7 @@ public class Packet14AddMob extends Packet {
 		for(Spell spell : spells){
 			s1+=spell.name()+"/";
 		}
-		return ("14"+x+","+y+","+health+","+identifier +"," +characters.length +"," +characters[0].length +","+s+","+s1).getBytes();
+		return ("14"+x+","+y+","+health+","+name+","+identifier +"," +characters.length +"," +characters[0].length +","+s+","+s1).getBytes();
 	}
 	
 	public int getX(){
@@ -85,6 +87,9 @@ public class Packet14AddMob extends Packet {
 	}
 	public char[][] getCharacters(){
 		return characters;
+	}
+	public String getName(){
+		return name;
 	}
 	public String getID(){
 		return identifier;

@@ -24,44 +24,46 @@ public class RandomLevel extends Level {
 	}
 	
 	public static enum RTile{
-		Wall_OUTOFBOUNDS(new char[]{'#','%','$'},new Color[]{Color.black},true),
-		Wall_Stone(new char[]{'H','M','#'},new Color[]{Color.darkGray},true),
-		Wall_Grass(new char[]{'W','w','v','V'},new Color[]{new Color(0x8ae75e)},true),
-		
-	Stone(new char[]{',','.','`',' ','\'',':',' ',' '},new Color[]{Color.gray},Wall_Stone),
-	Dirt(new char[]{'\\',';',':','=','!','#',']','['},new Color[]{new Color(0x8f6b38)},Wall_Grass),
-	;
-	public static RTile[] tiles(){
-		List<RTile> tileList = new ArrayList<RTile>();
-		for(RTile t : RTile.values())
-			if(t.border!=null)
-				tileList.add(t);
-		RTile[] tiles = tileList.toArray(new RTile[tileList.size()]);
-		return tiles;
+			Wall_OUTOFBOUNDS(new char[]{'#','%','$'},new Color[]{Color.black},true),
+			Wall_Stone(new char[]{'H','M','#'},new Color[]{Color.darkGray},true),
+			Wall_Grass(new char[]{'W','w','v','V'},new Color[]{new Color(0x8ae75e)},true),
+			
+		Stone(new char[]{',','.','`',' ','\'',':',' ',' '},new Color[]{Color.gray},Wall_Stone),
+		Dirt(new char[]{'\\',';',':','=','!','#',']','['},new Color[]{new Color(0x8f6b38)},Wall_Grass),
+		;
+		public static RTile[] tiles(){
+			List<RTile> tileList = new ArrayList<RTile>();
+			for(RTile t : RTile.values())
+				if(t.border!=null)
+					tileList.add(t);
+			RTile[] tiles = tileList.toArray(new RTile[tileList.size()]);
+			return tiles;
+		}
+		char[] characters;
+		Color[] colors;
+		RTile border;
+		boolean isWall;
+		RTile(char[] characters, Color[] colors, RTile border){
+			this.characters=characters;
+			this.colors=colors;
+			this.border=border;
+		}
+		RTile(char[] characters, Color[] colors, boolean isWall){
+			this.characters=characters;
+			this.colors=colors;
+			isWall=true;
+			border=null;
+		}
 	}
-	char[] characters;
-	Color[] colors;
-	RTile border;
-	boolean isWall;
-	RTile(char[] characters, Color[] colors, RTile border){
-		this.characters=characters;
-		this.colors=colors;
-		this.border=border;
-	}
-	RTile(char[] characters, Color[] colors, boolean isWall){
-		this.characters=characters;
-		this.colors=colors;
-		isWall=true;
-		border=null;
-	}
-}
 	
  	public void generateLevel() {
 		int[][] colorBlemishes = LevelLight.getPossibleBlemishes(100);
 		
 		//Generation happens here
-		while(roomCount<minRooms){
+		while(roomCount<minRooms || endH!=0 || endW!=0){
 			roomCount=0;
+			endH=0;
+			endW=0;
 			mobs=new ArrayList<Mob>();
 			roomTiles=new RTile[width][height];
 			generate(10,10,width/2-5,height/2-5,RTile.Dirt);
@@ -139,10 +141,19 @@ public class RandomLevel extends Level {
 	int DistBetweenMobs=3;
 	boolean hallway=false;
 	
+	int endW,endH;
+	
 	private void generate(int w,int h,int xStart,int yStart, RTile type){
 		roomCount++;
-		if(roomCount>maxRooms)
+		if(roomCount>maxRooms){
+			for(int x=xStart;x<w+xStart;x++){
+				for(int y=yStart;y<h+yStart;y++){
+					if(x>=0 && y>=0 && x<roomTiles.length && y<roomTiles[x].length)
+						roomTiles[x][y]=type;
+				}
+			}
 			return;
+		}
 		
 		for(int x=xStart;x<w+xStart;x++){
 			for(int y=yStart;y<h+yStart;y++){
@@ -163,7 +174,7 @@ public class RandomLevel extends Level {
 							while((char)character==',' || (char)character=='|' || (char)character=='/'){character=rng.nextInt(94)+33;}
 							Mob mob=new BasicEnemy(Game.game.level,x,y,"George",new char[][]{{(char)(character)}},10,Pathfinding.MoveToward,new Spell[]{Spell.Fireball});//(char)(random.nextInt(94)+33));
 							
-							Packet14AddMob mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
+							Packet14AddMob mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.name,mob.characters,mob.spells,mob.identifier);
 							mobPacket.writeData(Game.game.socketServer);
 							
 							x+=DistBetweenMobs;
@@ -194,6 +205,10 @@ public class RandomLevel extends Level {
 					nH=rng.nextInt(20)+5;
 					xOff=rng.nextInt(nW-1);
 					yOff=0;
+				}
+				if(roomCount>=maxRooms){
+					nW+=10;
+					nH+=10;
 				}
 				nX=rng.nextInt(w-1);
 				nY=0;
@@ -241,6 +256,10 @@ public class RandomLevel extends Level {
 					xOff=0;
 					yOff=rng.nextInt(nH-1);
 				}
+				if(roomCount>=maxRooms){
+					nW+=10;
+					nH+=10;
+				}
 				nX=0;
 				nY=rng.nextInt(h-1);
 				if(Math.random()<0.5){//L
@@ -278,6 +297,10 @@ public class RandomLevel extends Level {
 				}
 			}
 			if(canFit(nW+2,nH+2,nX+xStart-xOff-1,nY+yStart-yOff-1)){
+				if(roomCount>=maxRooms){
+					endW=nW;
+					endH=nH;
+				}
 				break;
 			}else{
 				attempts++;

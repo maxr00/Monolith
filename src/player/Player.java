@@ -82,12 +82,11 @@ public class Player extends Mob {
 		level.addPlayer((PlayerMP)this);
 	}
 
-	private int moveTime=0;
+	private int moveTime=0, castCooldown=0, castFinishCooldown=0;
 	boolean cast;
 	public void update() {
 		if(level==null)
 			return;
-		
 		
 		moveTime++;
 		inputX = 0;	inputY = 0;
@@ -100,16 +99,6 @@ public class Player extends Mob {
 			if (input.left){ inputX=-1; moveTime=0;}
 			if (input.down){ inputY=1; moveTime=0;}
 			if (input.up){ inputY=-1; moveTime=0;}
-		}
-
-		if(!cast){
-			for(int i=0;i<9;i++)
-				if(input.runeKeyOn[i]) Combat.combatPressRune(i);
-			Combat.notHeldCast();
-		}
-		
-		if(input.clearSpell){
-			Combat.clearSpell();
 		}
 		
 		if (inputX != 0 || inputY != 0){
@@ -130,39 +119,74 @@ public class Player extends Mob {
 			lockedOn = close;
 			if(lockedOn!=null)
 				lockedOn.lockedOnto=true;
-		}else 
-		if(input.onToggleLock && lockedOn!=null){
-			lockedOn.lockedOnto=false;
-			lockedOn=null;
 		}
+		else if(input.onToggleLock && lockedOn!=null){
+				lockedOn.lockedOnto=false;
+				lockedOn=null;
+			}
 
-		
-		if(cast){
-			castX = 0;	castY = 0; //Default case, unreachable otherwise
-			if(input.runeKeyOff[0]){ castX=-1; castY=-1; }
-			if(input.runeKeyOff[1]){ castX=0; castY=-1; }
-			if(input.runeKeyOff[2]){ castX=1; castY=-1; }
-			if(input.runeKeyOff[3]){ castX=-1; castY=0; }
-			if(input.runeKeyOff[4]){ castX=0; castY=0; }
-			if(input.runeKeyOff[5]){ castX=1; castY=0; }
-			if(input.runeKeyOff[6]){ castX=-1; castY=1; }
-			if(input.runeKeyOff[7]){ castX=0; castY=1; }
-			if(input.runeKeyOff[8]){ castX=1; castY=1; }
+		if(castFinishCooldown<=0){
+			if(!cast){
+				for(int i=0;i<9;i++)
+					if(input.runeKeyOn[i]) Combat.combatPressRune(i);
+				Combat.notHeldCast();
+			}
 			
-			//if(level.canMoveOn((int)(x/Game.TILE_SIZE+castX),(int)(y/Game.TILE_SIZE+castY)))
+			if(input.clearSpell){
+				Combat.clearSpell();
+			}
+			
+			if(cast){
+				castCooldown++;
+				castX = 0;	castY = 0; //Default case, unreachable otherwise
+				if(input.runeKeyOff[0]){ castX=-1; castY=-1; }
+				if(input.runeKeyOff[1]){ castX=0; castY=-1; }
+				if(input.runeKeyOff[2]){ castX=1; castY=-1; }
+				if(input.runeKeyOff[3]){ castX=-1; castY=0; }
+				if(input.runeKeyOff[4]){ castX=0; castY=0; }
+				if(input.runeKeyOff[5]){ castX=1; castY=0; }
+				if(input.runeKeyOff[6]){ castX=-1; castY=1; }
+				if(input.runeKeyOff[7]){ castX=0; castY=1; }
+				if(input.runeKeyOff[8]){ castX=1; castY=1; }
+				
+				//if(level.canMoveOn((int)(x/Game.TILE_SIZE+castX),(int)(y/Game.TILE_SIZE+castY)))
 				Combat.holdCast(castX, castY);//castX,castY);
-			if(input.castSpell)
-				Combat.chargeSpell();
-			//else Combat.notHeldCast();
-			if(castX!=0 || castY!=0){
-				Combat.holdCast(castX, castY);//(castX, castY);
-				Combat.castSpell();
-				if(Combat.shotsRemaining<=0){
-					Combat.notHeldCast();
-					cast=false;
+				if(input.castSpell)
+					Combat.chargeSpell();
+				//else Combat.notHeldCast();
+				if((castX!=0 || castY!=0) && castCooldown>=10){
+					castCooldown=0;
+					Combat.holdCast(castX, castY);//(castX, castY);
+					Combat.castSpell();
+					if(Combat.shotsRemaining<=0){
+						Combat.notHeldCast();
+						cast=false;
+						castFinishCooldown=40;
+						for(int i=0;i<UI.combatUI.colors.length;i++){
+							for(int j=0;j<UI.combatUI.colors[i].length;j++){
+								UI.combatUI.colors[i][j]=Color.darkGray;
+							}
+						}
+					}
+				}else if(input.runeKeyOff[4]){ 
+					//Cast on self
 				}
-			}else if(input.runeKeyOff[4]){ 
-				//Cast on self
+			}
+		}else{
+			castFinishCooldown--;
+			if(castFinishCooldown>0){
+				for(int i=0;i<UI.combatUI.colors.length;i++){
+					for(int j=0;j<UI.combatUI.colors[i].length;j++){
+						UI.combatUI.colors[i][j]=Color.darkGray;
+					}
+				}
+			}else{
+				for(int i=0;i<UI.combatUI.colors.length;i++){
+					for(int j=0;j<UI.combatUI.colors[i].length;j++){
+						UI.combatUI.colors[i][j]=Color.white;
+					}
+				}
+				UI.combatUI.colors=UI.combatUI.startColors;
 			}
 		}
 	}
@@ -200,10 +224,12 @@ public class Player extends Mob {
  		Combat.render(screen);
 		UI.healthUI.render(screen);
 		UI.statusUI.render(screen);
-		for(int y=0;y<colorBlemishes.length;y++){
-			for(int x=0;x<colorBlemishes.length;x++){
-				screen.renderSprite(this.x, this.y, sprites[x][y]);
-				screen.renderLight(this.x, this.y, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, this.color, colorBlemishes[x][y]);
+		if(render){
+			for(int y=0;y<colorBlemishes.length;y++){
+				for(int x=0;x<colorBlemishes.length;x++){
+					screen.renderSprite(this.x, this.y, sprites[x][y]);
+					screen.renderLight(this.x, this.y, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, this.color, colorBlemishes[x][y]);
+				}
 			}
 		}
 		

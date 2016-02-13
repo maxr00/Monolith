@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import entity.Particle;
 import entity.Projectile;
+import entity.mob.Mob;
 import game.Game;
 import graphics.Screen;
 import graphics.Sprite;
@@ -19,10 +20,10 @@ public class Combat {
 	private static double xDir=0, yDir=0;
 	private static int heldCount=0;
 	
-	private static Color[] pressedColors={	Color.red, 		Color.yellow,	Color.cyan,
-											Color.darkGray,	Color.green,	Color.pink,
-											Color.magenta,	Color.orange,	Color.blue};
-	
+	private static Color[] pressedColors={	Color.red, 				Color.yellow,	Color.cyan,
+											new Color(0x8f6b38),	Color.green,	new Color(112,39,195),
+											Color.magenta,			Color.darkGray,	Color.blue};
+
 	public static void combatPressRune(int runePressed){
 		//count++;
 		if(pressed[runePressed]==0)
@@ -103,9 +104,16 @@ public class Combat {
 		//castSpell = Spell.getSpell(pressed);
 		if(xDir !=0 || yDir !=0){
 			if(castSpell!=null){
-				//Since a projectile packet is sent, creating a projectile now makes 2 projectiles for the client.
-				//new Projectile(player.x + Game.TILE_SIZE/2, player.y + Game.TILE_SIZE/2, xDir, yDir, SpellToProjectile(castSpell),castSpell.getDamagePercent(heldCount),player.level);
-				Packet13Projectile packet = new Packet13Projectile(player.x, player.y, (float)xDir, (float)yDir, SpellToProjectile(castSpell).name(),castSpell.getDamagePercent(heldCount),player.lockedOn==null ? "null" : player.lockedOn.identifier);
+				Mob close = null; double dist=Integer.MAX_VALUE;
+				if(player.lockedOn==null){
+					for(Mob m : player.level.mobs){
+						if(m.isSeen && player.level.getDistance(m.vector, player.vector)<dist){
+							close = m;
+							dist = player.level.getDistance(m.vector, player.vector);
+						}
+					}
+				}
+				Packet13Projectile packet = new Packet13Projectile((int)(player.x+(xDir*Game.TILE_SIZE)), (int)(player.y+(yDir*Game.TILE_SIZE)), (float)xDir, (float)yDir, SpellToProjectile(castSpell).name(),castSpell.getDamagePercent(heldCount),player.lockedOn==null ? (close!=null ? close.identifier : "null") : player.lockedOn.identifier);
 				packet.writeData(Game.game.socketClient);
 			}else{
 				new Particle(player.x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE), player.y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,120,0.2f,50,player.level,new Color[]{Color.gray,Color.darkGray},Particle.RenderType.Sprite);

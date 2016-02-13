@@ -157,7 +157,7 @@ public class GameServer extends Thread{
     	//Send existing mobs to connecting player
     	Packet14AddMob mobPacket;
     	for(Mob mob : game.level.mobs){
-    		mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.characters,mob.spells,mob.identifier);
+    		mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.name,mob.characters,mob.spells,mob.identifier);
     		sendData(mobPacket.getData(),address,port);
     	}
         

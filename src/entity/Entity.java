@@ -8,6 +8,8 @@ import util.Vector2i;
 
 public abstract class Entity {
 
+	protected boolean render;
+	
 	public int x, y;
 	public Vector2i vector = new Vector2i(0,0);
 	protected boolean removed = false;
@@ -28,6 +30,8 @@ public abstract class Entity {
 	}
 	
 	public boolean isRemoved(){ return removed; }
+	
+	public void doRender(boolean b) {render=b;}
 	
 	//Method offset for updates _   void offsetForUpdates(int xOffset, int yOffset, int updates)
 }
