@@ -242,7 +242,7 @@ public class Player extends Mob {
 	}
 	
 	public String getStatus(){	
-		return username +".  HP:" +Health +"  ON TILE "+x/Game.TILE_SIZE +","+y/Game.TILE_SIZE;
+		return username +", LVL:"+Level +" HP:" +Health +" ON TILE "+x/Game.TILE_SIZE +","+y/Game.TILE_SIZE;
 	}
 
 	public void handleStatus(Screen screen) {
@@ -250,7 +250,9 @@ public class Player extends Mob {
 		int x=(mouse.x/Game.scale +(this.x - screen.width/2)) /Game.TILE_SIZE;
 		int y=(mouse.y/Game.scale +(this.y - screen.height/2)) /Game.TILE_SIZE;
 		if(level.getMobOn(x, y)!=null){
-			if(level.getMobOn(x, y).isSeen){
+			if(level.getMobOn(x, y) instanceof Player){
+				UI.statusUI.setStatus(level.getMobOn(x, y).getStatus());
+			}else if(level.getMobOn(x, y).isSeen){
 				if(lockedOn!=null)
 					lockedOn.lockedOnto=false;
 				UI.statusUI.setStatus(level.getMobOn(x, y).getStatus());
@@ -275,6 +277,15 @@ public class Player extends Mob {
 			}else{
 				lockedOn=null;
 			}
+		}
+	}
+
+	int Experience, Level, expToNextLevel=15;
+	public void addExp(int i) {
+		Experience+=i;
+		if(Experience >= expToNextLevel){
+			Level++;
+			expToNextLevel*=Level;
 		}
 	}
 	

@@ -60,10 +60,12 @@ public class RandomLevel extends Level {
 		int[][] colorBlemishes = LevelLight.getPossibleBlemishes(100);
 		
 		//Generation happens here
-		while(roomCount<minRooms || endH!=0 || endW!=0){
+		while(roomCount<minRooms || endH==0 || endW==0){
 			roomCount=0;
 			endH=0;
 			endW=0;
+			endX=0;
+			endY=0;
 			mobs=new ArrayList<Mob>();
 			roomTiles=new RTile[width][height];
 			generate(10,10,width/2-5,height/2-5,RTile.Dirt);
@@ -141,7 +143,7 @@ public class RandomLevel extends Level {
 	int DistBetweenMobs=3;
 	boolean hallway=false;
 	
-	int endW,endH;
+	int endW,endH,endX,endY;
 	
 	private void generate(int w,int h,int xStart,int yStart, RTile type){
 		roomCount++;
@@ -183,7 +185,6 @@ public class RandomLevel extends Level {
 				}
 			}
 		
-		
 		hallway=!hallway;
 		int nW, nH;
 		int nX, nY;
@@ -200,15 +201,19 @@ public class RandomLevel extends Level {
 				if(hallway){
 					nW=2;
 					nH=rng.nextInt(5)+10;
+					if(roomCount==maxRooms-1){
+						nW+=10;
+						nH+=10;
+					}
 				}else{
 					nW=rng.nextInt(25)+5;
 					nH=rng.nextInt(20)+5;
+					if(roomCount==maxRooms-1){
+						nW+=10;
+						nH+=10;
+					}
 					xOff=rng.nextInt(nW-1);
 					yOff=0;
-				}
-				if(roomCount>=maxRooms){
-					nW+=10;
-					nH+=10;
 				}
 				nX=rng.nextInt(w-1);
 				nY=0;
@@ -250,15 +255,19 @@ public class RandomLevel extends Level {
 				if(hallway){
 					nH=2;
 					nW=rng.nextInt(5)+10;
+					if(roomCount==maxRooms-1){
+						nW+=10;
+						nH+=10;
+					}
 				}else{
 					nH=rng.nextInt(25)+5;
 					nW=rng.nextInt(20)+5;
+					if(roomCount==maxRooms-1){
+						nW+=10;
+						nH+=10;
+					}
 					xOff=0;
 					yOff=rng.nextInt(nH-1);
-				}
-				if(roomCount>=maxRooms){
-					nW+=10;
-					nH+=10;
 				}
 				nX=0;
 				nY=rng.nextInt(h-1);
@@ -297,9 +306,11 @@ public class RandomLevel extends Level {
 				}
 			}
 			if(canFit(nW+2,nH+2,nX+xStart-xOff-1,nY+yStart-yOff-1)){
-				if(roomCount>=maxRooms){
+				if(roomCount==maxRooms-1){
 					endW=nW;
 					endH=nH;
+					endX=nX;
+					endY=nY;
 				}
 				break;
 			}else{

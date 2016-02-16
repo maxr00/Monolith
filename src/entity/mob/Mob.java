@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import entity.Entity;
 import entity.Particle;
+import entity.Particle_Exp;
 import entity.Projectile;
 import game.Game;
 import graphics.Screen;
@@ -106,6 +107,8 @@ public abstract class Mob extends Entity {
 			}
 			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,-600,0.3f,particlesPerDamage*damage*2,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
 			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),2,-1200,0.1f,5*((takenPos.length+takenPos[0].length)/2),level,new Color[]{Color.lightGray},Particle.RenderType.Sprite);
+
+			new Particle_Exp(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,1200,0.5f,10,level,new Color[]{Color.yellow},1);
 		}else
 			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,600,0.1f,particlesPerDamage*damage,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
 	}
@@ -118,7 +121,7 @@ public abstract class Mob extends Entity {
 		
 	}
 	
-	public String getStatus(){	
+	public String getStatus(){
 		return name +".  HP:" +Health +"  ON TILE "+x/Game.TILE_SIZE +","+y/Game.TILE_SIZE;
 	}
 }

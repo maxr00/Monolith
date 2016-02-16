@@ -5,7 +5,6 @@ import java.util.Random;
 
 import game.Game;
 
-//Class will allow calculate what
 public class Screen {
 
 	public int width;
@@ -79,7 +78,46 @@ public class Screen {
 		}
 	}
 	
-	Color[] additive, particle;
+	int[] particles;
+	public void newParticles(){
+		particles=new int[pixels.length];
+	}
+	public void resetParticles(){
+		for(int i=0;i<pixels.length;i++)
+			particles[i]=0;
+	}
+	public int[] getParticles(){return particles;}
+	public void renderParticle(int xPos, int yPos, Sprite sprite){
+		xPos -= xOffset; //Minus because otherwise movement would be reversed
+		yPos -= yOffset;
+		if(sprite==null) return;
+		for (int y = 0; y < sprite.HEIGHT; y++) {
+			int ya = yPos + y;
+			if(ya < -sprite.HEIGHT || ya >= height) break;
+			if(ya<0) ya=0;
+			for (int x = 0; x < sprite.WIDTH; x++) {
+				int xa = xPos + x;
+				if(xa < -sprite.WIDTH || xa >= width) break;
+				if(xa<0)xa=0;
+				if(sprite.pixels[x+y*sprite.WIDTH]!=0x00ffffff){ //Don't render transparent pixels
+					particles [xa + ya * width] = sprite.pixels[x + y * sprite.WIDTH];
+				}else
+					particles [xa + ya * width] = 0;
+					
+			}
+		}
+	}
+	public void displayParticles(){
+		if(particles!=null){
+			for(int i=0;i<pixels.length;i++)
+				if(particles[i]!=0){
+					pixels[i]=particles[i];
+				}
+			resetParticles();
+		}
+	}
+	
+	Color[] additive;
 	public void newAdditive(){
 		additive=new Color[pixels.length];
 	}
@@ -113,6 +151,7 @@ public class Screen {
 					c=new Color(pixels[i]);
 					pixels[i]=blendColor(new Color(c.getRed(),c.getGreen(),c.getBlue(),255-additive[i].getAlpha()),additive[i]);				
 				}
+			resetAdditive();
 		}
 	}
 	

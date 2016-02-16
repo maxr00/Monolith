@@ -221,11 +221,14 @@ public class Game extends Canvas implements Runnable {
 		screen.setOffset(xScroll, yScroll);
 		if(level!=null){
 			level.render(xScroll, yScroll, screen);
+			screen.displayAdditive();
+			screen.displayParticles();
 		}
 		if(player!=null)
 			player.render(screen);
 		
 		if(screen.isRainbow()) screen.renderRainbowEffect();
+		
 		
 		//UI.combatUI.render(screen);
 		

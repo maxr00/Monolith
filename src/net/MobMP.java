@@ -3,6 +3,7 @@ package net;
 import java.awt.Color;
 
 import entity.Particle;
+import entity.Particle_Exp;
 import entity.mob.Mob;
 import game.Game;
 import graphics.Screen;
@@ -20,6 +21,7 @@ public class MobMP extends Mob{
 		level.addMob(this);
 		Health = health;
 		identifier=id;
+		this.name=name;
 		
 		this.characters=characters;
 		sprites = new Sprite[characters.length][characters[0].length];
@@ -58,6 +60,8 @@ public class MobMP extends Mob{
 			packet.writeData(Game.game.socketClient);
 			new Particle(x + Game.TILE_SIZE/2,y + Game.TILE_SIZE/2,1,-600,0.3f,particlesPerDamage*(h-Health)*2,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
 			new Particle(x + Game.TILE_SIZE/2,y + Game.TILE_SIZE/2,2,-1200,0.1f,5*((takenPos.length+takenPos[0].length)/2),level,new Color[]{Color.lightGray},Particle.RenderType.Sprite);
+			
+			new Particle_Exp(x + Game.TILE_SIZE/2,y + Game.TILE_SIZE/2,1,1200,0.1f,10,level,new Color[]{Color.yellow},1);
 		}
 		Health=h;
 	}

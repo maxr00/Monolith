@@ -11,20 +11,20 @@ import util.Vector2i;
 
 public class Particle extends Entity {
 
-	private Sprite sprite;
+	protected Sprite sprite;
 	
-	private ArrayList<Particle> particles = new ArrayList<Particle>();
-	private Color color;
+	protected ArrayList<Particle> particles = new ArrayList<Particle>();
+	protected Color color;
 
-	private int life, alpha;
+	protected int life, alpha;
 	
-	private float xDir, yDir, zDir;
-	private float xx=0,yy=0, zz=0;
-	private float speed=1;
-	private int scale;
-	private boolean infinite;
+	protected float xDir, yDir, zDir;
+	protected float xx=0,yy=0, zz=0;
+	protected float speed=1;
+	protected int scale;
+	protected boolean infinite;
 
-	private RenderType renderType;
+	protected RenderType renderType;
 	
 	public enum RenderType{
 		Lighting,
@@ -32,7 +32,9 @@ public class Particle extends Entity {
 		Additive
 	}
 	
-	private Particle(int x, int y, int scale, int life, float speed, Color color, Level level, RenderType type,int alpha) {
+	protected Particle(){}
+	
+	protected Particle(int x, int y, int scale, int life, float speed, Color color, Level level, RenderType type,int alpha) {
 		this.level=level;
 		this.x = x;
 		this.y = y;
@@ -115,7 +117,7 @@ public class Particle extends Entity {
 	ArrayList<Vector2i> pPos=new ArrayList<Vector2i>();
 	public void update(){
 		for(int i=particles.size()-1;i>=0;i--){
-			if(particles.get(i).updateParticle())
+			if(particles.get(i).removed || particles.get(i).updateParticle())
 				particles.remove(i);
 		}
 		if(particles.size()==0)
@@ -125,23 +127,25 @@ public class Particle extends Entity {
 	public void render(Screen screen){
 		if(render){
 			if(screen.getAdditive()==null)screen.newAdditive();
-			screen.resetAdditive();
+			if(screen.getParticles()==null){screen.newParticles();}
+			
 			for(int i=0;i<particles.size();i++){
 				particles.get(i).renderPixel(screen);
 			}
-			screen.displayAdditive();
 		}
 	}
 	
 	public void renderPixel(Screen screen){
 		switch(renderType){
 		case Sprite:
-			screen.renderSprite((int)xx, (int)(yy-zz), sprite);
+			//screen.renderSprite((int)xx, (int)(yy-zz), sprite);
+			screen.renderParticle((int)xx, (int)(yy-zz), sprite);
 			break;
 		case Lighting:
 			screen.renderLight((int)xx, (int)yy, scale, scale, color.getRGB(), null);
 			break;
 		case Additive:
+			if(life<0 && infinite)	this.removed=true;
 			screen.renderAdditiveLight((int)xx, (int)yy, scale, scale, color,alpha);
 			break;
 		}
