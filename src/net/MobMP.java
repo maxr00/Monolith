@@ -16,11 +16,14 @@ public class MobMP extends Mob{
 	private int[][][] colorBlemishes;
 	private boolean hasBlemishes = false;
 	
-	public MobMP(Level lvl, int spawnX, int spawnY, char[][] characters, int health, String name, String id) { //Random Personality
+	public MobMP(Level lvl, int spawnX, int spawnY, char[][] characters,int col, int health, String name, String id, String[] statuses) { //Random Personality
 		level = lvl;
 		level.addMob(this);
 		Health = health;
 		identifier=id;
+		color = col;
+		System.out.println("Color: "+color);
+		this.statuses=statuses;
 		this.name=name;
 		
 		this.characters=characters;
@@ -77,9 +80,9 @@ public class MobMP extends Mob{
 						}
 						screen.renderSprite(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y]);
 						if (colorBlemishes != null && colorBlemishes[x][y] != null)
-							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, new Color(112,39,195).getRGB(), colorBlemishes[x][y]);
+							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, colorBlemishes[x][y]);
 						else
-							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, new Color(112,39,195).getRGB(), null);
+							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, null);
 					}
 				}
 			}

@@ -30,6 +30,8 @@ public class BasicEnemy extends Mob {
 	private ArrayList<Node> path = null;
 	private Vector2i lastTarget = null;
 
+	private float speed, shotSpeed, damage;
+	
 	private Pathfinding pathfind;
 
 	public static enum Pathfinding {
@@ -37,38 +39,27 @@ public class BasicEnemy extends Mob {
 		;public static Pathfinding getType(String p){return Pathfinding.valueOf(p);}
 	}
 
-	public static enum EngageRange {
-		Short, Medium, Long
-	}
-
-	public static enum IdleMovement {
-		Random, Still, Return
-	}
-
-	public static enum LostSightMovement {
-		Random, Still, Return, MoveToLastSeen
-	}
-	//Return in idle means they wait until idle to return,
-	//Return in lostSight means they go back right after losing sight
-
 	private int time = 0;
 	private int pathCount = 0;
 
-	public BasicEnemy(Level lvl, int spawnX, int spawnY, String name, char[][] characters, int health, Pathfinding pathfind, Projectile.Spell[] spells) { //Random Personality
+	public BasicEnemy(Level lvl, int spawnX, int spawnY, String name, char[][] characters, Pathfinding pathfind, Projectile.Spell[] spells, int health, float speed,float shotSpeed, float damage, Color col, String[] statuses) {
+		this.level = lvl;
 		this.pathfind = pathfind;
-		level = lvl;
 		this.name=name;
-		//if (level.players.size() > 0) player = level.players.get(0); //Temp!
-		level.addMob(this);
-		Health = health;
-
+		this.Health = health;
+		this.statuses=statuses;
 		this.spells=spells;
-		
+		this.speed=speed;
+		this.shotSpeed=shotSpeed;
+		this.Health=health;
+		this.color=col.getRGB();
 		this.characters=characters;
-		sprites = new Sprite[characters.length][characters[0].length];
-		takenPos = new boolean[characters.length][characters[0].length];
-		colorBlemishes = new int[characters.length][characters[0].length][];
+		this.sprites = new Sprite[characters.length][characters[0].length];
+		this.takenPos = new boolean[characters.length][characters[0].length];
+		this.colorBlemishes = new int[characters.length][characters[0].length][];
 
+		level.addMob(this);
+		
 		String chars="";
 		for (int x = 0; x < sprites.length; x++) {
 			for (int y = 0; y < sprites[x].length; y++) {
@@ -102,10 +93,11 @@ public class BasicEnemy extends Mob {
 	public void update() {
 		if(!hasBeenSeen)
 			return;
+		
 
 		time++;
 		
-		if (time % 60 == 0 || target==null) {
+		if (time % 60*speed == 0 || target==null) {
 			Vector2i close = null; double dist=Integer.MAX_VALUE;
 			Mob closeM=null;
 			for(PlayerMP p : level.players){
@@ -121,7 +113,7 @@ public class BasicEnemy extends Mob {
 		
 		switch (pathfind) {
 		case Astar:
-			if (time % 60 == 0) {
+			if (time % 60*speed == 0) {
 				pathFind(new Vector2i(target.getX() / Game.TILE_SIZE, target.getY() / Game.TILE_SIZE), 3500);
 				deltaX = 0;
 				deltaY = 0;
@@ -144,7 +136,7 @@ public class BasicEnemy extends Mob {
 				
 			}
 		case MoveToward:
-			if (time % 60 == 0) {
+			if (time % 60*speed == 0) {
 				deltaX = 0;
 				deltaY = 0;
 				if(target!=null){
@@ -199,7 +191,7 @@ public class BasicEnemy extends Mob {
 				Packet15MobUpdate packet=new Packet15MobUpdate(x,y,Health,identifier);
 				packet.writeData(Game.game.socketClient);
 			}
-			if (time % 140 == 0) {
+			if (time % 140*shotSpeed == 0) {
 				if(level.getDistance(vector, target)<=shootRange){
 					xDir=0;
 					yDir=0;
@@ -228,7 +220,7 @@ public class BasicEnemy extends Mob {
 					}
 					if(xDir!=0 || yDir!=0){
 						Projectile.Spell s=spells[(int)(Math.random()*spells.length)];
-						Packet13Projectile projPacket = new Packet13Projectile(x, y, xDir, yDir, s.name(),0.5f,targetMob.identifier);
+						Packet13Projectile projPacket = new Packet13Projectile(x, y, xDir, yDir, s.name(),damage,targetMob.identifier);
 						projPacket.writeData(Game.game.socketClient);
 					}
 				}
@@ -300,10 +292,12 @@ public class BasicEnemy extends Mob {
 							screen.renderBackground(this.x+x, this.y+y, Game.TILE_SIZE, Game.TILE_SIZE, Color.black.getRGB());
 						}
 						screen.renderSprite(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y]);
+						//new Color(112,39,195)
 						if (colorBlemishes != null && colorBlemishes[x][y] != null)
-							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, new Color(112,39,195).getRGB(), colorBlemishes[x][y]);
-						else
-							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, new Color(112,39,195).getRGB(), null);
+							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, colorBlemishes[x][y]);
+						else{
+							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, null);
+						}
 					}
 				}
 			}

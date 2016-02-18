@@ -24,7 +24,7 @@ public class Keyboard implements KeyListener {
 		right = keys[KeyEvent.VK_RIGHT] || keys[KeyEvent.VK_D];
 		refresh = keys[KeyEvent.VK_SPACE];
 
-		zoomIn = keys[KeyEvent.VK_EQUALS] || keys[KeyEvent.VK_PLUS];
+		zoomIn = keys[KeyEvent.VK_EQUALS] || keys[KeyEvent.VK_ADD];
 		zoomOut = keys[KeyEvent.VK_MINUS] || keys[KeyEvent.VK_SUBTRACT];
 		
 		if (up && !u) onUp = true;

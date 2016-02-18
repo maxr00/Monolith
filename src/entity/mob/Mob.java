@@ -18,6 +18,7 @@ public abstract class Mob extends Entity {
 	public int Health;
 	public int color;
 	public boolean lockedOnto;
+	public String[] statuses;
 	
 	public boolean hasBeenSeen, isSeen;
 	

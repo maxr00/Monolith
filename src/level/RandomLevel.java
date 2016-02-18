@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import entity.Projectile;
 import entity.Projectile.Spell;
 import entity.mob.BasicEnemy;
 import entity.mob.BasicEnemy.Pathfinding;
 import entity.mob.Mob;
+import entity.mob.MobInfo;
 import game.Game;
 import net.packet.Packet14AddMob;
 
@@ -171,16 +173,7 @@ public class RandomLevel extends Level {
 					if(x>=0 && y>=0 && x<roomTiles.length && y<roomTiles[x].length && roomTiles[x][y]!=null)
 						if(numEnemies>0 && Math.random()<mobChance){//(x!=width/2 || y!=height/2) &&
 							numEnemies--;
-							int character=rng.nextInt(94)+33;
-							//No commas or |s (causes problems sometimes)!
-							while((char)character==',' || (char)character=='|' || (char)character=='/'){character=rng.nextInt(94)+33;}
-							Mob mob=new BasicEnemy(Game.game.level,x,y,"George",new char[][]{{(char)(character)}},10,Pathfinding.MoveToward,new Spell[]{Spell.Fireball});//(char)(random.nextInt(94)+33));
-							
-							Packet14AddMob mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.name,mob.characters,mob.spells,mob.identifier);
-							mobPacket.writeData(Game.game.socketServer);
-							
-							x+=DistBetweenMobs;
-							//y+=DistBetweenMobs;
+							addEnemy(x,y);
 						}
 				}
 			}
@@ -352,6 +345,23 @@ public class RandomLevel extends Level {
 			}
 		}
 		return true;
+	}
+	
+	private void addEnemy(int x,int y){
+		int character=rng.nextInt(94)+33;
+		//No commas or |s (causes problems sometimes)!
+		//while((char)character==',' || (char)character=='|' || (char)character=='/'){character=rng.nextInt(94)+33;}
+		
+		MobInfo mobInfo=null;
+		while(mobInfo==null)
+			mobInfo = MobInfo.getMob();
+		
+		Mob mob=new BasicEnemy(Game.game.level,x,y,mobInfo.NAME,mobInfo.CHARACTERS,mobInfo.PATHFINDING,mobInfo.SPELLS,mobInfo.HEALTH,mobInfo.SPEED,mobInfo.SHOT_SPEED,mobInfo.DAMAGE_RATIO, mobInfo.COLOR,mobInfo.STATUSES);//(char)(random.nextInt(94)+33));
+		
+		//Packet14AddMob mobPacket = new Packet14AddMob(mob.x/Game.TILE_SIZE,mob.y/Game.TILE_SIZE,mob.Health,mob.name,mob.characters,mob.spells,mob.identifier,mobInfo.STATUSES);
+		//mobPacket.writeData(Game.game.socketServer);
+		
+		x+=DistBetweenMobs;
 	}
 
 	

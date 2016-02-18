@@ -4,12 +4,15 @@ import entity.Projectile.Spell;
 import net.GameClient;
 import net.GameServer;
 
+
 public class Packet14AddMob extends Packet {
 	
 	private int x,y, health;
 	private char[][] characters;
 	private String identifier, name;
 	private Spell[] spells;
+	private String[] statuses;
+	private int color;
 	
 	//Recieved a packet
 	public Packet14AddMob(byte[] data) {
@@ -22,26 +25,37 @@ public class Packet14AddMob extends Packet {
 			this.name=dataArray[3];
 			this.identifier=dataArray[4];
 			
-			int w=Integer.parseInt(dataArray[5]);
-			int h=Integer.parseInt(dataArray[6]);
-			characters=new char[w][h];
-			for(int y=0;y<h;y++){
-				for(int x=0;x<w;x++){
-					characters[x][y] = dataArray[7+y].split("/")[x].charAt(0);
+			//int w=Integer.parseInt(dataArray[5]);
+			//int h=Integer.parseInt(dataArray[6]);
+			for(String s : dataArray[5].split("\\."))
+				System.out.println(s);
+			characters=new char[dataArray[5].split("\\.")[0].length()][dataArray[7].split("\\.").length];
+			
+			for(int y=0;y<dataArray[5].split("\\.").length;y++){
+				for(int x=0;x<dataArray[5].split("\\.")[y].length();x++){
+					characters[x][y] = dataArray[5].split("\\.")[y].toCharArray()[x];
 				}
 			}
-			spells=new Spell[dataArray[8+h].split("/").length];
+			spells=new Spell[dataArray[6].split("/").length];
 			for(int i=0;i<spells.length;i++){
-				spells[i]=Spell.getSpell(dataArray[8+h].split("/")[i]);
+				spells[i]=Spell.getSpell(dataArray[6].split("/")[i]);
 			}
+			
+			color=Integer.parseInt(dataArray[7]);
+			
+			statuses=new String[dataArray[8].split("/").length];
+			for(int i=0;i<statuses.length;i++){
+				statuses[i]=dataArray[8].split("/")[i];
+			}
+			
 		}catch(ArrayIndexOutOfBoundsException e){
-			System.out.println("ADD MOB PACKET OUT OF BOUNDS");
 			e.printStackTrace();
+			System.out.println("ADD MOB PACKET OUT OF BOUNDS");
 		}
 	}
 	
 	//Creating a packet
-	public Packet14AddMob(int x, int y, int health,String name, char[][] characters, Spell[] spells, String identifier){
+	public Packet14AddMob(int x, int y, int health,int col,String name, char[][] characters, Spell[] spells, String identifier, String[] statuses){
 		super(14);
 		this.x = x;
 		this.y = y;
@@ -50,6 +64,8 @@ public class Packet14AddMob extends Packet {
 		this.characters=characters;
 		this.spells=spells;
 		this.identifier=identifier;
+		this.statuses=statuses;
+		this.color=col;
 	}
 	
 	//Send to server from client
@@ -63,17 +79,20 @@ public class Packet14AddMob extends Packet {
 	}	
 	
 	public byte[] getData(){
-		String s="", s1="";
+		String s="", s1="", st="";
 		for(int x=0;x<characters.length;x++){
 			for(int y=0;y<characters[x].length;y++){
-				s+= ""+characters[x][y]+"/";
+				s+= ""+characters[x][y];//;+"/";
 			}
-			s+=",";
+			s+=".";
 		}
 		for(Spell spell : spells){
 			s1+=spell.name()+"/";
 		}
-		return ("14"+x+","+y+","+health+","+name+","+identifier +"," +characters.length +"," +characters[0].length +","+s+","+s1).getBytes();
+		for(String status : statuses){
+			st+=status+"/";
+		}
+		return ("14"+x+","+y+","+health+","+name+","+identifier +","+s+","+s1+","+color+","+st).getBytes();
 	}
 	
 	public int getX(){
@@ -98,4 +117,11 @@ public class Packet14AddMob extends Packet {
 		return spells;
 	}
 
+	public String[] getStatuses() {
+		return statuses;
+	}
+
+	public int getColor(){
+		return color;
+	}
 }

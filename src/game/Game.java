@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import entity.mob.Mob;
+import entity.mob.MobInfo;
 import graphics.Screen;
 import input.Keyboard;
 import input.MouseHandler;
