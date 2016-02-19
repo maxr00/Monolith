@@ -22,7 +22,6 @@ public class MobMP extends Mob{
 		Health = health;
 		identifier=id;
 		color = col;
-		System.out.println("Color: "+color);
 		this.statuses=statuses;
 		this.name=name;
 		
@@ -70,21 +69,24 @@ public class MobMP extends Mob{
 	}
 	
 	public void render(Screen screen) {
-		if(render)
+		if(render){
+			if(lockedOnto){
+				screen.renderBackground(this.x-1, this.y-1, sprites.length*Game.TILE_SIZE+2, sprites[0].length*Game.TILE_SIZE+2, new Color(201,175,40).getRGB());
+				screen.renderBackground(this.x, this.y, sprites.length*Game.TILE_SIZE, sprites[0].length*Game.TILE_SIZE, Color.black.getRGB());
+			}
 			for (int x = 0; x < sprites.length; x++) {
 				for (int y = 0; y < sprites[x].length; y++) {
 					if (sprites[x][y] != null) {
-						if(lockedOnto){
-							screen.renderBackground(this.x+x-1, this.y+y-1, Game.TILE_SIZE+2, Game.TILE_SIZE+2, new Color(201,175,40).getRGB());
-							screen.renderBackground(this.x+x, this.y+y, Game.TILE_SIZE, Game.TILE_SIZE, Color.black.getRGB());
-						}
 						screen.renderSprite(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y]);
+						//new Color(112,39,195)
 						if (colorBlemishes != null && colorBlemishes[x][y] != null)
 							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, colorBlemishes[x][y]);
-						else
+						else{
 							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, null);
+						}
 					}
 				}
 			}
+		}
 	}
 }

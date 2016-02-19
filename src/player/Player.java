@@ -6,6 +6,7 @@ import java.util.Random;
 import entity.Particle;
 import entity.mob.Mob;
 import game.Game;
+import game.Menu;
 import graphics.Screen;
 import graphics.Sprite;
 import graphics.UI;
@@ -14,7 +15,6 @@ import input.MouseHandler;
 import level.Level;
 import net.PlayerMP;
 import net.packet.Packet12Move;
-import net.packet.Packet19RequestLevel;
 
 public class Player extends Mob {
 
@@ -84,10 +84,46 @@ public class Player extends Mob {
 
 	private int moveTime=0, castCooldown=0, castFinishCooldown=0;
 	boolean cast;
+	
+	public boolean inMenu;
+	private Menu menu;
+	
 	public void update() {
 		if(level==null)
 			return;
 		
+		if(input.onPause){
+			inMenu=!inMenu;
+			if(inMenu)
+				menu=Menu.PAUSE;
+			else
+				menu=null;
+		}
+		
+		if(inMenu)
+			menuUpdate();
+		else
+			gameplayUpdate();
+	}
+	
+	public void unPause(){
+		inMenu=false;
+		menu=null;
+	}
+		
+	private void menuUpdate(){
+		if (input.onUp)
+			menu.selectPrevious();
+		if (input.onDown)
+			menu.selectNext();
+		if(input.onSelect)
+			menu.select();
+		if(input.onBack)
+			if(menu.back()!=null)
+				menu=menu.back();
+	}
+	
+	private void gameplayUpdate(){
 		moveTime++;
 		inputX = 0;	inputY = 0;
 		if(input.onCastSpell)
@@ -190,7 +226,7 @@ public class Player extends Mob {
 			}
 		}
 	}
-	
+		
 	int particlesPerDamage=400;
 	public void damage(int damage, float xDir, float yDir){
 		Health-=damage;
@@ -221,9 +257,6 @@ public class Player extends Mob {
 	}
 	
 	public void render(Screen screen){
- 		Combat.render(screen);
-		UI.healthUI.render(screen);
-		UI.statusUI.render(screen);
 		if(render){
 			for(int y=0;y<colorBlemishes.length;y++){
 				for(int x=0;x<colorBlemishes.length;x++){
@@ -231,6 +264,14 @@ public class Player extends Mob {
 					screen.renderLight(this.x, this.y, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, this.color, colorBlemishes[x][y]);
 				}
 			}
+		}
+		
+		if(inMenu)
+			menu.render(screen);
+		else{
+			Combat.render(screen);
+			UI.healthUI.render(screen);
+			UI.statusUI.render(screen);
 		}
 		
 		//screen.renderSprite( (int)(((mouse.x/((float)Game.scale)+x-screen.width/2f) / ((float)screen.width/2) - 1)*Game.TILE_SIZE+x),(int)(((mouse.y/((float)Game.scale)+y-screen.height/2f) / ((float)screen.height/2) - 1)*Game.TILE_SIZE+y),Sprite.percent);
@@ -244,6 +285,13 @@ public class Player extends Mob {
 	public String getStatus(){	
 		return username +", LVL:"+Level +" HP:" +Health +" ON TILE "+x/Game.TILE_SIZE +","+y/Game.TILE_SIZE;
 	}
+	
+	public String getObservation(){	
+		if(input!=null)
+			return "It's me!";
+		else
+			return "My friend?";
+	}
 
 	public void handleStatus(Screen screen) {
 		if(level==null) return;
@@ -251,11 +299,11 @@ public class Player extends Mob {
 		int y=(mouse.y/Game.scale +(this.y - screen.height/2)) /Game.TILE_SIZE;
 		if(level.getMobOn(x, y)!=null){
 			if(level.getMobOn(x, y) instanceof Player){
-				UI.statusUI.setStatus(level.getMobOn(x, y).getStatus());
+				UI.statusUI.setStatus(level.getMobOn(x, y).getStatus(),level.getMobOn(x,y).getObservation());
 			}else if(level.getMobOn(x, y).isSeen){
 				if(lockedOn!=null)
 					lockedOn.lockedOnto=false;
-				UI.statusUI.setStatus(level.getMobOn(x, y).getStatus());
+				UI.statusUI.setStatus(level.getMobOn(x, y).getStatus(),level.getMobOn(x,y).getObservation());
 				if(mouse.isPressed && level.getMobOn(x, y)!=this){
 					lockedOn=level.getMobOn(x, y);
 				}
@@ -271,7 +319,7 @@ public class Player extends Mob {
 		if(lockedOn!=null){
 			if(!lockedOn.isRemoved()){
 				lockedOn.lockedOnto=true;
-				UI.statusUI.setStatus("LOCKED ON:" +lockedOn.getStatus());
+				UI.statusUI.setStatus("LOCKED ON:" +lockedOn.getStatus(),lockedOn.getObservation());
 				for(int i=0;i<"LOCKED ON:".length();i++)
 					UI.statusUI.colors[i][0]=Color.yellow;
 			}else{

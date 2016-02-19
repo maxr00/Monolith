@@ -46,14 +46,17 @@ public class BasicEnemy extends Mob {
 		this.level = lvl;
 		this.pathfind = pathfind;
 		this.name=name;
-		this.Health = health;
 		this.statuses=statuses;
+		
+		this.Health = health;
+		this.color=col.getRGB();
+		this.characters=characters;
+		
 		this.spells=spells;
 		this.speed=speed;
 		this.shotSpeed=shotSpeed;
-		this.Health=health;
-		this.color=col.getRGB();
-		this.characters=characters;
+		this.damage=damage;
+		
 		this.sprites = new Sprite[characters.length][characters[0].length];
 		this.takenPos = new boolean[characters.length][characters[0].length];
 		this.colorBlemishes = new int[characters.length][characters[0].length][];
@@ -283,14 +286,14 @@ public class BasicEnemy extends Mob {
 	}
 
 	public void render(Screen screen) {
-		if(render)
+		if(render){
+			if(lockedOnto){
+				screen.renderBackground(this.x-1, this.y-1, sprites.length*Game.TILE_SIZE+2, sprites[0].length*Game.TILE_SIZE+2, new Color(201,175,40).getRGB());
+				screen.renderBackground(this.x, this.y, sprites.length*Game.TILE_SIZE, sprites[0].length*Game.TILE_SIZE, Color.black.getRGB());
+			}
 			for (int x = 0; x < sprites.length; x++) {
 				for (int y = 0; y < sprites[x].length; y++) {
 					if (sprites[x][y] != null) {
-						if(lockedOnto){
-							screen.renderBackground(this.x+x-1, this.y+y-1, Game.TILE_SIZE+2, Game.TILE_SIZE+2, new Color(201,175,40).getRGB());
-							screen.renderBackground(this.x+x, this.y+y, Game.TILE_SIZE, Game.TILE_SIZE, Color.black.getRGB());
-						}
 						screen.renderSprite(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y]);
 						//new Color(112,39,195)
 						if (colorBlemishes != null && colorBlemishes[x][y] != null)
@@ -301,6 +304,7 @@ public class BasicEnemy extends Mob {
 					}
 				}
 			}
+		}
 	}
 	
 	int particlesPerDamage=400;

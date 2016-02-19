@@ -5,6 +5,7 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -16,6 +17,7 @@ import javax.swing.JOptionPane;
 import entity.mob.Mob;
 import entity.mob.MobInfo;
 import graphics.Screen;
+import graphics.UI;
 import input.Keyboard;
 import input.MouseHandler;
 import input.WindowHandler;
@@ -25,6 +27,7 @@ import net.GameClient;
 import net.GameServer;
 import net.PlayerMP;
 import net.packet.Packet10Login;
+import net.packet.Packet11Disconnect;
 import player.Player;
 
 public class Game extends Canvas implements Runnable {
@@ -63,6 +66,11 @@ public class Game extends Canvas implements Runnable {
 	public GameClient socketClient;
 	public GameServer socketServer;	
 	
+	private boolean inGame;
+	public Menu startMenu;
+	
+	private int startScale;
+	
 	public Game() {
 		game=this;
 		//Set up window and canvas
@@ -75,27 +83,18 @@ public class Game extends Canvas implements Runnable {
 		windowHandler = new WindowHandler(this);
 		mouse = new MouseHandler();
 
-		if(JOptionPane.showConfirmDialog(this, "Do you want to run the server")==0){
-			//Server Starts
-			socketServer = new GameServer(this);
-			socketServer.start();
-			
-			level = new RandomLevel(100,100);
-			((RandomLevel)level).generateLevel();
-			
-			socketClient = new GameClient(this, "localhost");
-			socketClient.start();
+		/*if(JOptionPane.showConfirmDialog(this, "Do you want to run the server")==0){
+			startServer();
 		}else{
-			//Client joins
-			socketClient = new GameClient(this, "localhost");
-			socketClient.start();
-			
-			username=JOptionPane.showInputDialog(frame,"Please enter a username");
-			playerCol=new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256));
-			
-			Packet10Login loginPacket = new Packet10Login(username,playerStartX*TILE_SIZE,playerStartY*TILE_SIZE,playerCol.getRGB());
-			loginPacket.writeData(socketClient);
-		}
+			startClient();
+		}*/
+		startMenu=Menu.START_MENU;
+		inGame=false;
+		
+		startScale=scale;
+		scale=4;
+		resetZoom();
+		
 		addKeyListener(keyboard);
 		addMouseListener(mouse);
 		addMouseMotionListener(mouse);
@@ -104,6 +103,53 @@ public class Game extends Canvas implements Runnable {
 	int playerStartY=50;
 	String username="";
 	Color playerCol;
+	
+	public void exitToMenu(){
+		inGame=false;
+		scale=4;
+		resetZoom();
+		
+		try{
+			Packet11Disconnect packet = new Packet11Disconnect(player.getUsername());
+			packet.writeData(socketClient);
+		}catch(Exception e){}
+	}
+	
+	public void closeGame(){
+		//Acts as if window was manually closed
+		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+	}
+	
+	
+	public void startServer(){
+		inGame=true;
+		scale=1;//startScale;
+		resetZoom();
+		
+		socketServer = new GameServer(this);
+		socketServer.start();
+		
+		level = new RandomLevel(100,100);
+		((RandomLevel)level).generateLevel();
+		
+		socketClient = new GameClient(this, "localhost");
+		socketClient.start();
+	}
+	
+	public void startClient(String ip){
+		inGame=true;
+		scale=startScale;
+		resetZoom();
+		
+		socketClient = new GameClient(this, ip);
+		socketClient.start();
+		
+		username=JOptionPane.showInputDialog(frame,"Please enter a username");
+		playerCol=new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256));
+		
+		Packet10Login loginPacket = new Packet10Login(username,playerStartX*TILE_SIZE,playerStartY*TILE_SIZE,playerCol.getRGB());
+		loginPacket.writeData(socketClient);
+	}
 	
 	public void joinLevel(){
 		player = new PlayerMP(keyboard,mouse,screen, level,playerStartX,playerStartY,username,playerCol.getRGB(), null, -1);
@@ -162,29 +208,42 @@ public class Game extends Canvas implements Runnable {
 	public void update() {
 		keyboard.update();
 		mouse.update();
-		if(keyboard.onRefresh){
-			screen.activateRainbowEffect();
-		}
-		if(keyboard.onZoomIn && scale<maxScale){
-			scale++;
-			resetZoom();
+		if(inGame){
+			if(keyboard.onRefresh){
+				screen.activateRainbowEffect();
+			}
+			if(keyboard.onZoomIn && scale<maxScale){
+				scale++;
+				resetZoom();
+				if(player!=null)
+					screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+			}
+			if(keyboard.onZoomOut && scale>minScale){
+				scale--;
+				resetZoom();
+				if(player!=null)
+					screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+			}
+			
+			if(level!=null){
+				level.update();
+				level.renderUpdate(xScroll, yScroll, screen);
+			}
 			if(player!=null)
-				screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+				player.handleStatus(screen);
+			screen.update();
+		}else{
+			//Start Menu controls
+			if (keyboard.onUp)
+				startMenu.selectPrevious();
+			if (keyboard.onDown)
+				startMenu.selectNext();
+			if(keyboard.onSelect)
+				startMenu.select();
+			if(keyboard.onBack)
+				if(startMenu.back()!=null)
+					startMenu=startMenu.back();
 		}
-		if(keyboard.onZoomOut && scale>minScale){
-			scale--;
-			resetZoom();
-			if(player!=null)
-				screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
-		}
-		
-		if(level!=null){
-			level.update();
-			level.renderUpdate(xScroll, yScroll, screen);
-		}
-		if(player!=null)
-			player.handleStatus(screen);
-		screen.update();
 	}
 
 	private void resetZoom(){
@@ -199,7 +258,7 @@ public class Game extends Canvas implements Runnable {
 	
 	int xScroll, yScroll;
 	public void render() {
-		if(socketServer!=null) return;
+		//if(socketServer!=null) return;
 		
 		BufferStrategy bufferStrategy = getBufferStrategy(); //Get buffer strategy from canvas
 		if (bufferStrategy == null) { //Called first time through
@@ -213,25 +272,23 @@ public class Game extends Canvas implements Runnable {
 		graphics.fillRect(0, 0, getWidth(), getHeight());
 		screen.clear();
 		
-		if(player!=null){
-			//xScroll=0;
-			//yScroll=0;
-			xScroll = player.x - screen.width/2;
-			yScroll = player.y - screen.height/2;
+		if(inGame){
+			if(player!=null){
+				xScroll = player.x - screen.width/2;
+				yScroll = player.y - screen.height/2;
+			}
+			screen.setOffset(xScroll, yScroll);
+			if(level!=null){
+				level.render(xScroll, yScroll, screen);
+				screen.displayAdditive();
+				screen.displayParticles();
+			}else
+				UI.waitingForServerLevel.render(screen);
+			if(screen.isRainbow()) screen.renderRainbowEffect();
+		}else{
+			startMenu.render(screen);
 		}
-		screen.setOffset(xScroll, yScroll);
-		if(level!=null){
-			level.render(xScroll, yScroll, screen);
-			screen.displayAdditive();
-			screen.displayParticles();
-		}
-		if(player!=null)
-			player.render(screen);
 		
-		if(screen.isRainbow()) screen.renderRainbowEffect();
-		
-		
-		//UI.combatUI.render(screen);
 		
 		if(renderPixels.length==screen.pixels.length)
 		for (int i = 0; i < renderPixels.length; i++) {

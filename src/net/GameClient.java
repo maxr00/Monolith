@@ -38,17 +38,20 @@ public class GameClient extends Thread{
 	public void run() {
 		while(true){
 			byte[] data = new byte[8192*10]; //Increase size if needed?
-				DatagramPacket packet = new DatagramPacket(data, data.length);
-				try {
-					socket.receive(packet);
-				} catch (IOException e) {e.printStackTrace();}
+			DatagramPacket packet = new DatagramPacket(data, data.length);
+			try {
+				socket.receive(packet);
+			} catch (IOException e) {e.printStackTrace();}
 				
-				this.parsePacket(packet.getData(), packet.getAddress(), packet.getPort());
-				//System.out.println("SERVER SAYS > " +new String(packet.getData()).trim() );
+			this.parsePacket(packet.getData(), packet.getAddress(), packet.getPort());
+			//System.out.println("SERVER SAYS > " +new String(packet.getData()).trim() );
 		}
 	}
 	
 	public void sendData(byte[] data){
+		System.out.println("Sent packet to "+ipAddress);
+		
+		
 		DatagramPacket packet = new DatagramPacket(data,data.length, ipAddress, 1331);//Port 1331, pick above 1024(?)
 		try {
 			socket.send(packet);

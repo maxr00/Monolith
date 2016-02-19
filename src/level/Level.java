@@ -14,6 +14,7 @@ import entity.mob.Mob;
 import game.Game;
 import graphics.Screen;
 import net.PlayerMP;
+import player.Player;
 import util.Node;
 import util.Vector2i;
 
@@ -127,7 +128,25 @@ public class Level {
 
 	int time=0;
 	boolean doMobUpdate;
+	boolean paused=true;
 	public void update() {
+		if(getPlayers().size()==0) paused=false;
+		for(Player p : getPlayers())
+			if(!p.inMenu){
+				paused=false;
+				break;
+			}
+		
+		if(paused) {
+			for(int i = getPlayers().size()-1;i >= 0; i--){
+				if(getPlayers().get(i)!=null && !getPlayers().get(i).isRemoved()){
+					getPlayers().get(i).update();
+				}else
+					getPlayers().remove(i);
+			}
+			return;
+		}
+		
 		time++;
 		//Update mobs and tiles
 		for(int i = 0;i < tiles.length; i++){
@@ -218,21 +237,25 @@ public class Level {
 					Tile tile = getTile(x, y);
 					if (tile != null){
 						if(getPlayers().size()>0){
+							boolean seen=false;
 							for(int i=0;i<getPlayers().size();i++){
 								if(i<shadowMap.length && shadowMap[i]!=null && shadowMap[i][x][y]==1){
-									tile.doRender(true);
-									tile.doRenderLight(true);
-									tile.hasBeenSeen=true;
-									tile.renderGray=false;
-								}else if(tile.hasBeenSeen){
-									tile.renderGray=true;
-									tile.doRender(true);
-									tile.doRenderLight(true);
-								}else{
-									tile.renderGray=false;
-									tile.doRender(false);
-									tile.doRenderLight(false);
+									seen=true;
 								}
+							}
+							if(seen){
+								tile.doRender(true);
+								tile.doRenderLight(true);
+								tile.hasBeenSeen=true;
+								tile.renderGray=false;
+							}else if(tile.hasBeenSeen){
+								tile.renderGray=true;
+								tile.doRender(true);
+								tile.doRenderLight(true);
+							}else{
+								tile.renderGray=false;
+								tile.doRender(false);
+								tile.doRenderLight(false);
 							}
 						}else{
 							tile.doRender(true);

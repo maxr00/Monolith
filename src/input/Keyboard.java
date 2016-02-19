@@ -6,15 +6,15 @@ import java.awt.event.KeyListener;
 public class Keyboard implements KeyListener {
 
 	private boolean[] keys = new boolean[600];
-	public boolean up, down, left, right, refresh, zoomIn, zoomOut;
-	public boolean onUp, onDown, onLeft, onRight, onRefresh, onZoomIn, onZoomOut; //True on update it is pressed
+	public boolean up, down, left, right, refresh, zoomIn, zoomOut, pause, select, back;
+	public boolean onUp, onDown, onLeft, onRight, onRefresh, onZoomIn, onZoomOut, onPause,onSelect,onBack; //True on update it is pressed
 
 	public boolean[] runeKey = new boolean[9], runeKeyOn = new boolean[9], runeKeyOff = new boolean[9];
 	public boolean castSpell, onCastSpell, offCastSpell, clearSpell;
 	
 	public boolean onToggleLock, toggleLock;
 	
-	private boolean u,d,l,r,rf,cs,tl,zi,zo;
+	private boolean u,d,l,r,rf,cs,tl,zi,zo,p,s,b;
 	private boolean[] rk = new boolean[9];
 	
 	public void update() {
@@ -24,6 +24,10 @@ public class Keyboard implements KeyListener {
 		right = keys[KeyEvent.VK_RIGHT] || keys[KeyEvent.VK_D];
 		refresh = keys[KeyEvent.VK_SPACE];
 
+		pause = keys[KeyEvent.VK_ESCAPE] || keys[KeyEvent.VK_P];
+		select = keys[KeyEvent.VK_ENTER];
+		back = keys[KeyEvent.VK_BACK_SPACE];
+		
 		zoomIn = keys[KeyEvent.VK_EQUALS] || keys[KeyEvent.VK_ADD];
 		zoomOut = keys[KeyEvent.VK_MINUS] || keys[KeyEvent.VK_SUBTRACT];
 		
@@ -41,6 +45,12 @@ public class Keyboard implements KeyListener {
 		else onZoomIn=false;
 		if(zoomOut && !zo) onZoomOut=true;
 		else onZoomOut=false;
+		if(pause && !p) onPause=true;
+		else onPause=false;
+		if(select && !s) onSelect=true;
+		else onSelect=false;
+		if(back && !b) onBack=true;
+		else onBack=false;
 
 		runeKey[0] = keys[KeyEvent.VK_NUMPAD7];
 		runeKey[1] = keys[KeyEvent.VK_NUMPAD8];
@@ -82,6 +92,7 @@ public class Keyboard implements KeyListener {
 			rk[i]=runeKey[i];
 		}
 		tl=toggleLock;zi=zoomIn;zo=zoomOut;
+		p=pause; s=select; b=back;
 	}
 
 	public void keyPressed(KeyEvent e) {

@@ -5,14 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import entity.Projectile;
-import entity.Projectile.Spell;
 import entity.mob.BasicEnemy;
-import entity.mob.BasicEnemy.Pathfinding;
 import entity.mob.Mob;
 import entity.mob.MobInfo;
 import game.Game;
-import net.packet.Packet14AddMob;
 
 public class RandomLevel extends Level {
 

@@ -21,6 +21,9 @@ public class UI {
 	public static UI healthUI = new UI("/ui/health",Align.Bottom_Left,Type.Health, true);
 	public static UI statusUI = new UI(Align.Top,Type.Status, true);
 	
+	public static UI waitingForServerLevel = new UI("/ui/waiting",Align.Center,Type.Standby,true);
+	//public static UI pauseMenu = new UI("/ui/pause",Align.Center, Type.Pause, true);
+	
 	public boolean active;
 	public Align alignment;
 	public Type type;
@@ -30,12 +33,12 @@ public class UI {
 	public Color defaultColor=Color.white;
 	public final Color[][] startColors;
 	private int width, height;
-	private final static int pixelOffset=7;
 	
 	public static enum Type{
-		Combat,Pause,Health,Status
+		Combat,Pause,Health,Status,Standby
 	}
 	
+	private final static int pixelOffset=7;
 	public static enum Align {
 		Top_Left	(pixelOffset,pixelOffset),//(0.1f,0.1f),
 		Top			(0,pixelOffset),//(0.5f,0.1f),
@@ -189,25 +192,35 @@ public class UI {
 		}
 	}
 	
-	public void setStatus(String status){
+	public void setStatus(String status, String observation){
 		status=status.toUpperCase();
+		observation=observation.toUpperCase();
 		
-		width=status.length();
-		char[] ui = new char[width];
+		width=Math.max(status.length(), observation.length());
+		char[][] ui = new char[width][3];
 		for (int x = 0; x < width; x++) {
-			ui[x] = status.charAt(x);
+			if(x<status.length())
+				ui[x][0] = status.charAt(x);
+		}
+		for (int x = 0; x < width; x++) {
+			if(x<observation.length())
+				ui[x][2] = observation.charAt(x);
 		}
 
-		sprites=new Sprite[width][1];
+		sprites=new Sprite[width][3];
 		for (int x = 0; x < width; x++) {
-			if(!Character.isWhitespace(ui[x])){
-				sprites[x][0] = Sprite.getSprite(ui[x]);
+			for (int y = 0; y < ui[x].length; y++) {
+				if(!Character.isWhitespace(ui[x][y])){
+					sprites[x][y] = Sprite.getSprite(ui[x][y]);
+				}
 			}
 		}
 		
-		colors=new Color[width][1];
+		colors=new Color[width][3];
 		for (int x = 0; x < width; x++) {
-			colors[x][0]=defaultColor;//Color.white;
+			for (int y = 0; y < colors[x].length; y++) {
+				colors[x][y]=defaultColor;//Color.white;
+			}
 		}
 		//startColors=colors;
 	}

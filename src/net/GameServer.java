@@ -39,12 +39,12 @@ public class GameServer extends Thread{
 	public void run() {
 		while(true){
 			byte[] data = new byte[8192*10]; //Original size:1024   //Increase size if needed?
-				DatagramPacket packet = new DatagramPacket(data, data.length);
-				try {
-					socket.receive(packet);
-				} catch (IOException e) {e.printStackTrace();}
+			DatagramPacket packet = new DatagramPacket(data, data.length);
+			try {
+				socket.receive(packet);
+			} catch (IOException e) {e.printStackTrace();}
 				
-				this.parsePacket(packet.getData(), packet.getAddress(), packet.getPort());
+			this.parsePacket(packet.getData(), packet.getAddress(), packet.getPort());
 //				String message = new String(packet.getData());
 //				System.out.println("CLIENT SAYS > " +message.trim()); //["+packet.getAddress().getHostAddress()+":" +packet.getPort() +"]
 //				if(message.trim().equalsIgnoreCase("Ping")){
@@ -54,6 +54,8 @@ public class GameServer extends Thread{
 	}
 	
     private void parsePacket(byte[] data, InetAddress address, int port) {
+    	System.out.println("Recieved packet... ");
+    	
         String message = new String(data).trim();
         PacketType type = Packet.lookupPacket(message.substring(0, 2));
         Packet packet = null;

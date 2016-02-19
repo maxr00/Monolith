@@ -22,9 +22,11 @@ public class WindowHandler implements WindowListener{
 	}
 
 	public void windowClosing(WindowEvent event) {
-		if(Game.game.socketServer==null){
-			Packet11Disconnect packet = new Packet11Disconnect(this.game.player.getUsername());
-			packet.writeData(this.game.socketClient);
+		if(Game.game.socketServer==null && Game.game.socketClient!=null && Game.game.player!=null){
+			try{
+				Packet11Disconnect packet = new Packet11Disconnect(this.game.player.getUsername());
+				packet.writeData(this.game.socketClient);
+			}catch(Exception e){e.printStackTrace();}
 		}
 	}
 

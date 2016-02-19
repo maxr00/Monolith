@@ -125,4 +125,10 @@ public abstract class Mob extends Entity {
 	public String getStatus(){
 		return name +".  HP:" +Health +"  ON TILE "+x/Game.TILE_SIZE +","+y/Game.TILE_SIZE;
 	}
+
+	public String getObservation() {
+		if(statuses.length>0)
+			return statuses[0];
+		return "";
+	}
 }
