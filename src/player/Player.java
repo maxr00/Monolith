@@ -15,6 +15,7 @@ import input.MouseHandler;
 import level.Level;
 import net.PlayerMP;
 import net.packet.Packet12Move;
+import net.packet.Packet21PlayerPause;
 
 public class Player extends Mob {
 
@@ -26,6 +27,8 @@ public class Player extends Mob {
 	private int[][][] colorBlemishes;
 	public Mob lockedOn;
 	private final static Random random = new Random();
+	
+	public boolean paused;
 	
 	private String username;
 	
@@ -95,9 +98,9 @@ public class Player extends Mob {
 		if(input.onPause){
 			inMenu=!inMenu;
 			if(inMenu)
-				menu=Menu.PAUSE;
+				pause();
 			else
-				menu=null;
+				unPause();
 		}
 		
 		if(inMenu)
@@ -108,7 +111,22 @@ public class Player extends Mob {
 	
 	public void unPause(){
 		inMenu=false;
+		menu.active=false;
 		menu=null;
+		paused=false;
+		
+		Packet21PlayerPause packet = new Packet21PlayerPause(identifier, paused);
+		packet.writeData(Game.game.socketClient);
+	}
+	
+	public void pause(){
+		inMenu=true;
+		menu=Menu.PAUSE;
+		menu.active=true;
+		paused=true;
+		
+		Packet21PlayerPause packet = new Packet21PlayerPause(identifier, paused);
+		packet.writeData(Game.game.socketClient);
 	}
 		
 	private void menuUpdate(){
@@ -226,7 +244,7 @@ public class Player extends Mob {
 			}
 		}
 	}
-		
+	
 	int particlesPerDamage=400;
 	public void damage(int damage, float xDir, float yDir){
 		Health-=damage;
@@ -266,12 +284,18 @@ public class Player extends Mob {
 			}
 		}
 		
-		if(inMenu)
-			menu.render(screen);
-		else{
+		if(inMenu){
+			if(menu!=null)
+				menu.active=true;//render(screen);
+			Combat.dontRender(screen);
+			UI.healthUI.active=false;//render(screen);
+			UI.statusUI.active=false;//render(screen);
+		}else{
+			if(menu!=null)
+				menu.active=false;
 			Combat.render(screen);
-			UI.healthUI.render(screen);
-			UI.statusUI.render(screen);
+			UI.healthUI.active=true;//render(screen);
+			UI.statusUI.active=true;//render(screen);
 		}
 		
 		//screen.renderSprite( (int)(((mouse.x/((float)Game.scale)+x-screen.width/2f) / ((float)screen.width/2) - 1)*Game.TILE_SIZE+x),(int)(((mouse.y/((float)Game.scale)+y-screen.height/2f) / ((float)screen.height/2) - 1)*Game.TILE_SIZE+y),Sprite.percent);
@@ -296,7 +320,7 @@ public class Player extends Mob {
 	public void handleStatus(Screen screen) {
 		if(level==null) return;
 		int x=(mouse.x/Game.scale +(this.x - screen.width/2)) /Game.TILE_SIZE;
-		int y=(mouse.y/Game.scale +(this.y - screen.height/2)) /Game.TILE_SIZE;
+		int y=(mouse.y/Game.scale +(this.y - screen.height/2) + Game.TILE_SIZE/2) /Game.TILE_SIZE;
 		if(level.getMobOn(x, y)!=null){
 			if(level.getMobOn(x, y) instanceof Player){
 				UI.statusUI.setStatus(level.getMobOn(x, y).getStatus(),level.getMobOn(x,y).getObservation());

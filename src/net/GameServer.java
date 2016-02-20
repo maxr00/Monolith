@@ -22,6 +22,8 @@ import net.packet.Packet15MobUpdate;
 import net.packet.Packet16RemoveMob;
 import net.packet.Packet17LoadLevel;
 import net.packet.Packet18LevelColors;
+import net.packet.Packet19RequestLevel;
+import net.packet.Packet21PlayerPause;
 
 public class GameServer extends Thread{
 
@@ -54,8 +56,6 @@ public class GameServer extends Thread{
 	}
 	
     private void parsePacket(byte[] data, InetAddress address, int port) {
-    	System.out.println("Recieved packet... ");
-    	
         String message = new String(data).trim();
         PacketType type = Packet.lookupPacket(message.substring(0, 2));
         Packet packet = null;
@@ -103,20 +103,25 @@ public class GameServer extends Thread{
         	handleLoadLevelColors((Packet18LevelColors)packet);
         	break;
         case REQUESTLEVEL:
-        	Packet17LoadLevel levelPacket = new Packet17LoadLevel(Game.game.level.width, Game.game.level.height, Game.game.level.world, Game.game.level.solids);
-        	sendData(levelPacket.getData(), address, port);
-        	
-			int[] cols=new int[Game.game.level.colors.length];
-			for(int i=0;i<Game.game.level.colors.length;i++){
-				cols[i]=Game.game.level.colors[i].getRGB();
-			}
-			Packet18LevelColors colorPacket = new Packet18LevelColors(cols);
-			sendData(colorPacket.getData(), address, port);
+        	if(Game.game.level!=null && Game.game.level.colors!=null){
+        		packet = new Packet19RequestLevel(data);
+        		sendData(((Packet19RequestLevel)packet).getData(), address, port);
+        	}
 			break;
+        case PAUSE:
+        	packet = new Packet21PlayerPause(data);
+        	handlePause((Packet21PlayerPause)packet);
+        	break;
         }
     }
     
-    private void handleLoadLevelColors(Packet18LevelColors packet) {
+    
+    private void handlePause(Packet21PlayerPause packet) {
+		packet.writeData(this);
+		((PlayerMP)game.level.getMob(packet.getID())).paused=packet.getPaused();
+	}
+
+	private void handleLoadLevelColors(Packet18LevelColors packet) {
 		 packet.writeData(this);
 	}
     
@@ -147,7 +152,8 @@ public class GameServer extends Thread{
     	Level lvl=Game.game.level;
     	int[] cols=new int[lvl.colors.length];
     	for(int i=0;i<lvl.colors.length;i++){
-    		cols[i]=lvl.colors[i].getRGB();
+    		if(lvl.colors[i]!=null)
+    			cols[i]=lvl.colors[i].getRGB();
     	}
 
     	Packet17LoadLevel levelPacket=new Packet17LoadLevel(lvl.width,lvl.height,lvl.world,lvl.solids);//cols
@@ -240,5 +246,18 @@ public class GameServer extends Thread{
 			sendData(data, p.ipAddress, p.port);
 		}
 	}
+	
+	/*Request Level:
+	
+	Packet17LoadLevel levelPacket = new Packet17LoadLevel(Game.game.level.width, Game.game.level.height, Game.game.level.world, Game.game.level.solids);
+	sendData(levelPacket.getData(), address, port);
+	
+	int[] cols=new int[Game.game.level.colors.length];
+	for(int i=0;i<Game.game.level.colors.length;i++){
+		cols[i]=Game.game.level.colors[i].getRGB();
+	}
+	Packet18LevelColors colorPacket = new Packet18LevelColors(cols);
+	sendData(colorPacket.getData(), address, port);
+	*/
 	
 }

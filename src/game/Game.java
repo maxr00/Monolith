@@ -15,7 +15,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import entity.mob.Mob;
-import entity.mob.MobInfo;
 import graphics.Screen;
 import graphics.UI;
 import input.Keyboard;
@@ -28,6 +27,7 @@ import net.GameServer;
 import net.PlayerMP;
 import net.packet.Packet10Login;
 import net.packet.Packet11Disconnect;
+import net.packet.Packet19RequestLevel;
 import player.Player;
 
 public class Game extends Canvas implements Runnable {
@@ -90,6 +90,7 @@ public class Game extends Canvas implements Runnable {
 		}*/
 		startMenu=Menu.START_MENU;
 		inGame=false;
+		startMenu.active=true;
 		
 		startScale=scale;
 		scale=4;
@@ -123,6 +124,10 @@ public class Game extends Canvas implements Runnable {
 	
 	public void startServer(){
 		inGame=true;
+		
+		startMenu.active=false;
+		startMenu=null;
+		
 		scale=1;//startScale;
 		resetZoom();
 		
@@ -138,6 +143,9 @@ public class Game extends Canvas implements Runnable {
 	
 	public void startClient(String ip){
 		inGame=true;
+		startMenu.active=false;
+		startMenu=null;
+		
 		scale=startScale;
 		resetZoom();
 		
@@ -147,6 +155,10 @@ public class Game extends Canvas implements Runnable {
 		username=JOptionPane.showInputDialog(frame,"Please enter a username");
 		playerCol=new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256));
 		
+		sendLogin();
+	}
+	
+	public void sendLogin(){
 		Packet10Login loginPacket = new Packet10Login(username,playerStartX*TILE_SIZE,playerStartY*TILE_SIZE,playerCol.getRGB());
 		loginPacket.writeData(socketClient);
 	}
@@ -154,6 +166,11 @@ public class Game extends Canvas implements Runnable {
 	public void joinLevel(){
 		player = new PlayerMP(keyboard,mouse,screen, level,playerStartX,playerStartY,username,playerCol.getRGB(), null, -1);
 		screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+	}
+	
+	public void leaveLevel(){
+		player=null;
+		level=null;
 	}
 
 	
@@ -204,7 +221,6 @@ public class Game extends Canvas implements Runnable {
 		stop();//if program gets out of loop, it will terminate
 	}
 
-	Mob lockedOn;
 	public void update() {
 		keyboard.update();
 		mouse.update();
@@ -228,6 +244,11 @@ public class Game extends Canvas implements Runnable {
 			if(level!=null){
 				level.update();
 				level.renderUpdate(xScroll, yScroll, screen);
+			}else{
+				if(UI.waitingForServerLevel.standByUpdate()){
+					Packet19RequestLevel request=new Packet19RequestLevel();
+					request.writeData(socketClient);
+				}
 			}
 			if(player!=null)
 				player.handleStatus(screen);
@@ -272,6 +293,7 @@ public class Game extends Canvas implements Runnable {
 		graphics.fillRect(0, 0, getWidth(), getHeight());
 		screen.clear();
 		
+		
 		if(inGame){
 			if(player!=null){
 				xScroll = player.x - screen.width/2;
@@ -282,11 +304,19 @@ public class Game extends Canvas implements Runnable {
 				level.render(xScroll, yScroll, screen);
 				screen.displayAdditive();
 				screen.displayParticles();
+				UI.waitingForServerLevel.active=false;
 			}else
-				UI.waitingForServerLevel.render(screen);
+				UI.waitingForServerLevel.active=true;//render(screen);
+			
+			for(UI ui : UI.UIElements)
+				ui.render(screen);
+			for(Menu m : Menu.Menus)
+				m.render(screen);
+			
 			if(screen.isRainbow()) screen.renderRainbowEffect();
 		}else{
-			startMenu.render(screen);
+			for(Menu m : Menu.Menus)
+				m.render(screen);
 		}
 		
 		

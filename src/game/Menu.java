@@ -1,12 +1,12 @@
 package game;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
 import graphics.Screen;
 import graphics.Sprite;
-import player.Player;
 
 public class Menu {
 	
@@ -107,6 +107,7 @@ public class Menu {
 			Game.game.startServer();
 			break;
 		case Join_Server:
+			active=false;
 			Game.game.startMenu=JOIN_SERVER.load();
 			break;
 		case Join_Local_Server:
@@ -133,6 +134,9 @@ public class Menu {
 	private Sprite[][] sprites;
 	private int selected;
 	private Menu previousMenu;
+	
+	public boolean active=false;
+	public static ArrayList<Menu> Menus;
 	
 	private Menu(String[] lines, Option[] options, Color color, Color selectColor, Menu previousMenu){
 		this.lines=lines;
@@ -162,9 +166,14 @@ public class Menu {
 				selected=i;
 				break;
 			}
+		
+		if(Menus==null)
+			Menus=new ArrayList<Menu>();
+		Menus.add(this);
 	}
 	
 	public Menu load(){
+		active=true;
 		for(int i=0;i<lines.length;i++)
 			if(options[i]!=null){
 				selected=i;
@@ -203,11 +212,15 @@ public class Menu {
 	
 	
 	public Menu back(){
-		return previousMenu.load();
+		if(back()!=null){
+			active=false;
+			return previousMenu.load();
+		}
+		return null;
 	}
 	
 	public void render(Screen screen){
-		if(sprites==null)
+		if(sprites==null || !active)
 			return;
 		
 		for (int x = 0; x < sprites.length; x++) {

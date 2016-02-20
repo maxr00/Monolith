@@ -16,12 +16,12 @@ import game.Game;
 
 public class UI {
 	
-	public static UI combatUI = new UI("/ui/combat",Align.Bottom_Right,Type.Combat, true);
-	public static UI combatUIDir = new UI("/ui/combatDirection",Align.Bottom_Right,Type.Combat, true);
-	public static UI healthUI = new UI("/ui/health",Align.Bottom_Left,Type.Health, true);
+	public static UI combatUI = new UI("/ui/combat",Align.Bottom_Right,Type.Combat, false);
+	public static UI combatUIDir = new UI("/ui/combatDirection",Align.Bottom_Right,Type.Combat, false);
+	public static UI healthUI = new UI("/ui/health",Align.Bottom_Left,Type.Health, false);
 	public static UI statusUI = new UI(Align.Top,Type.Status, true);
 	
-	public static UI waitingForServerLevel = new UI("/ui/waiting",Align.Center,Type.Standby,true);
+	public static UI waitingForServerLevel = new UI("/ui/waiting",Align.Center,Type.Standby,false);
 	//public static UI pauseMenu = new UI("/ui/pause",Align.Center, Type.Pause, true);
 	
 	public boolean active;
@@ -62,12 +62,18 @@ public class UI {
 		}
 	}
 
+	public static ArrayList<UI> UIElements;
+	
 	public UI(Align alignment,Type type,boolean active){
 		this.type=type;
 		this.alignment=alignment;
 		this.active=active;
 		startSprites=null;
 		startColors=null;
+		
+		if(UIElements==null)
+			UIElements=new ArrayList<UI>();
+		UIElements.add(this);
 	}
 	
 	public UI(String path, Align alignment,Type type, boolean active) {
@@ -146,6 +152,10 @@ public class UI {
 			}
 		}
 		startColors=colors;
+		
+		if(UIElements==null)
+			UIElements=new ArrayList<UI>();
+		UIElements.add(this);
 	}
 	
 	public void setDefaultColor(Color c){
@@ -159,7 +169,7 @@ public class UI {
 	
 	private int xOffset,yOffset;
 	public void render(Screen screen){
-		if(sprites==null)
+		if(sprites==null || !active)
 			return;
 		
 		if(alignment.xRelativeOffset>=0)
@@ -197,17 +207,26 @@ public class UI {
 		observation=observation.toUpperCase();
 		
 		width=Math.max(status.length(), observation.length());
-		char[][] ui = new char[width][3];
+		char[][] ui;
+		if(observation.length()>0){
+			ui = new char[width][3];
+		}else
+			ui = new char[width][1];
+		
 		for (int x = 0; x < width; x++) {
 			if(x<status.length())
 				ui[x][0] = status.charAt(x);
 		}
-		for (int x = 0; x < width; x++) {
-			if(x<observation.length())
-				ui[x][2] = observation.charAt(x);
-		}
+		if(ui[0].length>1)
+			for (int x = 0; x < width; x++) {
+				if(x<observation.length())
+					ui[x][2] = observation.charAt(x);
+			}
 
-		sprites=new Sprite[width][3];
+		if(observation.length()>0)
+			sprites=new Sprite[width][3];
+		else
+			sprites=new Sprite[width][1];
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < ui[x].length; y++) {
 				if(!Character.isWhitespace(ui[x][y])){
@@ -216,7 +235,11 @@ public class UI {
 			}
 		}
 		
-		colors=new Color[width][3];
+		if(observation.length()>0)
+			colors=new Color[width][3];
+		else
+			colors=new Color[width][1];
+		
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < colors[x].length; y++) {
 				colors[x][y]=defaultColor;//Color.white;
@@ -226,8 +249,43 @@ public class UI {
 	}
 	public void clearStatus(){sprites=null;width=0;colors=null;}
 
-	//
-	//Combat UI functions
-	//
+	int amt=100,currSpot=-amt, speed=4, count=0;
+	int waitTime=300;
+	public boolean standByUpdate(){
+		count++;
+		if(count%speed==0){
+			currSpot++;
+			if(currSpot>sprites.length) currSpot=-amt;
+			
+			this.colors=new Color[sprites.length][sprites[0].length];
+			for(int x=0;x<colors.length;x++){
+				for(int y=0;y<colors[x].length;y++){
+					colors[x][y]=defaultColor;
+				}
+			}
+			int extra=0;
+			for(int i=0;i<amt;i++){
+				int spot=currSpot+i+extra;
+				for(int x=0;x<colors.length;x++){
+					for(int y=0;y<colors[x].length;y++){
+						if(spot>=0){
+							if(x==spot){
+								if(sprites[x][y]==null){
+									extra++;
+									spot++;
+								}else
+									colors[x][y]=new Color((int)(Math.random()*256),(int)(Math.random()*256),(int)(Math.random()*256));//new Color((int)(Math.random()*106)+150,100,100);//Color.blue;
+							}
+						}
+					}
+				}
+			}
+		}
+		if(count%waitTime==0){
+			return true;
+		}
+		return false;
+	}
+	
 
 }

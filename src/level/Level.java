@@ -131,8 +131,9 @@ public class Level {
 	boolean paused=true;
 	public void update() {
 		if(getPlayers().size()==0) paused=false;
+		else paused=true;
 		for(Player p : getPlayers())
-			if(!p.inMenu){
+			if(!p.paused){
 				paused=false;
 				break;
 			}

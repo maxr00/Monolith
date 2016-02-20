@@ -17,6 +17,8 @@ public abstract class Packet {
 		LOADLEVEL(17),
 		LEVELCOLORS(18),
 		REQUESTLEVEL(19),
+		SERVERENDING(20),
+		PAUSE(21),
 		;
 		private int packetId;
 		private PacketType(int packetId){

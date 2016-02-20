@@ -136,10 +136,18 @@ public class Combat {
 			//screen.renderUI(screen.width/2+xDir*Game.TILE_SIZE, screen.height/2+yDir*Game.TILE_SIZE, Sprite.x, Color.white.getRGB());
 		}
 		if(renderDir){
-			UI.combatUIDir.render(screen);
-		}else
-			UI.combatUI.render(screen);
+			UI.combatUIDir.active=true;//render(screen);
+			UI.combatUI.active=false;
+		}else{
+			UI.combatUIDir.active=false;
+			UI.combatUI.active=true;//render(screen);
+		}
 	}
+	public static void dontRender(Screen screen){
+		UI.combatUI.active=false;
+		UI.combatUIDir.active=false;
+	}
+	
 	
 	private static Projectile.Spell SpellToProjectile(Spell spell){
 		switch(spell){

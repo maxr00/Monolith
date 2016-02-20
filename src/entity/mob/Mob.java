@@ -14,7 +14,7 @@ public abstract class Mob extends Entity {
 	
 	protected Sprite[][] sprites;
 	public char[][] characters;
-	public float updateRange=125*Game.scale;
+	public float updateRange=125*Game.TILE_SIZE;
 	public int Health;
 	public int color;
 	public boolean lockedOnto;

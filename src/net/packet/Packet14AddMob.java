@@ -25,11 +25,6 @@ public class Packet14AddMob extends Packet {
 			this.name=dataArray[3];
 			this.identifier=dataArray[4];
 			
-			//int w=Integer.parseInt(dataArray[5]);
-			//int h=Integer.parseInt(dataArray[6]);
-			for(String s : dataArray[5].split("\\."))
-				System.out.println(s);
-			
 			characters=new char[dataArray[5].split("\\.")[0].length()][dataArray[5].split("\\.").length];
 			
 			for(int y=0;y<dataArray[5].split("\\.").length;y++){
