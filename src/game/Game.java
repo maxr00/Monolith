@@ -9,12 +9,14 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import entity.mob.Mob;
 import graphics.Screen;
 import graphics.UI;
 import input.Keyboard;
@@ -44,7 +46,7 @@ public class Game extends Canvas implements Runnable {
 	
 	public static Game game;
 	
-	private static String title = "Project Monolith v0.05";
+	private static String title = "Project Monolith vDB_7";
 
 	private Thread gameThread;
 	public JFrame frame;
@@ -175,6 +177,10 @@ public class Game extends Canvas implements Runnable {
 
 	
 	public synchronized void start() {
+		BufferedImage fileImg = null;
+		try{fileImg =ImageIO.read(this.getClass().getResource("/textures/Monolith-Icon.png"));}catch (IOException e) {e.printStackTrace();}
+		game.frame.setIconImage(fileImg);
+		
 		isRunning = true;
 		//Begin thread
 		gameThread = new Thread(this, "Monolith_Game");
@@ -344,7 +350,7 @@ public class Game extends Canvas implements Runnable {
 		game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//Terminate on application close
 		game.frame.setLocationRelativeTo(null); //Creates window in center of screen
 		game.frame.setVisible(true);
-
+		
 		game.start();
 	}
 
