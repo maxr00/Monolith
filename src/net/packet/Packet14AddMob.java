@@ -1,8 +1,8 @@
 package net.packet;
 
-import entity.Projectile.Spell;
 import net.GameClient;
 import net.GameServer;
+import player.Spell;
 
 
 public class Packet14AddMob extends Packet {
@@ -83,7 +83,7 @@ public class Packet14AddMob extends Packet {
 			s+=".";
 		}
 		for(Spell spell : spells){
-			s1+=spell.name()+"/";
+			s1+=spell.name+"/";
 		}
 		for(String status : statuses){
 			st+=status+"/";

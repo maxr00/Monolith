@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -13,6 +11,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import game.Game;
+import player.Spell;
 
 public class UI {
 	
@@ -29,7 +28,7 @@ public class UI {
 	public Type type;
 	public Sprite[][] sprites;
 	public final Sprite[][] startSprites;
-	public Color[][] colors;
+	public Color[][] colors, backgroundColors;
 	public Color defaultColor=Color.white;
 	public final Color[][] startColors;
 	private int width, height;
@@ -138,16 +137,20 @@ public class UI {
 			img.getGraphics().drawImage(bufImg, 0, 0, null);
 			pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
 			colors=new Color[width][height];
+			backgroundColors=new Color[width][height];
 			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
 					colors[x][y]=new Color(pixels[x+y*width]);
+					backgroundColors[x][y]=Color.black;
 				}
 			}
 		}else{
 			colors=new Color[width][height];
+			backgroundColors=new Color[width][height];
 			for (int y = 0; y < height; y++) {
 				for (int x = 0; x < width; x++) {
 					colors[x][y]=defaultColor;//Color.white;
+					backgroundColors[x][y]=Color.black;
 				}
 			}
 		}
@@ -197,9 +200,33 @@ public class UI {
 		
 		for (int x = 0; x < sprites.length; x++) {
 			for (int y = 0; y < sprites[x].length; y++) {
-				screen.renderUI(x*Game.TILE_SIZE+xOffset, y*Game.TILE_SIZE+yOffset, sprites[x][y], colors[x][y].getRGB());
+				screen.renderUI(x*Game.TILE_SIZE+xOffset, y*Game.TILE_SIZE+yOffset, sprites[x][y], colors[x][y].getRGB(), backgroundColors[x][y].getRGB());
 			}
 		}
+	}
+	
+	public void setRunes() {
+		sprites[1][2]=Sprite.getSprite(Spell.runes[0].character);
+		sprites[3][2]=Sprite.getSprite(Spell.runes[1].character);
+		sprites[5][2]=Sprite.getSprite(Spell.runes[2].character);
+		sprites[1][4]=Sprite.getSprite(Spell.runes[3].character);
+		sprites[3][4]=Sprite.getSprite(Spell.runes[4].character);
+		sprites[5][4]=Sprite.getSprite(Spell.runes[5].character);
+		sprites[1][6]=Sprite.getSprite(Spell.runes[6].character);
+		sprites[3][6]=Sprite.getSprite(Spell.runes[7].character);
+		sprites[5][6]=Sprite.getSprite(Spell.runes[8].character);
+		colors[1][2]=Spell.runes[0].color;
+		colors[3][2]=Spell.runes[1].color;
+		colors[5][2]=Spell.runes[2].color;
+		colors[1][4]=Spell.runes[3].color;
+		colors[3][4]=Spell.runes[4].color;
+		colors[5][4]=Spell.runes[5].color;
+		colors[1][6]=Spell.runes[6].color;
+		colors[3][6]=Spell.runes[7].color;
+		colors[5][6]=Spell.runes[8].color;
+		for(int x=0;x<backgroundColors.length;x++)
+			for(int y=0;y<backgroundColors[x].length;y++)
+				backgroundColors[x][y]=Color.black;
 	}
 	
 	public void setStatus(String status, String observation){
@@ -286,6 +313,5 @@ public class UI {
 		}
 		return false;
 	}
-	
 
 }

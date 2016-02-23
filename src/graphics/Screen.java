@@ -155,7 +155,7 @@ public class Screen {
 		}
 	}
 	
-	public void renderUI(int xPos, int yPos, Sprite sprite, int color){
+	public void renderUI(int xPos, int yPos, Sprite sprite, int color, int background){
 		if(sprite==null){
 			for (int y = 0; y < Game.TILE_SIZE; y++) {
 				int ya = yPos + y;
@@ -182,6 +182,16 @@ public class Screen {
 					pixels [xa + ya * width] = color;//sprite.pixels[x + y * sprite.WIDTH];
 				}else 
 					pixels [xa + ya * width] = 0x000000;
+			}
+		}
+		//Background
+		for (int y = 0; y < Game.TILE_SIZE; y++) {
+			int ya = yPos + y;
+			if(ya < -Game.TILE_SIZE || ya >= height) break; if(ya<0) ya=0;
+			for (int x = 0; x < Game.TILE_SIZE; x++) {
+				int xa = xPos + x;
+				if(xa < -Game.TILE_SIZE || xa >= width) break; if(xa<0)xa=0;
+				this.background[xa + ya * width]=background;
 			}
 		}
 	}

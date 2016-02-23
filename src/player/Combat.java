@@ -3,7 +3,6 @@ package player;
 import java.awt.Color;
 
 import entity.Particle;
-import entity.Projectile;
 import entity.mob.Mob;
 import game.Game;
 import graphics.Screen;
@@ -20,9 +19,7 @@ public class Combat {
 	private static double xDir=0, yDir=0;
 	private static int heldCount=0;
 	
-	private static Color[] pressedColors={	Color.red, 				Color.yellow,	Color.cyan,
-											new Color(0x8f6b38),	Color.green,	new Color(112,39,195),
-											Color.magenta,			Color.darkGray,	Color.blue};
+	private static Color[] pressedColors=new Color[9];
 
 	public static void combatPressRune(int runePressed){
 		//count++;
@@ -31,13 +28,17 @@ public class Combat {
 		else
 			pressed[runePressed]=0;
 			
-		if(pressed[runePressed]==0)
-			UI.combatUI.colors[(runePressed)%3*2+1][(runePressed)/3*2+2]=Color.white; //Disable
+		//if(pressed[runePressed]==0)
+			//UI.combatUI.colors[(runePressed)%3*2+1][(runePressed)/3*2+2]=Color.white; //Disable
+		//else
+			//UI.combatUI.colors[(runePressed)%3*2+1][(runePressed)/3*2+2]=pressedColors[runePressed];
+		if(pressed[runePressed]==1)
+			UI.combatUI.backgroundColors[(runePressed)%3*2+1][(runePressed)/3*2+2]=Color.white;
 		else
-			UI.combatUI.colors[(runePressed)%3*2+1][(runePressed)/3*2+2]=pressedColors[runePressed];
+			UI.combatUI.backgroundColors[(runePressed)%3*2+1][(runePressed)/3*2+2]=Color.black;
 		castSpell = Spell.getSpell(pressed);
 		if(castSpell!=null)
-			shotsRemaining = castSpell.remainingShots;
+			shotsRemaining = castSpell.shots;
 		else
 			shotsRemaining = 1;
 		
@@ -53,11 +54,12 @@ public class Combat {
 		UI.combatUIDir.sprites[3][0]=Sprite.getSprite('=');
 		castSpell=null;
 		shotsRemaining=0;
-		UI.combatUIDir.setDefaultColor(Color.white);
+		//UI.combatUIDir.setDefaultColor(Color.white);
 		for(int i=0;i<pressed.length;i++){
 			pressed[i]=0;
-			UI.combatUI.colors[i%3*2+1][i/3*2+2]=Color.white;
+			//UI.combatUI.colors[i%3*2+1][i/3*2+2]=Color.white;
 		}
+		UI.combatUI.setRunes();
 	}
 	
 	public static void holdCast(int xDir, int yDir){//float xDir, float yDir){
@@ -113,7 +115,7 @@ public class Combat {
 						}
 					}
 				}
-				Packet13Projectile packet = new Packet13Projectile((int)(player.x+(xDir*Game.TILE_SIZE)), (int)(player.y+(yDir*Game.TILE_SIZE)), (float)xDir, (float)yDir, SpellToProjectile(castSpell).name(),castSpell.getDamagePercent(heldCount),player.lockedOn==null ? (close!=null ? close.identifier : "null") : player.lockedOn.identifier);
+				Packet13Projectile packet = new Packet13Projectile((int)(player.x+(xDir*Game.TILE_SIZE)), (int)(player.y+(yDir*Game.TILE_SIZE)), (float)xDir, (float)yDir, castSpell.name,castSpell.getDamagePercent(heldCount),player.lockedOn==null ? (close!=null ? close.identifier : "null") : player.lockedOn.identifier);
 				packet.writeData(Game.game.socketClient);
 			}else{
 				new Particle(player.x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE), player.y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,120,0.2f,50,player.level,new Color[]{Color.gray,Color.darkGray},Particle.RenderType.Sprite);
@@ -149,7 +151,7 @@ public class Combat {
 	}
 	
 	
-	private static Projectile.Spell SpellToProjectile(Spell spell){
+	/*private static Projectile.Spell SpellToProjectile(Spell spell){
 		switch(spell){
 		case Fireball: return Projectile.Spell.Fireball;
 		case Lightning: return Projectile.Spell.Lightning;
@@ -198,5 +200,6 @@ public class Combat {
 			return null;
 		}
 	}
+	 */
 	
 }

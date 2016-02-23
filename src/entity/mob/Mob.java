@@ -5,10 +5,10 @@ import java.awt.Color;
 import entity.Entity;
 import entity.Particle;
 import entity.Particle_Exp;
-import entity.Projectile;
 import game.Game;
 import graphics.Screen;
 import graphics.Sprite;
+import player.Spell;
 
 public abstract class Mob extends Entity {
 	
@@ -22,7 +22,7 @@ public abstract class Mob extends Entity {
 	
 	public boolean hasBeenSeen, isSeen;
 	
-	public Projectile.Spell[] spells;
+	public Spell[] spells;
 	
 	public String identifier, name;
 	

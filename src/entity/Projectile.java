@@ -5,22 +5,22 @@ import java.awt.Color;
 import entity.mob.Mob;
 import game.Game;
 import graphics.Screen;
-import graphics.Sprite;
 import level.Level;
+import player.Spell;
 
 public class Projectile extends Entity{
 
 	final private int xOrigin, yOrigin;
 	private float xDir, yDir, px,py;
 	private Spell spell;
-	private int speed=1;
+	private float speed=1;
 	private float life=1.5f;
 	private int lifeTime=(int)(life*60);
 	private int damage = 1;
 	private Level level;
 	private Mob target;
 	
-	public static enum Spell{
+	/*public static enum Spell{
 		Fireball	(Sprite.and,	Color.orange, 5, 1, 1.5f),
 		Lightning	(Sprite.tilde,	Color.yellow, 3, 3, 1f),
 		Waterball	(Sprite.o,		Color.blue,	  2, 2, 1f),
@@ -34,7 +34,7 @@ public class Projectile extends Entity{
 		public static Spell getSpell(String name){
 			return Spell.valueOf(name);
 		}
-	}
+	}*/
 	
 	public Projectile(int x,int y, float xDir, float yDir, Spell spell, float damagePercent, Mob target, Level level){
 		//this.creator = creator;

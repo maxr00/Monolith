@@ -3,8 +3,8 @@ package entity.mob;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import entity.Projectile.Spell;
 import entity.mob.BasicEnemy.Pathfinding;
+import player.Spell;
 
 public class MobInfo {
 	
@@ -15,51 +15,51 @@ public class MobInfo {
 	//		
 	//		
 
-	public static MobInfo Gumbling			=new MobInfo("Gumbling",		Type.Common,	new char[][]{{'e'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward, 	new String[]{""});
-	public static MobInfo Whopple			=new MobInfo("Whopple",			Type.Common,	new char[][]{{'f'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{""});
-	public static MobInfo Gubble			=new MobInfo("Gubble",			Type.Common,	new char[][]{{'c'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{""});
-	public static MobInfo Kacaka			=new MobInfo("Kacaka",			Type.Common,	new char[][]{{'!'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{""});
-	public static MobInfo Fleye				=new MobInfo("Fleye",			Type.Common,	new char[][]{{'i'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{""});
-	public static MobInfo Cubble			=new MobInfo("Cubble",			Type.Common,	new char[][]{{'k'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{""});
-	public static MobInfo Du				=new MobInfo("Du",				Type.Common,	new char[][]{{'z'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{""});
-	public static MobInfo Do				=new MobInfo("Du",				Type.Common,	new char[][]{{'Z'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{""});
-	public static MobInfo Whacka			=new MobInfo("Whacka",			Type.Common,	new char[][]{{'3'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{""});
-	public static MobInfo Long_Arm			=new MobInfo("Long Arm",		Type.Common,	new char[][]{{'W'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Hopefully it doesn't want a tickle fight"});
+	public static MobInfo Gumbling			=new MobInfo("Gumbling",		Type.Common,	new char[][]{{'e'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward, 	new String[]{""});
+	public static MobInfo Whopple			=new MobInfo("Whopple",			Type.Common,	new char[][]{{'f'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{""});
+	public static MobInfo Gubble			=new MobInfo("Gubble",			Type.Common,	new char[][]{{'c'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{""});
+	public static MobInfo Kacaka			=new MobInfo("Kacaka",			Type.Common,	new char[][]{{'!'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{""});
+	public static MobInfo Fleye				=new MobInfo("Fleye",			Type.Common,	new char[][]{{'i'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{""});
+	public static MobInfo Cubble			=new MobInfo("Cubble",			Type.Common,	new char[][]{{'k'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{""});
+	public static MobInfo Du				=new MobInfo("Du",				Type.Common,	new char[][]{{'z'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{""});
+	public static MobInfo Do				=new MobInfo("Du",				Type.Common,	new char[][]{{'Z'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{""});
+	public static MobInfo Whacka			=new MobInfo("Whacka",			Type.Common,	new char[][]{{'3'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{""});
+	public static MobInfo Long_Arm			=new MobInfo("Long Arm",		Type.Common,	new char[][]{{'W'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Hopefully it doesn't want a tickle fight"});
 
-	public static MobInfo Bat				=new MobInfo("Bat",				Type.Common,	new char[][]{{'^'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Flap flap flap!"});
-	public static MobInfo Ghoul				=new MobInfo("Ghoul",			Type.Common,	new char[][]{{'&'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Looks lonely"});
-	public static MobInfo Ghost				=new MobInfo("Ghost",			Type.Common,	new char[][]{{'?'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Spooky!"});
-	public static MobInfo Ghostly_Ghoul		=new MobInfo("Ghostly Ghoul",	Type.Common,	new char[][]{{'Q'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Doesn't look too friendly"});
-	public static MobInfo Python			=new MobInfo("Python",			Type.Common,	new char[][]{{'q'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Watch out, it bites!"});
-	public static MobInfo Dwarf				=new MobInfo("Dwarf",			Type.Common,	new char[][]{{'p'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Doesn't like intruders in it's fortress"});
-	public static MobInfo H					=new MobInfo("H",				Type.Common,	new char[][]{{'H'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{""});
-	public static MobInfo Gnome1			=new MobInfo("Gnome",			Type.Common,	new char[][]{{'b'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"It's hat is very pointy"});
-	public static MobInfo Gnome2			=new MobInfo("Gnome",			Type.Common,	new char[][]{{'d'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"It's hat is very pointy"});
+	public static MobInfo Bat				=new MobInfo("Bat",				Type.Common,	new char[][]{{'^'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Flap flap flap!"});
+	public static MobInfo Ghoul				=new MobInfo("Ghoul",			Type.Common,	new char[][]{{'&'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Looks lonely"});
+	public static MobInfo Ghost				=new MobInfo("Ghost",			Type.Common,	new char[][]{{'?'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Spooky!"});
+	public static MobInfo Ghostly_Ghoul		=new MobInfo("Ghostly Ghoul",	Type.Common,	new char[][]{{'Q'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Doesn't look too friendly"});
+	public static MobInfo Python			=new MobInfo("Python",			Type.Common,	new char[][]{{'q'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Watch out, it bites!"});
+	public static MobInfo Dwarf				=new MobInfo("Dwarf",			Type.Common,	new char[][]{{'p'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Doesn't like intruders in it's fortress"});
+	public static MobInfo H					=new MobInfo("H",				Type.Common,	new char[][]{{'H'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{""});
+	public static MobInfo Gnome1			=new MobInfo("Gnome",			Type.Common,	new char[][]{{'b'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"It's hat is very pointy"});
+	public static MobInfo Gnome2			=new MobInfo("Gnome",			Type.Common,	new char[][]{{'d'}},	10, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"It's hat is very pointy"});
 	
 	
-	public static MobInfo Slippery_Snake	=new MobInfo("Slippery Snake",	Type.Uncommon,	new char[][]{{'~'}},		15, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"So slippery!"});
-	public static MobInfo Average_Monster	=new MobInfo("Average Monster",	Type.Uncommon,	new char[][]{{'M'}},		15, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Not my type."});
-	public static MobInfo Living_Bucket		=new MobInfo("Living Bucket",	Type.Uncommon,	new char[][]{{'u'}},		15, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"How?"});
-	public static MobInfo Jack_OLantern		=new MobInfo("Jack O'Lantern",	Type.Uncommon,	new char[][]{{'G'}},		15, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Mr.O'Lantern doesn't play around"});
-	public static MobInfo George			=new MobInfo("George",			Type.Uncommon,	new char[][]{{'G'}},		15, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{""});
-	public static MobInfo Lost_Traveller	=new MobInfo("Lost Traveller",	Type.Uncommon,	new char[][]{{'P','\\'}},	15, 1f,2f, 0.5f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Why are they attacking me?"});
+	public static MobInfo Slippery_Snake	=new MobInfo("Slippery Snake",	Type.Uncommon,	new char[][]{{'~'}},		15, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"So slippery!"});
+	public static MobInfo Average_Monster	=new MobInfo("Average Monster",	Type.Uncommon,	new char[][]{{'M'}},		15, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Not my type."});
+	public static MobInfo Living_Bucket		=new MobInfo("Living Bucket",	Type.Uncommon,	new char[][]{{'u'}},		15, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"How?"});
+	public static MobInfo Jack_OLantern		=new MobInfo("Jack O'Lantern",	Type.Uncommon,	new char[][]{{'G'}},		15, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Mr.O'Lantern doesn't play around"});
+	public static MobInfo George			=new MobInfo("George",			Type.Uncommon,	new char[][]{{'G'}},		15, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{""});
+	public static MobInfo Lost_Traveller	=new MobInfo("Lost Traveller",	Type.Uncommon,	new char[][]{{'P','\\'}},	15, 1f,2f, 0.5f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Why are they attacking me?"});
 	
-	public static MobInfo Horse				=new MobInfo("Horse",			Type.Uncommon,	new char[][]{{'n','n','P'}},		15, 1f,2f, 0.75f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Who gave this horse magic?"});
-	public static MobInfo Large_Bat			=new MobInfo("Large Bat",		Type.Uncommon,	new char[][]{{'`','^','\''}},		15, 1f,2f, 0.75f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Eek!"});
-	public static MobInfo Cyclops			=new MobInfo("Cyclops",			Type.Uncommon,	new char[][]{{'<','>'},{'{','}'}},	15, 1f,2f, 0.75f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Good aim, all things considered"});
-	public static MobInfo Big_Ghost			=new MobInfo("Big Ghost",		Type.Uncommon,	new char[][]{{'{','\"','}'}},		15, 1f,2f, 0.75f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Wonder what it was when it was alive"});
-	public static MobInfo Walking_Pot		=new MobInfo("Walking Pot",		Type.Uncommon,	new char[][]{{'2','5'}},			15, 1f,2f, 0.75f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Cool?"});
-	public static MobInfo Stick				=new MobInfo("Stick",			Type.Uncommon,	new char[][]{{'\\'}},				15, 1f,2f, 0.75f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Don't think about it."});
-	public static MobInfo Mega_H			=new MobInfo("Mega H",			Type.Uncommon,	new char[][]{{'|','-','|'}},		15, 1f,2f, 0.75f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{""});
-	public static MobInfo Shielded_Gnome1	=new MobInfo("Shielded Gnome",	Type.Uncommon,	new char[][]{{'[','d'}},			15, 1f,2f, 0.75f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Finally thinking rationally"});
-	public static MobInfo Shielded_Gnome2	=new MobInfo("Shielded Gnome",	Type.Uncommon,	new char[][]{{'b',']'}},			15, 1f,2f, 0.75f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Finally thinking rationally"});
+	public static MobInfo Horse				=new MobInfo("Horse",			Type.Uncommon,	new char[][]{{'n','n','P'}},		15, 1f,2f, 0.75f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Who gave this horse magic?"});
+	public static MobInfo Large_Bat			=new MobInfo("Large Bat",		Type.Uncommon,	new char[][]{{'`','^','\''}},		15, 1f,2f, 0.75f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Eek!"});
+	public static MobInfo Cyclops			=new MobInfo("Cyclops",			Type.Uncommon,	new char[][]{{'<','>'},{'{','}'}},	15, 1f,2f, 0.75f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Good aim, all things considered"});
+	public static MobInfo Big_Ghost			=new MobInfo("Big Ghost",		Type.Uncommon,	new char[][]{{'{','\"','}'}},		15, 1f,2f, 0.75f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Wonder what it was when it was alive"});
+	public static MobInfo Walking_Pot		=new MobInfo("Walking Pot",		Type.Uncommon,	new char[][]{{'2','5'}},			15, 1f,2f, 0.75f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Cool?"});
+	public static MobInfo Stick				=new MobInfo("Stick",			Type.Uncommon,	new char[][]{{'\\'}},				15, 1f,2f, 0.75f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Don't think about it."});
+	public static MobInfo Mega_H			=new MobInfo("Mega H",			Type.Uncommon,	new char[][]{{'|','-','|'}},		15, 1f,2f, 0.75f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{""});
+	public static MobInfo Shielded_Gnome1	=new MobInfo("Shielded Gnome",	Type.Uncommon,	new char[][]{{'[','d'}},			15, 1f,2f, 0.75f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Finally thinking rationally"});
+	public static MobInfo Shielded_Gnome2	=new MobInfo("Shielded Gnome",	Type.Uncommon,	new char[][]{{'b',']'}},			15, 1f,2f, 0.75f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Finally thinking rationally"});
 	
 	
-	public static MobInfo Salty_Sailor		=new MobInfo("Salty Sailor",	Type.Rare,		new char[][]{{'T'}},		 20, 1f,2f, 1f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Not having a great time"});
-	public static MobInfo Yellow_Belly		=new MobInfo("Yellow Belly",	Type.Rare,		new char[][]{{'B'}},		 20, 1f,2f, 1f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Argg"});
-	public static MobInfo Royal_Pain		=new MobInfo("Royal Pain",		Type.Rare,		new char[][]{{'R'}},		 20, 1f,2f, 1f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Just go away!"});
-	public static MobInfo Penny_Pincher		=new MobInfo("Penny Pincher",	Type.Rare,		new char[][]{{'$'}},		 20, 1f,2f, 1f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Don't mess with it's money!"});
-	public static MobInfo Walrus			=new MobInfo("Walrus", 			Type.Rare,		new char[][]{{'^','W','w'}}, 20, 1f,2f, 1f, new Spell[]{Spell.Fireball}, Pathfinding.MoveToward,	new String[]{"Oh?"});
+	public static MobInfo Salty_Sailor		=new MobInfo("Salty Sailor",	Type.Rare,		new char[][]{{'T'}},		 20, 1f,2f, 1f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Not having a great time"});
+	public static MobInfo Yellow_Belly		=new MobInfo("Yellow Belly",	Type.Rare,		new char[][]{{'B'}},		 20, 1f,2f, 1f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Argg"});
+	public static MobInfo Royal_Pain		=new MobInfo("Royal Pain",		Type.Rare,		new char[][]{{'R'}},		 20, 1f,2f, 1f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Just go away!"});
+	public static MobInfo Penny_Pincher		=new MobInfo("Penny Pincher",	Type.Rare,		new char[][]{{'$'}},		 20, 1f,2f, 1f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Don't mess with it's money!"});
+	public static MobInfo Walrus			=new MobInfo("Walrus", 			Type.Rare,		new char[][]{{'^','W','w'}}, 20, 1f,2f, 1f, new Spell[]{Spell.Shadowblast}, Pathfinding.MoveToward,	new String[]{"Oh?"});
 	
 	
 	

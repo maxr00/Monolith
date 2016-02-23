@@ -15,6 +15,7 @@ import net.PlayerMP;
 import net.packet.Packet13Projectile;
 import net.packet.Packet15MobUpdate;
 import net.packet.Packet16RemoveMob;
+import player.Spell;
 import util.Node;
 import util.Vector2i;
 
@@ -42,7 +43,7 @@ public class BasicEnemy extends Mob {
 	private int time = 0;
 	private int pathCount = 0;
 
-	public BasicEnemy(Level lvl, int spawnX, int spawnY, String name, char[][] characters, Pathfinding pathfind, Projectile.Spell[] spells, int health, float speed,float shotSpeed, float damage, Color col, String[] statuses) {
+	public BasicEnemy(Level lvl, int spawnX, int spawnY, String name, char[][] characters, Pathfinding pathfind, Spell[] spells, int health, float speed,float shotSpeed, float damage, Color col, String[] statuses) {
 		this.level = lvl;
 		this.pathfind = pathfind;
 		this.name=name;
@@ -222,8 +223,8 @@ public class BasicEnemy extends Mob {
 						}
 					}
 					if(xDir!=0 || yDir!=0){
-						Projectile.Spell s=spells[(int)(Math.random()*spells.length)];
-						Packet13Projectile projPacket = new Packet13Projectile(x, y, xDir, yDir, s.name(),damage,targetMob.identifier);
+						Spell s=spells[(int)(Math.random()*spells.length)];
+						Packet13Projectile projPacket = new Packet13Projectile(x, y, xDir, yDir, s.name,damage,targetMob.identifier);
 						projPacket.writeData(Game.game.socketClient);
 					}
 				}
@@ -271,8 +272,8 @@ public class BasicEnemy extends Mob {
 			}
 		}
 		if(xDir!=0 || yDir!=0){
-			Projectile.Spell s=spells[(int)(Math.random()*spells.length)];
-			Packet13Projectile projPacket = new Packet13Projectile(x, y, xDir, yDir, s.name(),0.5f,null);
+			Spell s=spells[(int)(Math.random()*spells.length)];
+			Packet13Projectile projPacket = new Packet13Projectile(x, y, xDir, yDir, s.name,0.5f,null);
 			projPacket.writeData(Game.game.socketClient);
 		}
 	}

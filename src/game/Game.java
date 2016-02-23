@@ -94,6 +94,7 @@ public class Game extends Canvas implements Runnable {
 		inGame=false;
 		startMenu.active=true;
 		
+		//set Start Menu scale
 		startScale=scale;
 		scale=4;
 		resetZoom();

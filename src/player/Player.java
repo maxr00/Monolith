@@ -77,6 +77,11 @@ public class Player extends Mob {
 			joinLevel(lvl,spawnX,spawnY);
 		}else
 			System.out.println(username+" spawned with no level!");
+		
+		Spell.setRunes(new Spell.Rune[]{Spell.Rune.Electricity,	Spell.Rune.Fire,	Spell.Rune.Water,
+										Spell.Rune.Air,			Spell.Rune.Earth,	Spell.Rune.Shadow,
+										Spell.Rune.Darkness,	Spell.Rune.Sickness,Spell.Rune.Light,});
+		UI.combatUI.setRunes();
 	}
 	
 	public void joinLevel(Level lvl,int spawnX,int spawnY){
@@ -240,6 +245,7 @@ public class Player extends Mob {
 						UI.combatUI.colors[i][j]=Color.white;
 					}
 				}
+				UI.combatUI.setRunes();
 				UI.combatUI.colors=UI.combatUI.startColors;
 			}
 		}

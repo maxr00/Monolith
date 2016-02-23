@@ -20,6 +20,7 @@ import net.packet.Packet16RemoveMob;
 import net.packet.Packet17LoadLevel;
 import net.packet.Packet18LevelColors;
 import net.packet.Packet21PlayerPause;
+import player.Spell;
 
 public class GameClient extends Thread{
 	
@@ -150,7 +151,7 @@ public class GameClient extends Thread{
 	}
 	 
 	private void handleProjectile(Packet13Projectile packet){
-		new Projectile(packet.getX(),packet.getY(),packet.getxDir(),packet.getyDir(),Projectile.Spell.getSpell(packet.getSpell()),packet.getDamagePercent(),game.level.getMob(packet.getMobID()),game.level);
+		new Projectile(packet.getX(),packet.getY(),packet.getxDir(),packet.getyDir(),Spell.getSpell(packet.getSpell()),packet.getDamagePercent(),game.level.getMob(packet.getMobID()),game.level);
 	}
 	 
 	private void handleLogin(Packet10Login packet, InetAddress address, int port){

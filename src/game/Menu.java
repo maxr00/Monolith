@@ -79,6 +79,27 @@ public class Menu {
 			Color.white, Color.yellow,START_MENU
 	);
 	
+	public final static Menu LEVEL_UP_SPELL=new Menu(new String[]{
+			"                L E V E L  U P                ",
+			"                                              ",
+			"----------------------------------------------",
+			"                                              ",
+			"upgrade1                                      ",
+			"upgrade2                                      ",
+			"upgrade3                                      ",
+			"upgrade4                                      ",
+			"upgrade5                                      ",
+			"upgrade6                                      ",
+			"upgrade7                                      ",
+			"upgrade8                                      ",
+			"upgrade9                                      ",
+			"                                              ",
+			"----------------------------------------------",
+			},
+			new Option[]{	null, null, null, null,	 null, Option.Resume,null, null, Option.Exit_To_Menu,null,null,null},
+			Color.white, Color.yellow,null
+	);
+	
 	
 	//Menu for joining a local or external server
 	// if choose external, for now pull up j-option-panel and get ip from that
@@ -226,9 +247,9 @@ public class Menu {
 		for (int x = 0; x < sprites.length; x++) {
 			for (int y = 0; y < sprites[x].length; y++) {
 				if(y!=selected)
-					screen.renderUI(x*Game.TILE_SIZE+screen.width/2-sprites.length*Game.TILE_SIZE/2, y*Game.TILE_SIZE+screen.height/2-sprites[x].length*Game.TILE_SIZE/2, sprites[x][y], color.getRGB());
+					screen.renderUI(x*Game.TILE_SIZE+screen.width/2-sprites.length*Game.TILE_SIZE/2, y*Game.TILE_SIZE+screen.height/2-sprites[x].length*Game.TILE_SIZE/2, sprites[x][y], color.getRGB(),0);
 				else
-					screen.renderUI(x*Game.TILE_SIZE+screen.width/2-sprites.length*Game.TILE_SIZE/2, y*Game.TILE_SIZE+screen.height/2-sprites[x].length*Game.TILE_SIZE/2, sprites[x][y], selectedColor.getRGB());
+					screen.renderUI(x*Game.TILE_SIZE+screen.width/2-sprites.length*Game.TILE_SIZE/2, y*Game.TILE_SIZE+screen.height/2-sprites[x].length*Game.TILE_SIZE/2, sprites[x][y], selectedColor.getRGB(),0);
 			}
 		}
 	}
