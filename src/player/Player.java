@@ -98,7 +98,7 @@ public class Player extends Mob {
 	boolean cast;
 	
 	public boolean inMenu;
-	private Menu menu;
+	public Menu menu;
 	
 	public void update() {
 		if(level==null)
@@ -114,7 +114,9 @@ public class Player extends Mob {
 		if(input.onLevelUp && timesLeveledUp<Level){
 			inMenu=!inMenu;
 			if(inMenu){
-				if(timesLeveledUp+1%5==0){
+				System.out.println(timesLeveledUp);
+				if((timesLeveledUp+1)%5==0){
+					System.out.println("Rune time");
 					Rune.setRuneMenu();
 					menu=Menu.LEVEL_UP_RUNE.load();
 				}else{
@@ -154,6 +156,11 @@ public class Player extends Mob {
 		packet.writeData(Game.game.socketClient);
 	}
 		
+	public void swapRuneMenu(){
+		Rune.setRuneSwapMenu();
+		menu.active=false;
+		menu=Menu.LEVEL_UP_REPLACE_RUNE.load();
+	}
 	private void menuUpdate(){
 		if (input.onUp)
 			menu.selectPrevious();

@@ -115,7 +115,7 @@ public class Menu {
 			Color.white, Color.green,null
 	);
 	
-	private Rune newRune;
+	private static Rune newRune;
 	public final static Menu LEVEL_UP_RUNE=new Menu(new String[]{
 			"----------------------------------------------",
 			"      N E W  R U N E S  A V A I L A B L E     ",
@@ -165,9 +165,9 @@ public class Menu {
 			"----------------------------------------------",
 			},
 			new Option[]{null,null,null,null,null,null,
-						Option.Level_Up_New_Rune, Option.Level_Up_New_Rune, Option.Level_Up_New_Rune,
-						Option.Level_Up_New_Rune, Option.Level_Up_New_Rune, Option.Level_Up_New_Rune,
-						Option.Level_Up_New_Rune, Option.Level_Up_New_Rune, Option.Level_Up_New_Rune,
+						Option.Level_Up_Replace_Rune, Option.Level_Up_Replace_Rune, Option.Level_Up_Replace_Rune,
+						Option.Level_Up_Replace_Rune, Option.Level_Up_Replace_Rune, Option.Level_Up_Replace_Rune,
+						Option.Level_Up_Replace_Rune, Option.Level_Up_Replace_Rune, Option.Level_Up_Replace_Rune,
 						null,Option.Cancel_Level_Up,null},
 			Color.white, Color.green,LEVEL_UP_RUNE
 	);
@@ -233,9 +233,12 @@ public class Menu {
 			break;
 		case Level_Up_New_Rune: 
 			newRune = Rune.getRune(selected-6);
+			Game.game.player.swapRuneMenu();
 			break;
 		case Level_Up_Replace_Rune:
-			Rune.replaceRune(newRune, Rune.getRune(selected-6));
+			Game.game.player.unPause();
+			Game.game.player.leveledUp();
+			Rune.replaceRune(Rune.getRune(selected-6),newRune);
 			break;
 		}
 	}

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import game.Menu;
 import graphics.Sprite;
+import graphics.UI;
 
 public class Spell {
 	//Default
@@ -100,6 +101,7 @@ public class Spell {
 				if(runes[i]==base)
 					runes[i]=replace;
 			}
+			UI.combatUI.setRunes();
 		}
 		public static Rune getRune(int i){
 			return runes[i];
@@ -118,7 +120,7 @@ public class Spell {
 						available.add(s);
 				}
 			}
-			String[] lines= new String[15];
+			String[] lines= new String[9];
 			for(int i=0;i<lines.length;i++){
 				if(i<available.size()){
 					lines[i] = available.get(i).toString().toUpperCase();
@@ -142,6 +144,13 @@ public class Spell {
 				Menu.LEVEL_UP_RUNE.setLines(lines, 6);
 			else
 				Menu.LEVEL_UP_RUNE.setLines(new String[]{"N O  U P G R A D E S  A V A I L A B L E",""}, 3);
+		}
+		public static void setRuneSwapMenu(){
+			String[] lines=new String[9];
+			for(int i=0;i<lines.length;i++){
+				lines[i]=runes[i].toString().toUpperCase();
+			}
+			Menu.LEVEL_UP_REPLACE_RUNE.setLines(lines, 6);
 		}
 	}
 	
