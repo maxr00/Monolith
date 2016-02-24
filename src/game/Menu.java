@@ -231,14 +231,14 @@ public class Menu {
 		case Cancel_Level_Up:
 			Game.game.player.unPause();
 			break;
-		case Level_Up_New_Rune: 
-			newRune = Rune.getRune(selected-6);
-			Game.game.player.swapRuneMenu();
+		case Level_Up_New_Rune:
+			newRune = Rune.getAvailableRunes().get(selected-6);
+			Game.game.player.swapRuneMenu(newRune.preReq);//Rune.getAvailableRunes().get(selected-6).preReq);
 			break;
 		case Level_Up_Replace_Rune:
 			Game.game.player.unPause();
 			Game.game.player.leveledUp();
-			Rune.replaceRune(Rune.getRune(selected-6),newRune);
+			Rune.replaceRune(Rune.getRunesForSwap(newRune.preReq).get(selected-6),newRune);//Rune.getAvailableRunes().get(selected-6)
 			break;
 		}
 	}
