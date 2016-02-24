@@ -3,6 +3,7 @@ package player;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import game.Menu;
 import graphics.Sprite;
 
 public class Spell {
@@ -13,15 +14,28 @@ public class Spell {
 	public static Spell Splash		=new Spell("Splash",		'>', Color.blue, 			1, 1f,	 0.75f,	0.2f, 	8, new Rune[]{Rune.Water},					null,					Affect.Wet,		0.5f,  1,	true);
 	public static Spell Airblast 	=new Spell("Airblast",		'=', Color.cyan, 			3, 3f, 	 1f, 	0.5f, 	4, new Rune[]{Rune.Air}, 					null,					Affect.Slow,	0.25f, 1,	true);
 	public static Spell Earthball	=new Spell("Earthball",		'#', new Color(0x8f6b38),	4, 1f, 	 1f, 	0.5f, 	3, new Rune[]{Rune.Earth},					null,												true);
-	public static Spell Shadowblast =new Spell("Shadowblast",	'&', new Color(112,39,195), 3, 2f, 	 1f, 	0.5f, 	4, new Rune[]{Rune.Shadow},					null,												true);
-	public static Spell Trick		=new Spell("Trick",			'?', Color.gray,			3, 0f, 	 4f, 	1f,		2, new Rune[]{Rune.Darkness},				null,												true);
-	public static Spell Poisoncloud	=new Spell("Poisoncloud",	'*', Color.green,		 	0, 0f, 	 5f, 	1.5f, 	2, new Rune[]{Rune.Poison},					null,					Affect.Poison,	0.25f, 2,	true);
+	public static Spell Shadowblast =new Spell("Shadowblast",	'&', new Color(112,39,195), 3, 1f, 	 1f, 	0.5f, 	4, new Rune[]{Rune.Shadow},					null,												true);
+	public static Spell Trick		=new Spell("Trick",			'?', Color.gray,			3, 0.01f,4f, 	1f,		2, new Rune[]{Rune.Darkness},				null,												true);
+	public static Spell Poisoncloud	=new Spell("Poisoncloud",	'*', Color.green,		 	0, 0.01f,5f, 	1.5f, 	2, new Rune[]{Rune.Poison},					null,					Affect.Poison,	0.25f, 2,	true);
 	public static Spell Sunspot		=new Spell("Earthball",		'f', new Color(0x8f6b38),	4, 1f, 	 1f, 	0.5f, 	3, new Rune[]{Rune.Light},					null,												true);
 	
 	//Level 1 Unlocks
 	public static Spell Lightning	=new Spell("Lightning",		'~', Color.yellow, 			3, 3, 	 1f, 	0.5f, 	6, new Rune[]{Rune.Electricity,Rune.Air},   new Spell[]{Shock},									false);
-	public static Spell FireWhip	=new Spell("FireWhip",		'/', Color.red,			 	7, 0.5f, 4f,	2f,		1, new Rune[]{Rune.Fire},					new Spell[]{Fireball},	Affect.onFire,	0.5f,  1,	false);
-	public static Spell Waterball	=new Spell("Waterbll",		'o', Color.blue, 			3, 2.5f, 1f, 	0.5f, 	4, new Rune[]{Rune.Water},					new Spell[]{Splash},	Affect.Wet,		0.5f,  1,	false);
+	public static Spell FireWhip	=new Spell("FireWhip",		'/', Color.red,			 	7, 0.5f, 4f,	2f,		1, new Rune[]{Rune.Fire,Rune.Air},			new Spell[]{Fireball},	Affect.onFire,	0.5f,  1,	false);
+	public static Spell Waterball	=new Spell("Waterbll",		'o', Color.blue, 			3, 2.5f, 1f, 	0.5f, 	4, new Rune[]{Rune.Water,Rune.Air},			new Spell[]{Splash},	Affect.Wet,		0.5f,  1,	false);
+	public static Spell Airwave		=new Spell("Airwave",		')', Color.white, 			3, 3.25f,0.5f, 	0.4f, 	5, new Rune[]{Rune.Air,Rune.Light},   		new Spell[]{Airblast},								false);
+	public static Spell Rockslam	=new Spell("Rockslam",		'0', new Color(0x8f6b38),	7, 1f,	 0.1f, 	0.5f, 	1, new Rune[]{Rune.Earth,Rune.Air},   		new Spell[]{Earthball},								false);
+	public static Spell ShadowPuppet=new Spell("ShadowPuppet",	'%', new Color(112,39,195),	4, 2f,	 2f, 	2f, 	8, new Rune[]{Rune.Shadow,Rune.Darkness},	new Spell[]{Shadowblast},							false);
+	public static Spell DarkLight	=new Spell("DarkLight",		'#', Color.darkGray,		5, 3f,	 1f, 	1f, 	5, new Rune[]{Rune.Darkness,Rune.Light},	new Spell[]{Trick},									false);
+	public static Spell PoisonDart	=new Spell("PoisonDart",	',', Color.green,			2, 3.5f, 1f, 	1.5f, 	8, new Rune[]{Rune.Poison,Rune.Air},		new Spell[]{Poisoncloud},Affect.Poison,	0.5f,	1,	false);
+	public static Spell Lightbulb	=new Spell("Lightbulb",		'?', Color.yellow,			5, 2f,	 2f, 	0.75f, 	4, new Rune[]{Rune.Light,Rune.Electricity},	new Spell[]{Sunspot},								false);
+	
+	//Level 2 Unlocks
+	
+	
+	//Levels 3-7
+	//
+	//
 	
 	//Requires additional runes
 	public static Spell MagmaSnake	=new Spell("MagmaSnake",	'%', Color.red,			 	7, 0.5f,4f,		2f,		1, new Rune[]{Rune.Magma},					null,												false);
@@ -32,44 +46,102 @@ public class Spell {
 	//		Remove Particle.Spells and Combat.Spells, and fix any errors from that.
 	
 	
-	public enum Rune{
+	public static enum Rune{
 		//Default
-		Electricity	('L',Color.yellow),
-		Fire		('F',Color.orange),
-		Water		('W',Color.blue),
-		Air			('A',Color.cyan),
-		Earth		('E',new Color(0x8f6b38)),
-		Shadow		('S',new Color(112,39,195)),
-		Darkness 	('D',Color.darkGray),
-		Poison		('P',Color.green),
-		Light		('T',new Color(244,234,102)),
+		Electricity	('L',Color.yellow,			true,null),
+		Fire		('F',Color.orange,			true,null),
+		Water		('W',Color.blue,			true,null),
+		Air			('A',Color.cyan,			true,null),
+		Earth		('E',new Color(0x8f6b38),	true,null),
+		Shadow		('S',new Color(112,39,195),	true,null),
+		Darkness 	('D',Color.darkGray,		true,null),
+		Poison		('P',Color.green,			true,null),
+		Light		('i',new Color(244,234,102),true,null),
 		
 		//Rune 1st Choices
-		Flux		('X',Color.magenta),
-		Magma		('M',Color.red),//Change color to red-orange
-		Ice			('C',Color.cyan),//Change color to light blue
-		Storm		('T',Color.gray),//Change color to gray-blue
-		Gravity		('G',Color.green),//Change color to blue-green
-		Evil		('V',Color.red),
-		Illusion	('I',Color.gray),
-		Sickness	('K',Color.green),//Change color to another green
-		Life		('F',Color.white),
+		Flux		('X',Color.magenta,			false,new Rune[]{Electricity}),
+		Magma		('M',Color.red,				false,new Rune[]{Fire}),//Change color to red-orange
+		Ice			('C',Color.cyan,			false,new Rune[]{Water}),//Change color to light blue
+		Storm		('T',Color.gray,			false,new Rune[]{Air}),//Change color to gray-blue
+		Gravity		('G',Color.green,			false,new Rune[]{Earth}),//Change color to blue-green
+		Evil		('V',Color.red,				false,new Rune[]{Shadow}),
+		Illusion	('I',Color.gray,			false,new Rune[]{Darkness}),
+		Sickness	('s',Color.green,			false,new Rune[]{Poison}),//Change color to another green
+		Life		('F',Color.white,			false,new Rune[]{Light}),
 		
 		//Rune 2nd Choices (use symbols like %,$,#)
-		Magnetism	('U',Color.lightGray),//Change color to something?
-		Technology	('$',Color.gray),
-		Laser		('Z',Color.red),
+		Magnetism	('U',Color.lightGray,		false,new Rune[]{Flux}),//Change color to something?
+
+		//Rune 3rd Choices
+		Technology	('$',Color.gray,			false,new Rune[]{Magnetism}),
 		
-		//Special
-		Magic('@',Color.white)//Change color and symbol every update
+		//Rune 4th Choices
+		Laser		('+',Color.red,				false,new Rune[]{Technology}),
+		
+		//Special, Requires 2 4th tier runes
+		Magic('@',Color.white,					false,new Rune[]{Laser})//Change color and symbol every update
 		;
 		
 		public char character;
 		public Color color;
-		public Spell preReq;
-		Rune(char c,Color col){
+		public boolean active;
+		public Rune[] preReq;
+		public static ArrayList<Rune> allRunes;
+		Rune(char c,Color col,boolean active,Rune[] preReq){
 			character=c;
 			color=col;
+			this.active=active;
+			this.preReq=preReq;
+		}
+		public static void replaceRune(Rune base, Rune replace){
+			base.active=false;
+			replace.active=true;
+			for(int i=0;i<runes.length;i++){
+				if(runes[i]==base)
+					runes[i]=replace;
+			}
+		}
+		public static Rune getRune(int i){
+			return runes[i];
+		}
+		
+		public static void setRuneMenu(){
+			ArrayList<Rune> available=new ArrayList<Rune>();
+			for(Rune s : runes){
+				if(!s.active){
+					boolean av=true;
+					if(s.preReq!=null)
+						for(Rune p : s.preReq)
+							if(!p.active)
+								av=false;
+					if(av)
+						available.add(s);
+				}
+			}
+			String[] lines= new String[15];
+			for(int i=0;i<lines.length;i++){
+				if(i<available.size()){
+					lines[i] = available.get(i).toString().toUpperCase();
+					lines[i] += "  -  REQUIRES: ";//"Prerequisites:";
+					if(available.get(i).preReq!=null){
+						for(int p=0;p<available.get(i).preReq.length;p++){
+							if(i<available.size() && p<available.get(i).preReq.length){
+								lines[i] += available.get(i).preReq[p].toString().toUpperCase();
+								if(p<available.get(i).preReq.length-1)
+									lines[i]+=",";
+							}else{
+								lines[i]+="";
+							}
+						}
+					}
+				}else{
+					lines[i]="";
+				}
+			}
+			if(available.size()>0)
+				Menu.LEVEL_UP_RUNE.setLines(lines, 6);
+			else
+				Menu.LEVEL_UP_RUNE.setLines(new String[]{"N O  U P G R A D E S  A V A I L A B L E",""}, 3);
 		}
 	}
 	
@@ -167,6 +239,65 @@ public class Spell {
 		if((float)count/holdTime<1)
 			return 0.5f;
 		return 1;
+	}
+	
+	public static void setLevelMenu(){
+		ArrayList<Spell> available=new ArrayList<Spell>();
+		for(Spell s : spells){
+			if(!s.unlocked){
+				boolean av=true;
+				if(s.preReq!=null)
+					for(Spell p : s.preReq)
+						if(!p.unlocked)
+							av=false;
+				if(av)
+					for(Rune r : s.runesNeeded)
+						if(!r.active)
+							av=false;
+				if(av)
+					available.add(s);
+			}
+		}
+		String[] lines= new String[15];
+		for(int i=0;i<lines.length;i++){
+			if(i<available.size()){
+				lines[i] = available.get(i).name.toUpperCase();
+				lines[i] += "  -  REQUIRES: ";//"Prerequisites:";
+				if(available.get(i).preReq!=null){
+					for(int p=0;p<available.get(i).preReq.length;p++){
+						if(i<available.size() && p<available.get(i).preReq.length){
+							lines[i] += available.get(i).preReq[p].name.toUpperCase();
+							if(p<available.get(i).preReq.length-1)
+								lines[i]+=",";
+						}else{
+							lines[i]+="";
+						}
+					}
+				}
+			}else{
+				lines[i]="";
+			}
+		}
+		if(available.size()>0)
+			Menu.LEVEL_UP_SPELL.setLines(lines, 4);
+		else
+			Menu.LEVEL_UP_SPELL.setLines(new String[]{"N O  U P G R A D E S  A V A I L A B L E",""}, 3);
+	}
+	
+	public static void unlockSpell(int index){
+		ArrayList<Spell> available=new ArrayList<Spell>();
+		for(Spell s : spells){
+			if(!s.unlocked){
+				boolean av=true;
+				if(s.preReq!=null)
+					for(Spell p : s.preReq)
+						if(!p.unlocked)
+							av=false;
+				if(av)
+					available.add(s);
+			}
+		}
+		available.get(index).unlocked=true;
 	}
 	
 }

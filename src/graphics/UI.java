@@ -19,9 +19,9 @@ public class UI {
 	public static UI combatUIDir = new UI("/ui/combatDirection",Align.Bottom_Right,Type.Combat, false);
 	public static UI healthUI = new UI("/ui/health",Align.Bottom_Left,Type.Health, false);
 	public static UI statusUI = new UI(Align.Top,Type.Status, true);
+	public static UI levelReadyUI = new UI(Align.Top,Type.LevelUpReady,new String[]{"PRESS L TO LEVEL UP"},Color.green, false);
 	
 	public static UI waitingForServerLevel = new UI("/ui/waiting",Align.Center,Type.Standby,false);
-	//public static UI pauseMenu = new UI("/ui/pause",Align.Center, Type.Pause, true);
 	
 	public boolean active;
 	public Align alignment;
@@ -34,7 +34,7 @@ public class UI {
 	private int width, height;
 	
 	public static enum Type{
-		Combat,Pause,Health,Status,Standby
+		Combat,Health,Status,Standby,LevelUpReady,
 	}
 	
 	private final static int pixelOffset=7;
@@ -69,6 +69,34 @@ public class UI {
 		this.active=active;
 		startSprites=null;
 		startColors=null;
+		
+		if(UIElements==null)
+			UIElements=new ArrayList<UI>();
+		UIElements.add(this);
+	}
+	
+	public UI(Align alignment,Type type,String[] text,Color def,boolean active){
+		this.type=type;
+		this.alignment=alignment;
+		this.active=active;
+		startSprites=null;
+		startColors=null;
+		defaultColor=def;
+		
+		sprites=new Sprite[text[0].length()][text.length];
+		for (int x = 0; x < sprites.length; x++) {
+			for (int y = 0; y < sprites[x].length; y++) {
+				if(x<text[y].length()){
+					if(!Character.isWhitespace(text[y].charAt(x))){
+						sprites[x][y] = Sprite.getSprite(text[y].charAt(x));
+					}
+				}
+			}
+		}
+		colors=new Color[text[0].length()][text.length];
+		for(int x=0;x<colors.length;x++)
+			for(int y=0;y<colors[y].length;y++)
+				colors[x][y]=defaultColor;
 		
 		if(UIElements==null)
 			UIElements=new ArrayList<UI>();
@@ -200,7 +228,7 @@ public class UI {
 		
 		for (int x = 0; x < sprites.length; x++) {
 			for (int y = 0; y < sprites[x].length; y++) {
-				screen.renderUI(x*Game.TILE_SIZE+xOffset, y*Game.TILE_SIZE+yOffset, sprites[x][y], colors[x][y].getRGB(), backgroundColors[x][y].getRGB());
+				screen.renderUI(x*Game.TILE_SIZE+xOffset, y*Game.TILE_SIZE+yOffset, sprites[x][y], colors[x][y].getRGB(), backgroundColors!=null && backgroundColors[x][y]!=null ? backgroundColors[x][y].getRGB() : 0);
 			}
 		}
 	}

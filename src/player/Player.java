@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.Random;
 
 import entity.Particle;
+import entity.Particle_Exp;
 import entity.mob.Mob;
 import game.Game;
 import game.Menu;
@@ -16,6 +17,7 @@ import level.Level;
 import net.PlayerMP;
 import net.packet.Packet12Move;
 import net.packet.Packet21PlayerPause;
+import player.Spell.Rune;
 
 public class Player extends Mob {
 
@@ -33,6 +35,8 @@ public class Player extends Mob {
 	private String username;
 	
 	private boolean hasBlemishes = false;
+	
+	private int Experience, Level, expToNextLevel=15, timesLeveledUp=0;
 	
 	public Player(Keyboard in, MouseHandler mouse, Screen screen, Level lvl, String name, int spawnX, int spawnY, int color) {
 		Health=25;
@@ -106,6 +110,22 @@ public class Player extends Mob {
 				pause();
 			else
 				unPause();
+		}else
+		if(input.onLevelUp && timesLeveledUp<Level){
+			inMenu=!inMenu;
+			if(inMenu){
+				if(timesLeveledUp+1%5==0){
+					Rune.setRuneMenu();
+					menu=Menu.LEVEL_UP_RUNE.load();
+				}else{
+					Spell.setLevelMenu();
+					menu=Menu.LEVEL_UP_SPELL.load();
+				}
+				menu.active=true;
+				paused=true;
+			}else{
+				unPause();
+			}
 		}
 		
 		if(inMenu)
@@ -147,6 +167,16 @@ public class Player extends Mob {
 	}
 	
 	private void gameplayUpdate(){
+		
+		//Debug
+		if(mouse.isPressed && mouse.button==2){
+			int x=(mouse.x/Game.scale +(this.x - screen.width/2));
+			int y=(mouse.y/Game.scale +(this.y - screen.height/2) + Game.TILE_SIZE/2);
+			
+			new Particle_Exp(x,y,1,1200,0.1f,10,level,new Color[]{Color.yellow},1);
+		}
+		
+		
 		moveTime++;
 		inputX = 0;	inputY = 0;
 		if(input.onCastSpell)
@@ -296,12 +326,17 @@ public class Player extends Mob {
 			Combat.dontRender(screen);
 			UI.healthUI.active=false;//render(screen);
 			UI.statusUI.active=false;//render(screen);
+			UI.levelReadyUI.active=false;
 		}else{
 			if(menu!=null)
 				menu.active=false;
 			Combat.render(screen);
 			UI.healthUI.active=true;//render(screen);
 			UI.statusUI.active=true;//render(screen);
+			if(timesLeveledUp<Level && UI.statusUI.sprites==null)
+				UI.levelReadyUI.active=true;
+			else
+				UI.levelReadyUI.active=false;
 		}
 		
 		//screen.renderSprite( (int)(((mouse.x/((float)Game.scale)+x-screen.width/2f) / ((float)screen.width/2) - 1)*Game.TILE_SIZE+x),(int)(((mouse.y/((float)Game.scale)+y-screen.height/2f) / ((float)screen.height/2) - 1)*Game.TILE_SIZE+y),Sprite.percent);
@@ -358,13 +393,15 @@ public class Player extends Mob {
 		}
 	}
 
-	int Experience, Level, expToNextLevel=15;
 	public void addExp(int i) {
 		Experience+=i;
 		if(Experience >= expToNextLevel){
 			Level++;
-			expToNextLevel*=Level;
+			expToNextLevel*=1.5f;
 		}
 	}
 	
+	public void leveledUp(){
+		timesLeveledUp++;
+	}
 }
