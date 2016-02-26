@@ -1,5 +1,6 @@
 package net;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -8,6 +9,7 @@ import java.net.InetAddress;
 import entity.Projectile;
 import entity.mob.Mob;
 import game.Game;
+import graphics.Popup;
 import level.Level;
 import net.packet.Packet;
 import net.packet.Packet10Login;
@@ -70,8 +72,11 @@ public class GameClient extends Thread{
 			break;
 		case DISCONNECT:
 			packet = new Packet11Disconnect(data);
+			new Popup("PLAYER " +((Packet11Disconnect) packet).getUsername() +" DISCONNECTED",Color.red,5f);
+			
 			System.out.println("["+address.getHostAddress()+":"+port+"] "+((Packet11Disconnect) packet).getUsername()+" has left the world...");
 			game.level.removePlayerMP(((Packet11Disconnect)packet).getUsername());
+			
 			break;
 		case MOVE:
 			packet=new Packet12Move(data);
@@ -157,6 +162,8 @@ public class GameClient extends Thread{
 	private void handleLogin(Packet10Login packet, InetAddress address, int port){
 		System.out.println("[" + address.getHostAddress() + ":" + port + "] " + packet.getUsername() + " has joined the game...");
 		new PlayerMP(game.level, packet.getX()/Game.TILE_SIZE, packet.getY()/Game.TILE_SIZE, packet.getUsername(),packet.getColor(), address, port);
+		
+		new Popup("PLAYER " +packet.getUsername() +" JOINED",Color.green,5f);
 	}
 	
 	private void handleMove(Packet12Move packet) {

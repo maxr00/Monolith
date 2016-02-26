@@ -154,7 +154,6 @@ public class Level {
 			if(tiles[i]!=null)
 				tiles[i].update();
 		}
-		
 		if(time%15==0){
 			if(getPlayers().size()>0){
 				for(int i=0;i<getPlayers().size();i++){
