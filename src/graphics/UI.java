@@ -20,6 +20,7 @@ public class UI {
 	public static UI healthUI = new UI("/ui/health",Align.Bottom_Left,Type.Health, false);
 	public static UI statusUI = new UI(Align.Top,Type.Status, true);
 	public static UI levelReadyUI = new UI(Align.Top,Type.LevelUpReady,new String[]{"PRESS L TO LEVEL UP"},Color.green, false);
+	public static UI popupUI = new UI(Align.Center_Left,Type.Popup, true);
 	
 	public static UI waitingForServerLevel = new UI("/ui/waiting",Align.Center,Type.Standby,false);
 	
@@ -34,7 +35,7 @@ public class UI {
 	private int width, height;
 	
 	public static enum Type{
-		Combat,Health,Status,Standby,LevelUpReady,
+		Combat,Health,Status,Standby,LevelUpReady,Popup
 	}
 	
 	private final static int pixelOffset=7;
@@ -200,7 +201,7 @@ public class UI {
 	
 	private int xOffset,yOffset;
 	public void render(Screen screen){
-		if(sprites==null || !active)
+		if(sprites==null || sprites.length==0 || !active)
 			return;
 		
 		if(alignment.xRelativeOffset>=0)
@@ -340,6 +341,29 @@ public class UI {
 			return true;
 		}
 		return false;
+	}
+	
+	public void setPopups(String[] popups,Color[] popupColors){
+		int width=0;
+		for(String s : popups){
+			if(s.length()>width)
+				width=s.length();
+		}
+		
+		sprites=new Sprite[width][popups.length];
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < sprites[x].length; y++) {
+				if(x<popups[y].length()){
+					if(!Character.isWhitespace(popups[y].charAt(x))){
+						sprites[x][y] = Sprite.getSprite(popups[y].charAt(x));
+					}
+				}
+			}
+		}
+		colors=new Color[width][popupColors.length];
+		for(int x=0;x<colors.length;x++)
+			for(int y=0;y<colors[x].length;y++)
+				colors[x][y]=popupColors[y];
 	}
 
 }

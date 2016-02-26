@@ -8,6 +8,7 @@ import entity.Particle_Exp;
 import entity.mob.Mob;
 import game.Game;
 import game.Menu;
+import graphics.Popup;
 import graphics.Screen;
 import graphics.Sprite;
 import graphics.UI;
@@ -128,10 +129,15 @@ public class Player extends Mob {
 			}
 		}
 		
+		if(input.onSelect)
+			new Popup("POPUPS ARE COOL",new Color(random.nextInt(100)+150,random.nextInt(100)+150,random.nextInt(100)+150),3f);
+		
 		if(inMenu)
 			menuUpdate();
 		else
 			gameplayUpdate();
+		
+		Popup.update();
 	}
 	
 	public void unPause(){
