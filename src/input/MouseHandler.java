@@ -10,6 +10,7 @@ public class MouseHandler implements MouseListener, MouseMotionListener{
 	public int button;
 	public int x,y;
 	private boolean clicked=false;
+	public boolean inScreen;
 	
 	
 	//mouseClicked sometimes misses clicks if setting variable and resetting it each update
@@ -17,9 +18,11 @@ public class MouseHandler implements MouseListener, MouseMotionListener{
 	}
 
 	public void mouseEntered(MouseEvent e) {
+		inScreen=true;
 	}
 
 	public void mouseExited(MouseEvent e) {
+		inScreen=false;
 	}
 
 	public void mousePressed(MouseEvent e) {

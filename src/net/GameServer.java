@@ -187,9 +187,13 @@ public class GameServer extends Thread{
 
 	public void removeConnection(Packet11Disconnect packet) {
     	//PlayerMP player = getPlayerMP(packet.getUsername());
-    	this.connectedPlayers.remove(getPlayerMPIndex(packet.getUsername()));
-    	game.level.removePlayerMP(packet.getUsername());
-    	packet.writeData(this);
+		try{
+			this.connectedPlayers.remove(getPlayerMPIndex(packet.getUsername()));
+			game.level.removePlayerMP(packet.getUsername());
+			packet.writeData(this);
+		}catch(Exception e){
+			System.out.println("PROBLEM WITH PLAYER " +packet.getUsername() +" DISCONNECTING FROM SERVER");
+		}
 	}
     
     public PlayerMP getPlayerMP(String username){    	

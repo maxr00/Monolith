@@ -10,27 +10,27 @@ import player.Spell.Rune;
 
 public class Spell {
 	//Default
-	//									      (name,			chr, Color,       			D, S, 	 L,     hold, shots, runes,									preReq,					Affect, 		time,  amt, unlocked)
-	public static Spell Shock		=new Spell("Shock",			'!', Color.cyan,		 	5, 2f,	 1f, 	1.5f,		2, new Rune[]{Rune.Electricity},			null,												true);
-	public static Spell Fireball 	=new Spell("Fireball",		'&', Color.orange, 			5, 1f, 	 1.5f,  1f, 	3, new Rune[]{Rune.Fire},					null,												true);
-	public static Spell Splash		=new Spell("Splash",		'>', Color.blue, 			1, 1f,	 0.75f,	0.7f, 	8, new Rune[]{Rune.Water},					null,					Affect.Wet,		0.5f,  1,	true);
-	public static Spell Airblast 	=new Spell("Airblast",		'=', Color.cyan, 			3, 3f, 	 1f, 	1f, 	4, new Rune[]{Rune.Air}, 					null,					Affect.Slow,	0.25f, 1,	true);
-	public static Spell Earthball	=new Spell("Earthball",		'#', new Color(0x8f6b38),	4, 1f, 	 1f, 	1f, 	3, new Rune[]{Rune.Earth},					null,												true);
-	public static Spell Shadowblast =new Spell("Shadowblast",	'&', new Color(112,39,195), 3, 1f, 	 1f, 	1f, 	4, new Rune[]{Rune.Shadow},					null,												true);
-	public static Spell Trick		=new Spell("Trick",			'?', Color.gray,			3, 0.01f,4f, 	1.5f,		2, new Rune[]{Rune.Darkness},				null,												true);
-	public static Spell Poisoncloud	=new Spell("Poisoncloud",	'*', Color.green,		 	0, 0.01f,5f, 	2f, 	2, new Rune[]{Rune.Poison},					null,					Affect.Poison,	0.25f, 2,	true);
-	public static Spell Sunspot		=new Spell("Earthball",		'f', new Color(0x8f6b38),	4, 1f, 	 1f, 	1f, 	3, new Rune[]{Rune.Light},					null,												true);
+	//									      (name,			type,			chr, Color,       			D, S, 	 L,     hold, shots, runes,									preReq,					Affect, 		time,  amt, unlocked)
+	public static Spell Shock		=new Spell("Shock",			Type.Projectile,'!', Color.cyan,		 	5, 2f,	 1f, 	1.5f,		2, new Rune[]{Rune.Electricity},			null,												true);
+	public static Spell Fireball 	=new Spell("Fireball",		Type.Projectile,'&', Color.orange, 			5, 1f, 	 1.5f,  1f, 	3, new Rune[]{Rune.Fire},					null,												true);
+	public static Spell Splash		=new Spell("Splash",		Type.Projectile,'>', Color.blue, 			1, 1f,	 0.75f,	0.7f, 	8, new Rune[]{Rune.Water},					null,					Affect.Wet,		0.5f,  1,	true);
+	public static Spell Airblast 	=new Spell("Airblast",		Type.Projectile,'=', Color.cyan, 			3, 3f, 	 1f, 	1f, 	4, new Rune[]{Rune.Air}, 					null,					Affect.Slow,	0.25f, 1,	true);
+	public static Spell Earthball	=new Spell("Earthball",		Type.Projectile,'#', new Color(0x8f6b38),	4, 1f, 	 1f, 	1f, 	3, new Rune[]{Rune.Earth},					null,												true);
+	public static Spell Shadowblast =new Spell("Shadowblast",	Type.Projectile,'&', new Color(112,39,195), 3, 1f, 	 1f, 	1f, 	4, new Rune[]{Rune.Shadow},					null,												true);
+	public static Spell Trick		=new Spell("Trick",			Type.Projectile,'?', Color.gray,			3, 0.01f,4f, 	1.5f,		2, new Rune[]{Rune.Darkness},				null,												true);
+	public static Spell Poisoncloud	=new Spell("Poisoncloud",	Type.Projectile,'*', Color.green,		 	0, 0.01f,5f, 	2f, 	2, new Rune[]{Rune.Poison},					null,					Affect.Poison,	0.25f, 2,	true);
+	public static Spell Sunspot		=new Spell("Earthball",		Type.Projectile,'f', new Color(0x8f6b38),	4, 1f, 	 1f, 	1f, 	3, new Rune[]{Rune.Light},					null,												true);
 	
 	//Level 1 Unlocks
-	public static Spell Lightning	=new Spell("Lightning",		'~', Color.yellow, 			3, 3, 	 1f, 	1f, 	6, new Rune[]{Rune.Electricity,Rune.Air},   new Spell[]{Shock},									false);
-	public static Spell FireWhip	=new Spell("FireWhip",		'/', Color.red,			 	7, 0.5f, 4f,	2.5f,		1, new Rune[]{Rune.Fire,Rune.Air},			new Spell[]{Fireball},	Affect.onFire,	0.5f,  1,	false);
-	public static Spell Waterball	=new Spell("Waterbll",		'o', Color.blue, 			3, 2.5f, 1f, 	1f, 	4, new Rune[]{Rune.Water,Rune.Air},			new Spell[]{Splash},	Affect.Wet,		0.5f,  1,	false);
-	public static Spell Airwave		=new Spell("Airwave",		')', Color.white, 			3, 3.25f,0.5f, 	0.9f, 	5, new Rune[]{Rune.Air,Rune.Light},   		new Spell[]{Airblast},								false);
-	public static Spell Rockslam	=new Spell("Rockslam",		'0', new Color(0x8f6b38),	7, 1f,	 0.1f, 	1f, 	1, new Rune[]{Rune.Earth,Rune.Air},   		new Spell[]{Earthball},								false);
-	public static Spell ShadowPuppet=new Spell("ShadowPuppet",	'%', new Color(112,39,195),	4, 2f,	 2f, 	2.5f, 	8, new Rune[]{Rune.Shadow,Rune.Darkness},	new Spell[]{Shadowblast},							false);
-	public static Spell DarkLight	=new Spell("DarkLight",		'#', Color.darkGray,		5, 3f,	 1f, 	1.5f, 	5, new Rune[]{Rune.Darkness,Rune.Light},	new Spell[]{Trick},									false);
-	public static Spell PoisonDart	=new Spell("PoisonDart",	',', Color.green,			2, 3.5f, 1f, 	2f, 	8, new Rune[]{Rune.Poison,Rune.Air},		new Spell[]{Poisoncloud},Affect.Poison,	0.5f,	1,	false);
-	public static Spell Lightbulb	=new Spell("Lightbulb",		'?', Color.yellow,			5, 2f,	 2f, 	1.25f, 	4, new Rune[]{Rune.Light,Rune.Electricity},	new Spell[]{Sunspot},								false);
+	public static Spell Lightning	=new Spell("Lightning",		Type.Projectile,'~', Color.yellow, 			3, 3, 	 1f, 	1f, 	6, new Rune[]{Rune.Electricity,Rune.Air},   new Spell[]{Shock},									false);
+	public static Spell FireWhip	=new Spell("FireWhip",		Type.Projectile,'/', Color.red,			 	7, 0.5f, 4f,	2.5f,		1, new Rune[]{Rune.Fire,Rune.Air},			new Spell[]{Fireball},	Affect.onFire,	0.5f,  1,	false);
+	public static Spell Waterball	=new Spell("Waterbll",		Type.Projectile,'o', Color.blue, 			3, 2.5f, 1f, 	1f, 	4, new Rune[]{Rune.Water,Rune.Air},			new Spell[]{Splash},	Affect.Wet,		0.5f,  1,	false);
+	public static Spell Airwave		=new Spell("Airwave",		Type.Projectile,')', Color.white, 			3, 3.25f,0.5f, 	0.9f, 	5, new Rune[]{Rune.Air,Rune.Light},   		new Spell[]{Airblast},								false);
+	public static Spell Rockslam	=new Spell("Rockslam",		Type.Projectile,'0', new Color(0x8f6b38),	7, 1f,	 0.1f, 	1f, 	1, new Rune[]{Rune.Earth,Rune.Air},   		new Spell[]{Earthball},								false);
+	public static Spell ShadowPuppet=new Spell("ShadowPuppet",	Type.Projectile,'%', new Color(112,39,195),	4, 2f,	 2f, 	2.5f, 	8, new Rune[]{Rune.Shadow,Rune.Darkness},	new Spell[]{Shadowblast},							false);
+	public static Spell DarkLight	=new Spell("DarkLight",		Type.Projectile,'#', Color.darkGray,		5, 3f,	 1f, 	1.5f, 	5, new Rune[]{Rune.Darkness,Rune.Light},	new Spell[]{Trick},									false);
+	public static Spell PoisonDart	=new Spell("PoisonDart",	Type.Projectile,',', Color.green,			2, 3.5f, 1f, 	2f, 	8, new Rune[]{Rune.Poison,Rune.Air},		new Spell[]{Poisoncloud},Affect.Poison,	0.5f,	1,	false);
+	public static Spell Lightbulb	=new Spell("Lightbulb",		Type.Projectile,'?', Color.yellow,			5, 2f,	 2f, 	1.25f, 	4, new Rune[]{Rune.Light,Rune.Electricity},	new Spell[]{Sunspot},								false);
 	
 	//Level 2 Unlocks
 	
@@ -40,13 +40,12 @@ public class Spell {
 	//
 	
 	//Requires additional runes
-	public static Spell MagmaSnake	=new Spell("MagmaSnake",	'%', Color.red,			 	7, 0.5f,4f,		2f,		1, new Rune[]{Rune.Magma},					null,												true);
+	public static Spell MagmaSnake	=new Spell("MagmaSnake",	Type.Projectile,'%', Color.red,			 	7, 0.5f,4f,		2f,		1, new Rune[]{Rune.Magma},					null,												true);
 	
 	//Next steps:
 	//		Create Runes
 	//		Create Spells
 	//		Remove Particle.Spells and Combat.Spells, and fix any errors from that.
-	
 	
 	public static enum Rune{
 		//Default
@@ -177,6 +176,19 @@ public class Spell {
 			}
 			return list;
 		}
+		
+		public static void update(){
+			if(Magic.active){
+				Magic.character=(char)((Math.random()*93)+33);
+				Magic.color=new Color((int)(Math.random()*256),(int)(Math.random()*256),(int)(Math.random()*256));
+				UI.combatUI.setRunes();
+			}
+		}
+
+	}
+	
+	public enum Type{
+		Projectile, Trap, Laser,
 	}
 	
 	public enum Affect{
@@ -203,12 +215,15 @@ public class Spell {
 	public boolean unlocked;
 	public String name;
 	
-	private Spell(String name,char character, Color color, int damage, float speed, float life, float holdTime, int shots, Rune[] runes, Spell[] preReq, boolean unlocked){
-		this(name,character,color,damage,speed,life,holdTime,shots,runes,preReq,null,0,0,unlocked);
+	public Type type;
+	
+	private Spell(String name,Type type,char character, Color color, int damage, float speed, float life, float holdTime, int shots, Rune[] runes, Spell[] preReq, boolean unlocked){
+		this(name,type,character,color,damage,speed,life,holdTime,shots,runes,preReq,null,0,0,unlocked);
 	}
 	
-	private Spell(String name, char character, Color color, int damage, float speed, float life, float holdTime, int shots, Rune[] runes, Spell[] preReq, Affect affect, float affectTime, int affectAmt,boolean unlocked){
+	private Spell(String name, Type type, char character, Color color, int damage, float speed, float life, float holdTime, int shots, Rune[] runes, Spell[] preReq, Affect affect, float affectTime, int affectAmt,boolean unlocked){
 		this.name=name;
+		this.type=type;
 		this.sprite=Sprite.getSprite(character);
 		this.color=color;
 		this.damage=damage;
@@ -333,6 +348,46 @@ public class Spell {
 			}
 		}
 		available.get(index).unlocked=true;
+	}
+	
+	public static void setSpellBookPage(Spell spell){
+		String r1="",r2="",r3="";
+		for(int i=0;i<spell.runesNeeded.length;i++){
+			if(i<3) r1+=spell.runesNeeded[i].toString().toUpperCase();
+			else if(i<6) r2+=spell.runesNeeded[i].toString().toUpperCase();
+			else if(i<9) r3+=spell.runesNeeded[i].toString().toUpperCase();
+		}
+		String[] lines={
+				"----------------------------------------------",
+				"                  SPELL BOOK                  ",
+				"----------------------------------------------",
+				"                                              ",
+				"NAME:   "+spell.name.toUpperCase(),
+				"                                              ",
+				"TYPE:   " +spell.type.toString().toUpperCase(),
+				"                                              ",
+				"DAMAGE: " +spell.damage,
+				"                                              ",
+				"SPEED:  " +spell.speed,
+				"                                              ",
+				"                                              ",
+				"RUNES:                                        ",
+				"                                              ",
+				r1,
+				"                                              ",
+				r2,
+				"                                              ",
+				r3,
+				"                                              ",
+				"                                              ",
+				"                PREVIOUS PAGE                 ",
+				"                                              ",
+				"                  NEXT PAGE                   ",
+				"                                              ",
+				"                    CANCEL                    ",
+				"---------------------------------------------/",
+		};
+		Menu.SPELL_BOOK.setLines(lines, 0);
 	}
 	
 }

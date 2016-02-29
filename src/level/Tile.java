@@ -33,8 +33,8 @@ public class Tile {
 
 	public void renderLight(int x, int y, Screen screen) {
 		if(renderLight && sprite!=null){
-			if(renderGray)
-				screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, Color.black.getRGB(), colorBlemishes);
+			if(renderGray)											//Color.black.getRGB()
+				screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, Screen.defaultBackground, colorBlemishes);
 			else
 				screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, tint, colorBlemishes);
 		}

@@ -79,14 +79,14 @@ public class Combat {
 			if(castSpell.getDamagePercent(heldCount)==0.33f)
 				UI.combatUIDir.setDefaultColor(Color.yellow);
 			if(castSpell.getDamagePercent(heldCount)==0.5f)
-				UI.combatUIDir.setDefaultColor(Color.orange);
+				UI.combatUIDir.setDefaultColor(new Color(0xFF6500));
 			if(castSpell.getDamagePercent(heldCount)==1)
 				UI.combatUIDir.setDefaultColor(Color.red);
 		}else{
 			if(heldCount/60f<0.5f)
 				UI.combatUIDir.setDefaultColor(Color.yellow);
 			else if(heldCount/60f<1f)
-				UI.combatUIDir.setDefaultColor(Color.orange);
+				UI.combatUIDir.setDefaultColor(new Color(0xFF6500));
 			if(heldCount/60f==1)
 				UI.combatUIDir.setDefaultColor(Color.red);
 		}

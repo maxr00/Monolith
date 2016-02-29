@@ -168,6 +168,10 @@ public class Projectile extends Entity{
 	
 	public void render(Screen screen){
 		screen.renderProjectile((int)px, (int)py, spell.sprite, spell.color.getRGB());
+		
+		screen.renderGlow(x, y, Game.TILE_SIZE, Game.TILE_SIZE, new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256)), random.nextInt(30), 255);
+		//screen.splitRGB_UL((int)(x-screen.xOffset), (int)(y-screen.yOffset), Game.TILE_SIZE, Game.TILE_SIZE, 30,20,false, 1, random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
+		screen.splitRGB_UL((int)(x-screen.xOffset), (int)(y-screen.yOffset), Game.TILE_SIZE, Game.TILE_SIZE, 19,20,false, 1, true,false,false);
 	}
 	
 	public String toString(){

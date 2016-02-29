@@ -5,99 +5,87 @@ import java.awt.event.KeyListener;
 
 public class Keyboard implements KeyListener {
 
-	private boolean[] keys = new boolean[600];
-	public boolean up, down, left, right, refresh, zoomIn, zoomOut, pause, select, back, levelUp;
-	public boolean onUp, onDown, onLeft, onRight, onRefresh, onZoomIn, onZoomOut, onPause,onSelect,onBack, onLevelUp; //True on update it is pressed
-
-	public boolean[] runeKey = new boolean[9], runeKeyOn = new boolean[9], runeKeyOff = new boolean[9];
-	public boolean castSpell, onCastSpell, offCastSpell, clearSpell;
+	public boolean[] keys = new boolean[600];
+	public boolean[] onKeys = new boolean[600];
+	public boolean[] offKeys = new boolean[600];
+	public KeyEvent typedKey = null;
+	private boolean[] bk = new boolean[600];
 	
-	public boolean onToggleLock, toggleLock;
+	public static Key[] runes=new Key[]{Key.rune1,Key.rune2,Key.rune3,Key.rune4,Key.rune5,Key.rune6,Key.rune7,Key.rune8,Key.rune9};
+		
+	public static Keyboard input;
 	
-	private boolean u,d,l,r,rf,cs,tl,zi,zo,p,s,b,lu;
-	private boolean[] rk = new boolean[9];
+	public static enum Key{
+		up			(new int[]{ KeyEvent.VK_UP, 	KeyEvent.VK_W}),
+		down		(new int[]{	KeyEvent.VK_DOWN,	KeyEvent.VK_S}),
+		left		(new int[]{ KeyEvent.VK_LEFT,	KeyEvent.VK_A}),
+		right		(new int[]{ KeyEvent.VK_RIGHT,	KeyEvent.VK_D}),
+		refresh		(new int[]{ KeyEvent.VK_SPACE}),
+		zoomIn		(new int[]{ KeyEvent.VK_EQUALS,	KeyEvent.VK_ADD}),
+		zoomOut		(new int[]{ KeyEvent.VK_MINUS,	KeyEvent.VK_SUBTRACT}),
+		pause		(new int[]{ KeyEvent.VK_ESCAPE, KeyEvent.VK_P}),
+		select		(new int[]{ KeyEvent.VK_ENTER}),
+		back		(new int[]{ KeyEvent.VK_BACK_SPACE}),
+		levelUp		(new int[]{ KeyEvent.VK_L}),
+		
+		rune1		(new int[]{ KeyEvent.VK_NUMPAD7}),
+		rune2		(new int[]{ KeyEvent.VK_NUMPAD8}),
+		rune3		(new int[]{ KeyEvent.VK_NUMPAD9}),
+		rune4		(new int[]{ KeyEvent.VK_NUMPAD4}),
+		rune5		(new int[]{ KeyEvent.VK_NUMPAD5}),
+		rune6		(new int[]{ KeyEvent.VK_NUMPAD6}),
+		rune7		(new int[]{ KeyEvent.VK_NUMPAD1}),
+		rune8		(new int[]{ KeyEvent.VK_NUMPAD2}),
+		rune9		(new int[]{ KeyEvent.VK_NUMPAD3}),
+		
+		castSpell	(new int[]{ KeyEvent.VK_NUMPAD0}),
+		clearSpell	(new int[]{ KeyEvent.VK_DECIMAL}),
+		
+		toggleLock	(new int[]{ KeyEvent.VK_E}),
+		;
+		public boolean pressed;
+		public boolean onPress;
+		public boolean offPress;
+		
+		private int[] keyIndexes;
+		Key(int[] indexes){
+			keyIndexes=indexes;
+		}
+		
+		public void update(){
+			boolean p=false,o=false,f=false;
+			for(int key : keyIndexes){
+				if(!p)
+					p = input.keys[key];
+				if(!o)
+					o = input.onKeys[key];
+				if(!f)
+					f = input.offKeys[key];
+			}
+			pressed = p;
+			onPress = o;
+			offPress= f;
+		}
+	}
 	
 	public void update() {
-		up = keys[KeyEvent.VK_UP] || keys[KeyEvent.VK_W];
-		down = keys[KeyEvent.VK_DOWN] || keys[KeyEvent.VK_S];
-		left = keys[KeyEvent.VK_LEFT] || keys[KeyEvent.VK_A];
-		right = keys[KeyEvent.VK_RIGHT] || keys[KeyEvent.VK_D];
-		refresh = keys[KeyEvent.VK_SPACE];
-
-		pause = keys[KeyEvent.VK_ESCAPE] || keys[KeyEvent.VK_P];
-		select = keys[KeyEvent.VK_ENTER];
-		back = keys[KeyEvent.VK_BACK_SPACE];
-		
-		zoomIn = keys[KeyEvent.VK_EQUALS] || keys[KeyEvent.VK_ADD];
-		zoomOut = keys[KeyEvent.VK_MINUS] || keys[KeyEvent.VK_SUBTRACT];
-		
-		levelUp = keys[KeyEvent.VK_L];
-		
-		if (up && !u) onUp = true;
-		else onUp = false;
-		if (down && !d) onDown = true;
-		else onDown = false;
-		if (left && !l) onLeft = true;
-		else onLeft = false;
-		if (right && !r) onRight = true;
-		else onRight = false;
-		if (refresh && !rf) onRefresh = true;
-		else onRefresh = false;
-		if(zoomIn && !zi) onZoomIn=true;
-		else onZoomIn=false;
-		if(zoomOut && !zo) onZoomOut=true;
-		else onZoomOut=false;
-		if(pause && !p) onPause=true;
-		else onPause=false;
-		if(select && !s) onSelect=true;
-		else onSelect=false;
-		if(back && !b) onBack=true;
-		else onBack=false;
-		if(levelUp && !lu) onLevelUp=true;
-		else onLevelUp=false;
-
-		runeKey[0] = keys[KeyEvent.VK_NUMPAD7];
-		runeKey[1] = keys[KeyEvent.VK_NUMPAD8];
-		runeKey[2] = keys[KeyEvent.VK_NUMPAD9];
-		runeKey[3] = keys[KeyEvent.VK_NUMPAD4];
-		runeKey[4] = keys[KeyEvent.VK_NUMPAD5];
-		runeKey[5] = keys[KeyEvent.VK_NUMPAD6];
-		runeKey[6] = keys[KeyEvent.VK_NUMPAD1];
-		runeKey[7] = keys[KeyEvent.VK_NUMPAD2];
-		runeKey[8] = keys[KeyEvent.VK_NUMPAD3];
-		
-		for(int i=0;i<runeKey.length;i++){
-			if(rk[i] && !runeKey[i])
-				runeKeyOff[i]=true;
-			else runeKeyOff[i]=false;
+		for(int i=0;i<keys.length;i++){
+			if(Keyboard.input.keys[i] && !bk[i])
+				onKeys[i]=true;
+			else
+				onKeys[i]=false;
 			
-			if(!rk[i] && runeKey[i])
-				runeKeyOn[i]=true;
-			else runeKeyOn[i]=false;
+			if(input.bk[i] && !keys[i])
+				offKeys[i]=true;
+			else
+				offKeys[i]=false;
+			
+			bk[i]=keys[i];
 		}
 		
-		castSpell = keys[KeyEvent.VK_NUMPAD0];
-		clearSpell = keys[KeyEvent.VK_DECIMAL];
+		for(Key k : Key.values())
+			k.update();
 		
-		if (!castSpell && cs) offCastSpell = true;
-		else offCastSpell = false;
-		if (castSpell && !cs) onCastSpell = true;
-		else onCastSpell = false;
-		
-		toggleLock=keys[KeyEvent.VK_E];
-		
-		if(toggleLock && !tl)
-			onToggleLock=true;
-		else
-			onToggleLock=false;
-		
-		u=up; d=down; l=left; r=right; rf=refresh; cs=castSpell;
-		for(int i=0;i<runeKey.length;i++){
-			rk[i]=runeKey[i];
-		}
-		tl=toggleLock;zi=zoomIn;zo=zoomOut;
-		p=pause; s=select; b=back;
-		lu=levelUp;
 	}
 
 	public void keyPressed(KeyEvent e) {
@@ -108,8 +96,13 @@ public class Keyboard implements KeyListener {
 		keys[e.getKeyCode()] = false;
 	}
 
+	public boolean got;
 	public void keyTyped(KeyEvent e) {
-
+		if(e.getKeyChar()!=KeyEvent.CHAR_UNDEFINED){
+			typedKey = e;
+			got=false;
+		}else
+			typedKey=null;
 	}
 
 }

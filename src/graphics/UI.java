@@ -229,7 +229,7 @@ public class UI {
 		
 		for (int x = 0; x < sprites.length; x++) {
 			for (int y = 0; y < sprites[x].length; y++) {
-				screen.renderUI(x*Game.TILE_SIZE+xOffset, y*Game.TILE_SIZE+yOffset, sprites[x][y], colors[x][y].getRGB(), backgroundColors!=null && backgroundColors[x][y]!=null ? backgroundColors[x][y].getRGB() : 0);
+				screen.renderUI(x*Game.TILE_SIZE+xOffset, y*Game.TILE_SIZE+yOffset, sprites[x][y], colors[x][y].getRGB(), backgroundColors!=null && backgroundColors[x][y]!=null ? backgroundColors[x][y]==Color.black ? Screen.defaultBackground : backgroundColors[x][y].getRGB() : Screen.defaultBackground);
 			}
 		}
 	}
@@ -305,7 +305,7 @@ public class UI {
 	}
 	public void clearStatus(){sprites=null;width=0;colors=null;}
 
-	int amt=100,currSpot=-amt, speed=4, count=0;
+	int amt=100,currSpot=(int)(-amt*1.1f), speed=4, count=0;
 	int waitTime=300;
 	public boolean standByUpdate(){
 		count++;

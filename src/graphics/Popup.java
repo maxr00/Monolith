@@ -55,10 +55,10 @@ public class Popup {
 		if(lifeCount>=stayTime*60){active=false; return;}
 		
 		if(lifeCount/60f<=FADE_OUT_TIME){//Fade in
-			currColor=blend(color,Color.black,(lifeCount/60f)/(FADE_OUT_TIME));
+			currColor=blend(color,new Color(Screen.defaultBackground),(lifeCount/60f)/(FADE_OUT_TIME));
 			
 		}else if(lifeCount/60f>=stayTime-FADE_OUT_TIME && lifeCount/60f<stayTime){//Fade out
-			currColor=blend(color,Color.black,(float)(stayTime-(lifeCount/60f))/(FADE_OUT_TIME));
+			currColor=blend(color,new Color(Screen.defaultBackground),(float)(stayTime-(lifeCount/60f))/(FADE_OUT_TIME));
 			
 		}else{//Normal Update
 			currColor=color;

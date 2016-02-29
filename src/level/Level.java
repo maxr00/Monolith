@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import entity.Entity;
+import entity.Particle_Exp;
 import entity.mob.Mob;
 import game.Game;
 import graphics.Screen;
@@ -297,7 +298,7 @@ public class Level {
 					if(getPlayers().size()>0){
 						boolean seen=false;
 						for(int s=0;s<getPlayers().size();s++){
-							if(s<shadowMap.length && shadowMap[s]!=null && shadowMap[s][entities.get(i).x/Game.TILE_SIZE][entities.get(i).y/Game.TILE_SIZE]==1)
+							if((s<shadowMap.length && shadowMap[s]!=null && shadowMap[s][entities.get(i).x/Game.TILE_SIZE][entities.get(i).y/Game.TILE_SIZE]==1) || entities.get(i) instanceof Particle_Exp)
 								seen=true;
 						}
 						entities.get(i).doRender(seen);
@@ -560,7 +561,8 @@ public class Level {
 				break;
 			index++;
 		}
-		this.getPlayers().remove(index);
+		if(getPlayers().size()>index)
+			this.getPlayers().remove(index);
 	}
 	
 	private int getPlayerMPIndex(String username){

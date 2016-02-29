@@ -93,7 +93,7 @@ public abstract class Mob extends Entity {
 		return false;//(x/Game.TILE_SIZE==tx && y/Game.TILE_SIZE==ty);
 	}
 
-	int particlesPerDamage=400;
+	int particlesPerDamage=200;
 	public void damage(int damage, float xDir, float yDir){
 		Health-=damage;
 		if(Health<=0){
@@ -113,8 +113,10 @@ public abstract class Mob extends Entity {
 			new Particle_Exp(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,1200,0.5f,10,level,new Color[]{Color.yellow},1);
 			
 			new Popup(name.toUpperCase() +" SLAIN",new Color(color),5f);
-		}else
+		}else{
+			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,45,0.5f,damage*5,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Sprite,150);
 			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,600,0.1f,particlesPerDamage*damage,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
+		}
 	}
 	
 	public void update(){

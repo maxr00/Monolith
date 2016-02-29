@@ -13,6 +13,7 @@ import graphics.Screen;
 import graphics.Sprite;
 import graphics.UI;
 import input.Keyboard;
+import input.Keyboard.Key;
 import input.MouseHandler;
 import level.Level;
 import net.PlayerMP;
@@ -105,14 +106,14 @@ public class Player extends Mob {
 		if(level==null)
 			return;
 		
-		if(input.onPause){
+		if(Key.pause.onPress){
 			inMenu=!inMenu;
 			if(inMenu)
 				pause();
 			else
 				unPause();
 		}else
-		if(input.onLevelUp && timesLeveledUp<Level){
+		if(Key.levelUp.onPress && timesLeveledUp<Level){
 			inMenu=!inMenu;
 			if(inMenu){
 				if((timesLeveledUp+1)%5==0){
@@ -129,8 +130,9 @@ public class Player extends Mob {
 			}
 		}
 		
-		if(input.onSelect)
-			new Popup("POPUPS ARE COOL",new Color(random.nextInt(100)+150,random.nextInt(100)+150,random.nextInt(100)+150),3f);
+		if(Key.select.onPress){
+			new Popup("POPUPS ARE COOL",new Color(random.nextInt(150)+100,random.nextInt(150)+100,random.nextInt(150)+100),3f);
+		}
 		
 		if(inMenu)
 			menuUpdate();
@@ -166,13 +168,13 @@ public class Player extends Mob {
 		menu=Menu.LEVEL_UP_REPLACE_RUNE.load();
 	}
 	private void menuUpdate(){
-		if (input.onUp)
+		if (Key.up.onPress)
 			menu.selectPrevious();
-		if (input.onDown)
+		if (Key.down.onPress)
 			menu.selectNext();
-		if(input.onSelect)
+		if(Key.select.onPress)
 			menu.select();
-		if(input.onBack)
+		if(Key.back.onPress)
 			if(menu.back()!=null)
 				menu=menu.back();
 	}
@@ -190,15 +192,15 @@ public class Player extends Mob {
 		
 		moveTime++;
 		inputX = 0;	inputY = 0;
-		if(input.onCastSpell)
+		if(Key.castSpell.onPress)
 			cast=true;//!cast;
-		if(input.clearSpell)
+		if(Key.clearSpell.pressed)
 			cast=false;
 		if(moveTime>15){
-			if (input.right){ inputX=1; moveTime=0;}
-			if (input.left){ inputX=-1; moveTime=0;}
-			if (input.down){ inputY=1; moveTime=0;}
-			if (input.up){ inputY=-1; moveTime=0;}
+			if (Key.right.pressed){ inputX=1; moveTime=0;}
+			if (Key.left.pressed){ inputX=-1; moveTime=0;}
+			if (Key.down.pressed){ inputY=1; moveTime=0;}
+			if (Key.up.pressed){ inputY=-1; moveTime=0;}
 		}
 		
 		if (inputX != 0 || inputY != 0){
@@ -208,7 +210,7 @@ public class Player extends Mob {
 			packet.writeData(Game.game.socketClient);
 		}
 		
-		if(input.onToggleLock && lockedOn==null){
+		if(Key.toggleLock.onPress && lockedOn==null){
 			Mob close = null; double dist=Integer.MAX_VALUE;
 			for(Mob m : level.mobs){
 				if(m.isSeen && level.getDistance(m.vector, vector)<dist){
@@ -220,7 +222,7 @@ public class Player extends Mob {
 			if(lockedOn!=null)
 				lockedOn.lockedOnto=true;
 		}
-		else if(input.onToggleLock && lockedOn!=null){
+		else if(Key.toggleLock.onPress && lockedOn!=null){
 				lockedOn.lockedOnto=false;
 				lockedOn=null;
 			}
@@ -228,30 +230,30 @@ public class Player extends Mob {
 		if(castFinishCooldown<=0){
 			if(!cast){
 				for(int i=0;i<9;i++)
-					if(input.runeKeyOn[i]) Combat.combatPressRune(i);
+					if(Keyboard.runes[i].onPress) Combat.combatPressRune(i);
 				Combat.notHeldCast();
 			}
 			
-			if(input.clearSpell){
+			if(Key.clearSpell.pressed){
 				Combat.clearSpell();
 			}
 			
 			if(cast){
 				castCooldown++;
 				castX = 0;	castY = 0; //Default case, unreachable otherwise
-				if(input.runeKeyOff[0]){ castX=-1; castY=-1; }
-				if(input.runeKeyOff[1]){ castX=0; castY=-1; }
-				if(input.runeKeyOff[2]){ castX=1; castY=-1; }
-				if(input.runeKeyOff[3]){ castX=-1; castY=0; }
-				if(input.runeKeyOff[4]){ castX=0; castY=0; }
-				if(input.runeKeyOff[5]){ castX=1; castY=0; }
-				if(input.runeKeyOff[6]){ castX=-1; castY=1; }
-				if(input.runeKeyOff[7]){ castX=0; castY=1; }
-				if(input.runeKeyOff[8]){ castX=1; castY=1; }
+				if(Keyboard.runes[0].offPress){ castX=-1; castY=-1; }
+				if(Keyboard.runes[1].offPress){ castX=0; castY=-1; }
+				if(Keyboard.runes[2].offPress){ castX=1; castY=-1; }
+				if(Keyboard.runes[3].offPress){ castX=-1; castY=0; }
+				if(Keyboard.runes[4].offPress){ castX=0; castY=0; }
+				if(Keyboard.runes[5].offPress){ castX=1; castY=0; }
+				if(Keyboard.runes[6].offPress){ castX=-1; castY=1; }
+				if(Keyboard.runes[7].offPress){ castX=0; castY=1; }
+				if(Keyboard.runes[8].offPress){ castX=1; castY=1; }
 				
 				//if(level.canMoveOn((int)(x/Game.TILE_SIZE+castX),(int)(y/Game.TILE_SIZE+castY)))
 				Combat.holdCast(castX, castY);//castX,castY);
-				if(input.castSpell)
+				if(Key.castSpell.pressed)
 					Combat.chargeSpell();
 				//else Combat.notHeldCast();
 				if((castX!=0 || castY!=0) && castCooldown>=10){
@@ -268,9 +270,9 @@ public class Player extends Mob {
 							}
 						}
 					}
-				}else if(input.runeKeyOff[4]){ 
+				}//else if(input.runeKeyOff[4]){ 
 					//Cast on self
-				}
+				//}
 			}
 		}else{
 			castFinishCooldown--;
@@ -296,6 +298,9 @@ public class Player extends Mob {
 	public void damage(int damage, float xDir, float yDir){
 		Health-=damage;
 		
+		if(screen!=null)
+			screen.setShakeEffect(0.1f, 2, 2, 10);
+		
 		if(input!=null)
 			for(int h=0;h<24;h++){
 				if(Health>h){
@@ -318,9 +323,11 @@ public class Player extends Mob {
 			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,-600,0.3f,particlesPerDamage*damage*2,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
 			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),2,-1200,0.1f,5*((takenPos.length+takenPos[0].length)/2),level,new Color[]{Color.lightGray},Particle.RenderType.Sprite);
 			
-			new Popup(username.toUpperCase() +" SLAIN",Color.red,5f);
-		}else
+			new Popup(username.toUpperCase() +" HAS BEEN SLAIN",Color.red,5f);
+		}else{
+			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,45,0.5f,damage*5,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Sprite,150);
 			new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,600,0.1f,particlesPerDamage*damage,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
+		}
 	}
 	
 	public void render(Screen screen){
@@ -352,6 +359,7 @@ public class Player extends Mob {
 				UI.levelReadyUI.active=false;
 		}
 		
+		//screen.renderGlow(x, y, Game.TILE_SIZE, Game.TILE_SIZE, Color.yellow, 100, 25);
 		//screen.renderSprite( (int)(((mouse.x/((float)Game.scale)+x-screen.width/2f) / ((float)screen.width/2) - 1)*Game.TILE_SIZE+x),(int)(((mouse.y/((float)Game.scale)+y-screen.height/2f) / ((float)screen.height/2) - 1)*Game.TILE_SIZE+y),Sprite.percent);
 		//screen.renderSprite(mouse.x/Game.scale+x-screen.width/2,mouse.y/Game.scale+y-screen.height/2, Sprite._0);
 	}
@@ -373,8 +381,10 @@ public class Player extends Mob {
 
 	public void handleStatus(Screen screen) {
 		if(level==null) return;
-		int x=(mouse.x/Game.scale +(this.x - screen.width/2)) /Game.TILE_SIZE;
-		int y=(mouse.y/Game.scale +(this.y - screen.height/2) + Game.TILE_SIZE/2) /Game.TILE_SIZE;
+		int x=(int)((mouse.x/Game.scale +screen.xOffset) /Game.TILE_SIZE);
+		int y=(int)((mouse.y/Game.scale +screen.yOffset + Game.TILE_SIZE/2) /Game.TILE_SIZE);
+		//int x=(mouse.x/Game.scale +(this.x - screen.width/2)) /Game.TILE_SIZE;
+		//int y=(mouse.y/Game.scale +(this.y - screen.height/2) + Game.TILE_SIZE/2) /Game.TILE_SIZE;
 		if(level.getMobOn(x, y)!=null){
 			if(level.getMobOn(x, y) instanceof Player){
 				UI.statusUI.setStatus(level.getMobOn(x, y).getStatus(),level.getMobOn(x,y).getObservation());

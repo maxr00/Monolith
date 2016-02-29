@@ -22,6 +22,7 @@ import graphics.UI;
 import input.Keyboard;
 import input.MouseHandler;
 import input.WindowHandler;
+import input.Keyboard.Key;
 import level.Level;
 import level.RandomLevel;
 import net.GameClient;
@@ -42,12 +43,12 @@ public class Game extends Canvas implements Runnable {
 
 	public static int TILE_SIZE=7;
 	
+	private static String title = "Project Monolith vDB_8";
+	
 	private static final int minScale=1, maxScale=4;
 	
 	public static Game game;
 	
-	private static String title = "Project Monolith vDB_7";
-
 	private Thread gameThread;
 	public JFrame frame;
 	private boolean isRunning = false;
@@ -85,6 +86,8 @@ public class Game extends Canvas implements Runnable {
 		windowHandler = new WindowHandler(this);
 		mouse = new MouseHandler();
 
+		Keyboard.input=keyboard;
+		
 		/*if(JOptionPane.showConfirmDialog(this, "Do you want to run the server")==0){
 			startServer();
 		}else{
@@ -105,18 +108,24 @@ public class Game extends Canvas implements Runnable {
 	}
 	int playerStartX=50;
 	int playerStartY=50;
-	String username="";
-	Color playerCol;
+	String username="Player";
+	char playerCharacter='@';
+	Color playerCol=Color.yellow;
 	
 	public void exitToMenu(){
+		player.menu=null;
+		player.inMenu=false;
 		inGame=false;
 		scale=4;
 		resetZoom();
-		
+		startMenu = Menu.START_MENU.load();
+
 		try{
 			Packet11Disconnect packet = new Packet11Disconnect(player.getUsername());
 			packet.writeData(socketClient);
 		}catch(Exception e){}
+		
+		player=null;
 	}
 	
 	public void closeGame(){
@@ -155,8 +164,8 @@ public class Game extends Canvas implements Runnable {
 		socketClient = new GameClient(this, ip);
 		socketClient.start();
 		
-		username=JOptionPane.showInputDialog(frame,"Please enter a username");
-		playerCol=new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256));
+		//username=JOptionPane.showInputDialog(frame,"Please enter a username");
+		//playerCol=new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256));
 		
 		sendLogin();
 	}
@@ -229,24 +238,31 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	public void update() {
-		keyboard.update();
+		Keyboard.input.update();
 		mouse.update();
+		Menu.update();
+		
+		if(Key.zoomIn.onPress && scale<maxScale){
+			scale++;
+			resetZoom();
+			if(player!=null)
+				screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+		}
+		if(Key.zoomOut.onPress && scale>minScale){
+			scale--;
+			resetZoom();
+			if(player!=null)
+				screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+		}
+		
 		if(inGame){
-			if(keyboard.onRefresh){
+			if(Key.refresh.onPress){
 				screen.activateRainbowEffect();
 			}
-			if(keyboard.onZoomIn && scale<maxScale){
-				scale++;
-				resetZoom();
-				if(player!=null)
-					screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
-			}
-			if(keyboard.onZoomOut && scale>minScale){
-				scale--;
-				resetZoom();
-				if(player!=null)
-					screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
-			}
+			
+			//if(!screen.isShaking)
+			//if(keyboard.onSelect)
+			//	screen.setShakeEffect(5f, 1, 1, 10);
 			
 			if(level!=null){
 				level.update();
@@ -262,13 +278,13 @@ public class Game extends Canvas implements Runnable {
 			screen.update();
 		}else{
 			//Start Menu controls
-			if (keyboard.onUp)
+			if (Key.up.onPress)
 				startMenu.selectPrevious();
-			if (keyboard.onDown)
+			if (Key.down.onPress)
 				startMenu.selectNext();
-			if(keyboard.onSelect)
+			if(Key.select.onPress)
 				startMenu.select();
-			if(keyboard.onBack)
+			if(Key.back.onPress && !startMenu.listening)
 				if(startMenu.back()!=null)
 					startMenu=startMenu.back();
 		}
@@ -302,34 +318,50 @@ public class Game extends Canvas implements Runnable {
 		
 		
 		if(inGame){
+			if(screen.getAdditive()==null)screen.newAdditive();
+			if(screen.getParticles()==null){screen.newParticles();}
+			screen.resetAdditive();
+			screen.resetParticles();
+			
 			if(player!=null){
 				xScroll = player.x - screen.width/2;
 				yScroll = player.y - screen.height/2;
+			}else{
+				UI.combatUI.active=false;
+				UI.healthUI.active=false;
+				UI.levelReadyUI.active=false;
 			}
+				
 			screen.setOffset(xScroll, yScroll);
 			if(level!=null){
 				level.render(xScroll, yScroll, screen);
-				screen.displayAdditive();
-				screen.displayParticles();
 				UI.waitingForServerLevel.active=false;
 			}else
 				UI.waitingForServerLevel.active=true;//render(screen);
+			
+			screen.displayAdditive();
+			screen.displayParticles();
 			
 			for(UI ui : UI.UIElements)
 				ui.render(screen);
 			for(Menu m : Menu.Menus)
 				m.render(screen);
 			
-			if(screen.isRainbow()) screen.renderRainbowEffect();
+			
 		}else{
 			for(Menu m : Menu.Menus)
 				m.render(screen);
 		}
 		
+		if(screen.isRainbow()) screen.renderRainbowEffect();
+		//screen.renderGlitchEffect(1,5);
+		//screen.splitRGB_UL(10,10,width-10, height-10, 5,true, 2, true, false, false);
+		//screen.renderDistortRGB_DR(2, 2, width-2, height-2, 0, 2, false, false, true);
+		
 		
 		if(renderPixels.length==screen.pixels.length)
 		for (int i = 0; i < renderPixels.length; i++) {
-			if(screen.pixels[i]!=0)
+			if(screen.pixels[i]!=Screen.defaultBackground)
 				renderPixels[i] = screen.pixels[i]; //Copy raw pixels to screen pixels
 			else{
 				renderPixels[i] = screen.background[i];
