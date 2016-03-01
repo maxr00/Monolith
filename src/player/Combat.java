@@ -40,13 +40,16 @@ public class Combat {
 		if(castSpell!=null)
 			shotsRemaining = castSpell.shots;
 		else
-			shotsRemaining = 1;
+			shotsRemaining = -1;
 		
 		if(shotsRemaining>10){
 			UI.combatUIDir.sprites[3][0]=Sprite.getSprite(Character.forDigit(shotsRemaining/10, 10));
 			UI.combatUIDir.sprites[4][0]=Sprite.getSprite(Character.forDigit(shotsRemaining%10, 10));
 		}else
 			UI.combatUIDir.sprites[3][0]=Sprite.getSprite(Character.forDigit(shotsRemaining%10, 10));
+		
+		if(shotsRemaining==-1)
+			UI.combatUIDir.sprites[3][0]=Sprite.getSprite('=');
 	}
 	
 	public static void clearSpell(){
@@ -72,6 +75,29 @@ public class Combat {
 		}
 	}
 	
+	public static void setCanFireColors(){
+		for(int i=0;i<3;i++){
+			for(int j=0;j<3;j++){
+				if(i==1 && j==1) continue;
+				if(!player.level.canMoveOn((int)(player.x/Game.TILE_SIZE+i-1), (int)(player.y/Game.TILE_SIZE+j-1))){
+					UI.combatUIDir.colors[(i*2)+1][(j*2)+2]=Color.black;
+				}else{
+					if(castSpell!=null){
+						if(castSpell.getDamagePercent(heldCount)==0.33f)
+							UI.combatUIDir.colors[(i*2)+1][(j*2)+2]=Color.yellow;
+						if(castSpell.getDamagePercent(heldCount)==0.5f)
+							UI.combatUIDir.colors[(i*2)+1][(j*2)+2]=new Color(0xFF6500);
+						if(castSpell.getDamagePercent(heldCount)==1)
+							UI.combatUIDir.colors[(i*2)+1][(j*2)+2]=Color.red;
+					}else{
+							UI.combatUIDir.colors[(i*2)+1][(j*2)+2]=Color.red;
+					}
+				}
+			}
+		}
+		
+	}
+	
 	public static void chargeSpell(){
 		if(castSpell!=null){
 			//if(castSpell.remainingShots==shotsRemaining)
@@ -83,11 +109,6 @@ public class Combat {
 			if(castSpell.getDamagePercent(heldCount)==1)
 				UI.combatUIDir.setDefaultColor(Color.red);
 		}else{
-			if(heldCount/60f<0.5f)
-				UI.combatUIDir.setDefaultColor(Color.yellow);
-			else if(heldCount/60f<1f)
-				UI.combatUIDir.setDefaultColor(new Color(0xFF6500));
-			if(heldCount/60f==1)
 				UI.combatUIDir.setDefaultColor(Color.red);
 		}
 	}
@@ -104,7 +125,7 @@ public class Combat {
 	static int shotsRemaining;
 	public static void castSpell(){
 		//castSpell = Spell.getSpell(pressed);
-		if(xDir !=0 || yDir !=0){
+		if(player.level.canMoveOn((int)(player.x/Game.TILE_SIZE+xDir), (int)(player.y/Game.TILE_SIZE+yDir)) ){//if(xDir !=0 || yDir !=0){
 			if(castSpell!=null){
 				Mob close = null; double dist=Integer.MAX_VALUE;
 				if(player.lockedOn==null){
@@ -120,8 +141,8 @@ public class Combat {
 			}else{
 				new Particle(player.x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE), player.y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,120,0.2f,50,player.level,new Color[]{Color.gray,Color.darkGray},Particle.RenderType.Sprite);
 			}
+			shotsRemaining--;
 		}
-		shotsRemaining--;
 		if(shotsRemaining>=10){
 			UI.combatUIDir.sprites[3][0]=Sprite.getSprite(Character.forDigit(shotsRemaining/10, 10));
 			UI.combatUIDir.sprites[4][0]=Sprite.getSprite(Character.forDigit(shotsRemaining%10, 10));

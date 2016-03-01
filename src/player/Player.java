@@ -84,9 +84,28 @@ public class Player extends Mob {
 		}else
 			System.out.println(username+" spawned with no level!");
 		
-		Spell.setRunes(new Spell.Rune[]{Spell.Rune.Electricity,	Spell.Rune.Fire,	Spell.Rune.Water,
-										Spell.Rune.Air,			Spell.Rune.Earth,	Spell.Rune.Shadow,
-										Spell.Rune.Darkness,	Spell.Rune.Sickness,Spell.Rune.Light,});
+		
+		Spell.Rune[] runes=new Spell.Rune[9];
+		Spell.Rune[] start=new Spell.Rune[]{Spell.Rune.Electricity,	Spell.Rune.Fire,	Spell.Rune.Water,
+											Spell.Rune.Air,			Spell.Rune.Earth,	Spell.Rune.Shadow,
+											Spell.Rune.Darkness,	Spell.Rune.Sickness,Spell.Rune.Light,};
+		
+		int next=0;
+		while(next<runes.length){
+			int test = random.nextInt(runes.length);
+			boolean placed=false;
+			for(Rune r : runes)
+				if(r==start[test]){
+					placed=true;
+					break;
+				}
+			if(!placed){
+				runes[next]=start[test];
+				next++;
+			}
+		}
+		
+		Spell.setRunes(runes);
 		UI.combatUI.setRunes();
 	}
 	
@@ -273,6 +292,7 @@ public class Player extends Mob {
 				}//else if(input.runeKeyOff[4]){ 
 					//Cast on self
 				//}
+				Combat.setCanFireColors();
 			}
 		}else{
 			castFinishCooldown--;
