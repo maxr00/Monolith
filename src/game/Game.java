@@ -256,13 +256,20 @@ public class Game extends Canvas implements Runnable {
 		}
 		
 		if(inGame){
-			if(Key.refresh.onPress){
-				screen.activateRainbowEffect();
-			}
-			
-			//if(!screen.isShaking)
 			//if(keyboard.onSelect)
-			//	screen.setShakeEffect(5f, 1, 1, 10);
+			//if(!screen.isShaking)
+			if(player!=null && !screen.isShaking){
+				if(player.getUsername().equals("shakeit"))
+					screen.setShakeEffect(5f, 3, 3, 10);
+				if(player.getUsername().equals("icantakeit")){
+					screen.setShakeEffect(4f, random.nextInt(10), random.nextInt(10), random.nextInt(50));
+					if(Math.random()<0.5f)
+						screen.activateRainbowEffect();
+				}
+				if(player.getUsername().equals("*o*") && !screen.isRainbow()){
+					screen.activateRainbowEffect();
+				}
+			}
 			
 			if(level!=null){
 				level.update();
@@ -354,9 +361,29 @@ public class Game extends Canvas implements Runnable {
 		}
 		
 		if(screen.isRainbow()) screen.renderRainbowEffect();
-		//screen.renderGlitchEffect(1,5);
-		//screen.splitRGB_UL(10,10,width-10, height-10, 5,true, 2, true, false, false);
-		//screen.renderDistortRGB_DR(2, 2, width-2, height-2, 0, 2, false, false, true);
+		
+		if(player!=null){
+			if(player.getUsername().equals("glitch"))
+				screen.renderGlitchEffect(1,5);
+			if(player.getUsername().equals("3D"))
+				screen.splitRGB_UL(0,0,width, height, 0,true, 2, true, false, false);
+			if(player.getUsername().equals("icantakeit")){
+				screen.renderGlitchEffect(5,10);
+				screen.splitRGB_UL(0,0,width, height, 0,true, 2, false, true, false);
+				if(random.nextBoolean()){
+					screen.splitRGB_DR(0,		0,		 width/2, height/2, 0,true,		random.nextInt(10), random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
+					screen.splitRGB_DR(width/2,	height/2,width/2, height/2, 0,true, 	random.nextInt(10), random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
+					screen.splitRGB_DR(width/2,	0,		 width/2, height/2, 0,true,		random.nextInt(10), random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
+					screen.splitRGB_DR(0,		height/2,width/2, height/2, 0,true,		random.nextInt(10), random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
+				}else{
+					screen.splitRGB_UL(0,		0,		 width/2, height/2, 0,true,		random.nextInt(10), random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
+					screen.splitRGB_UL(width/2,	height/2,width/2, height/2, 0,true, 	random.nextInt(10), random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
+					screen.splitRGB_UL(width/2,	0,		 width/2, height/2, 0,true,		random.nextInt(10), random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
+					screen.splitRGB_UL(0,		height/2,width/2, height/2, 0,true,		random.nextInt(10), random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
+				}
+			}
+		}
+		
 		
 		
 		if(renderPixels.length==screen.pixels.length)

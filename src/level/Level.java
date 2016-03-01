@@ -329,6 +329,10 @@ public class Level {
 		for(int i = entities.size()-1;i >= 0; i--){
 			entities.get(i).render(screen);
 		}
+		screen.displayAdditive();
+		screen.displayParticles();
+		screen.resetAdditive();
+		screen.resetParticles();
 		for(int i = mobs.size()-1;i >= 0; i--){
 			mobs.get(i).render(screen);
 		}
@@ -357,6 +361,16 @@ public class Level {
 		Tile t=getTile(x, y);
 		if(t==null) return true;
 		return !t.isSolid();
+	}
+	
+	public Entity getEntityOn(int x,int y){
+		//if(player!=null && player.isOnTile(x, y))return player;
+		for(int i = 0;i < entities.size(); i++){
+			if(entities.get(i)!=null && !entities.get(i).isRemoved() && (entities.get(i).isOnTile(x,y))){
+				return entities.get(i);
+			}
+		}
+		return null;
 	}
 	
 	public Mob getMobOn(int x,int y){

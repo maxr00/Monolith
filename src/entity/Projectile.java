@@ -82,11 +82,22 @@ public class Projectile extends Entity{
 						//new Particle(x,y,1,600,0.1f,2000,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
 					}
 					removed=true;
+				}else{
+					Entity e = level.getEntityOn((int)((px+cx)/Game.TILE_SIZE),(int)((py+cy)/Game.TILE_SIZE));
+					if(e!=null && e!=this && e instanceof Projectile){
+						((Projectile)e).hitProjectile();
+						hitProjectile();
+					}
 				}
 			}
 		}
 	}
 	
+	private void hitProjectile() {
+		new Particle(x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE),y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,45,0.5f,damage*5,level,new Color[]{spell.color},Particle.RenderType.Sprite,150);
+		removed=true;
+	}
+
 	final float correctionAmt=0.09f;
 	int corrCount, corrTime=3;
 	public void move(){

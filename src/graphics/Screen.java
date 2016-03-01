@@ -345,7 +345,7 @@ public class Screen {
 				int sub =(int)(y/angle);
 				for (int x = xStart; x < xPos; x++) {
 					if(x-sub>=width)break;
-					if(x-sub>0 && x+colorMovement>0 && pixels [x-sub + y * width] != 0){
+					if(x-sub>0 && x+colorMovement>0 && pixels [x-sub + y * width] != defaultBackground){
 						pixels [x-sub + y * width] = rainbowCols[((x+colorMovement)/buffer)%rainbowCols.length].getRGB();
 					}
 				}
@@ -362,17 +362,14 @@ public class Screen {
 	
 	//Default amt = 2
 	public void renderGlitchEffect(int amt){
-		int a=random.nextInt(width), b=random.nextInt(height);
-		splitRGB_UL(a+amt, b+amt, random.nextInt(width-a)-amt, random.nextInt(height-b)-amt, 0,true, amt, random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
-		int a1=random.nextInt(width), b1=random.nextInt(height);
-		splitRGB_DR(a1+amt, b1+amt, random.nextInt(width-a1)-amt, random.nextInt(height-b1)-amt, 0,true, amt, random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
+		renderGlitchEffect(amt,amt);
 	}
 	
 	public void renderGlitchEffect(int min,int max){
 		int a=random.nextInt(width), b=random.nextInt(height);
-		splitRGB_UL(a+max, b+max, random.nextInt(width-a)-max, random.nextInt(height-b)-max, 0,true, random.nextInt(max-min)+min, random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
+		splitRGB_UL(a, b, random.nextInt(width-a), random.nextInt(height-b), 0,true, random.nextInt(max-min)+min, random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
 		int a1=random.nextInt(width), b1=random.nextInt(height);
-		splitRGB_DR(a1+max, b1+max, random.nextInt(width-a1)-max, random.nextInt(height-b1)-max, 0,true, random.nextInt(max-min)+min, random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
+		splitRGB_DR(a1, b1, random.nextInt(width-a1), random.nextInt(height-b1), 0,true, random.nextInt(max-min)+min, random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
 	}
 	
 	public void splitRGB_UL(int x,int y,int w,int h,int range, boolean isSquare,int amt,boolean distRed,boolean distGreen,boolean distBlue){
@@ -388,7 +385,7 @@ public class Screen {
 		Color color, lost, distorted;
 		for(int dx=xStart;dx<xEnd;dx++){
 			for(int dy=yStart;dy<yEnd;dy++){
-				if((isSquare && (dx-w/2 < start && dy-h/2 < start)) || (!isSquare && (dx-x-w/2)*(dx-x-w/2) + (dy-y-h/2)*(dy-y-h/2) > (start)*(start)))
+				if((isSquare && (dx-x-w < start && dy-y-h < start)) || (!isSquare && (dx-x-w/2)*(dx-x-w/2) + (dy-y-h/2)*(dy-y-h/2) > (start)*(start)))
 					if((isSquare || (dx-x-w/2)*(dx-x-w/2) + (dy-y-h/2)*(dy-y-h/2) < (range)*(range)) && dx+dy*this.width<pixels.length && dx+dy*this.width>=0 && pixels[dx+dy*this.width]!=0){
 						color=new Color(pixels[dx+dy*this.width]);
 						distorted=new Color(distRed ? color.getRed() : defaultBackgroundColor.getRed(), distGreen ? color.getGreen() : defaultBackgroundColor.getGreen(), distBlue ? color.getBlue() : defaultBackgroundColor.getBlue());
@@ -397,7 +394,7 @@ public class Screen {
 						
 						
 						pixels[dx+dy*width]=lost.getRGB();
-						if(dx-amt>=0 && dy-amt>=0 && dx-amt<this.width && dy-amt<this.height && pixels[dx-amt + (dy-amt)*this.width]==0){
+						if(dx-amt>=0 && dy-amt>=0 && dx-amt<this.width && dy-amt<this.height && pixels[dx-amt + (dy-amt)*this.width]==defaultBackground){
 							pixels[dx-amt + (dy-amt)*this.width]=distorted.getRGB();
 						}
 					}
@@ -418,8 +415,8 @@ public class Screen {
 		Color color, lost, distorted;
 		for(int dx=xEnd-1;dx>=xStart;dx--){
 			for(int dy=yEnd-1;dy>=yStart;dy--){
-				if((isSquare && (dx-w/2 < start && dy-h/2 < start)) || (!isSquare && (dx-x-w/2)*(dx-x-w/2) + (dy-y-h/2)*(dy-y-h/2) > (start)*(start)))
-					if((isSquare || (dx-x-w/2)*(dx-x-w/2) + (dy-y-h/2)*(dy-y-h/2) < (range)*(range)) &&  pixels[dx+dy*this.width]!=0){
+				if((isSquare && (dx-x-w < start && dy-y-h < start)) || (!isSquare && (dx-x-w/2)*(dx-x-w/2) + (dy-y-h/2)*(dy-y-h/2) > (start)*(start)))
+					if((isSquare || (dx-x-w/2)*(dx-x-w/2) + (dy-y-h/2)*(dy-y-h/2) < (range)*(range)) && dx+dy*this.width<pixels.length && dx+dy*this.width>=0 && pixels[dx+dy*this.width]!=0){
 						color=new Color(pixels[dx+dy*this.width]);
 						distorted=new Color(distRed ? color.getRed() : defaultBackgroundColor.getRed(), distGreen ? color.getGreen() : defaultBackgroundColor.getGreen(), distBlue ? color.getBlue() : defaultBackgroundColor.getBlue());
 						//Inverse of distorted
@@ -427,7 +424,7 @@ public class Screen {
 						
 						
 						pixels[dx+dy*width]=lost.getRGB();
-						if(dx+amt>=0 && dy+amt>=0 && dx+amt<this.width && dy+amt<this.height && pixels[dx+amt + (dy+amt)*this.width]==0){
+						if(dx+amt>=0 && dy+amt>=0 && dx+amt<this.width && dy+amt<this.height && pixels[dx+amt + (dy+amt)*this.width]==defaultBackground){
 							pixels[dx+amt + (dy+amt)*this.width]=distorted.getRGB();
 						}
 					}

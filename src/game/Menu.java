@@ -424,6 +424,8 @@ public class Menu {
 		}
 	}
 	
+	private static boolean usingMouse;
+	private static int lastY=-1;
 	public static void update(){
 		for(Menu m : Menus){
 			if(!m.active)
@@ -434,14 +436,18 @@ public class Menu {
 			if(!m.listening){
 				if(Game.game.mouse.inScreen){
 					int y=(int)( ((Game.game.mouse.y/(float)Game.scale) /Game.TILE_SIZE) -(Game.game.screen.height/2f-m.sprites[0].length*Game.TILE_SIZE/2f)/Game.TILE_SIZE);
-					System.out.println(y);
-					if(y<m.selectedOptions.length && y>=0 && m.selectedOptions[y]!=null){
+					
+					if(lastY!=Game.game.mouse.y)
+						usingMouse=true;
+					
+					if(usingMouse && y<m.selectedOptions.length && y>=0 && m.selectedOptions[y]!=null){
 						m.selected=y;
+						if(Game.game.mouse.onPress){
+							m.select();
+							Game.game.mouse.onPress=false;
+						}
 					}
-					if(Game.game.mouse.onPress){
-						m.select();
-						Game.game.mouse.onPress=false;
-					}
+					lastY = Game.game.mouse.y;
 				}
 			}
 		}
@@ -534,6 +540,7 @@ public class Menu {
 	
 	public void selectNext(){
 		if(listening) return;
+		usingMouse=false;
 		
 		for(int i=selected+1;i<lines.length;i++)
 			if(selectedOptions[i]!=null && lines[i].trim()!=""){
@@ -550,6 +557,7 @@ public class Menu {
 	
 	public void selectPrevious(){
 		if(listening) return;
+		usingMouse=false;
 		
 		for(int i=selected-1;i>0;i--)
 			if(selectedOptions[i]!=null && lines[i].trim()!=""){

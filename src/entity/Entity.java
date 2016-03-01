@@ -2,6 +2,7 @@ package entity;
 
 import java.util.Random;
 
+import game.Game;
 import graphics.Screen;
 import level.Level;
 import util.Vector2i;
@@ -32,6 +33,9 @@ public abstract class Entity {
 	public boolean isRemoved(){ return removed; }
 	
 	public void doRender(boolean b) {render=b;}
+
+	public boolean isOnTile(int x, int y) {
+		return this.x/Game.TILE_SIZE==x && this.y/Game.TILE_SIZE==y;
+	}
 	
-	//Method offset for updates _   void offsetForUpdates(int xOffset, int yOffset, int updates)
 }

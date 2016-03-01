@@ -423,6 +423,8 @@ public class Player extends Mob {
 			expToNextLevel*=1.5f;
 			
 			new Popup("LEVELED UP TO LEVEL " +Level,Color.green,5f);
+			if(screen!=null)
+				screen.activateRainbowEffect();
 		}
 	}
 	
