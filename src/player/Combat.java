@@ -80,7 +80,7 @@ public class Combat {
 			for(int j=0;j<3;j++){
 				if(i==1 && j==1) continue;
 				if(!player.level.canMoveOn((int)(player.x/Game.TILE_SIZE+i-1), (int)(player.y/Game.TILE_SIZE+j-1))){
-					UI.combatUIDir.colors[(i*2)+1][(j*2)+2]=Color.black;
+					UI.combatUIDir.colors[(i*2)+1][(j*2)+2]=Color.darkGray;
 				}else{
 					if(castSpell!=null){
 						if(castSpell.getDamagePercent(heldCount)==0.33f)
@@ -136,7 +136,7 @@ public class Combat {
 						}
 					}
 				}
-				Packet13Projectile packet = new Packet13Projectile((int)(player.x+(xDir*Game.TILE_SIZE)), (int)(player.y+(yDir*Game.TILE_SIZE)), (float)xDir, (float)yDir, castSpell.name,castSpell.getDamagePercent(heldCount),player.lockedOn==null ? (close!=null ? close.identifier : "null") : player.lockedOn.identifier);
+				Packet13Projectile packet = new Packet13Projectile((int)(player.x+(xDir*Game.TILE_SIZE)), (int)(player.y+(yDir*Game.TILE_SIZE)), (float)xDir, (float)yDir, castSpell.name,castSpell.getDamagePercent(heldCount),player.lockedOn==null ? (close!=null ? close.identifier : "null") : player.lockedOn.identifier,player.identifier);
 				packet.writeData(Game.game.socketClient);
 			}else{
 				new Particle(player.x + Game.TILE_SIZE/2 + (int)(xDir*Game.TILE_SIZE), player.y + Game.TILE_SIZE/2 + (int)(yDir*Game.TILE_SIZE),1,120,0.2f,50,player.level,new Color[]{Color.gray,Color.darkGray},Particle.RenderType.Sprite);

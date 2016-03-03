@@ -156,7 +156,7 @@ public class GameClient extends Thread{
 	}
 	 
 	private void handleProjectile(Packet13Projectile packet){
-		new Projectile(packet.getX(),packet.getY(),packet.getxDir(),packet.getyDir(),Spell.getSpell(packet.getSpell()),packet.getDamagePercent(),game.level.getMob(packet.getMobID()),game.level);
+		new Projectile(packet.getX(),packet.getY(),packet.getxDir(),packet.getyDir(),Spell.getSpell(packet.getSpell()),packet.getDamagePercent(),game.level.getMob(packet.getMobID()),game.level,packet.getSourceID());
 	}
 	 
 	private void handleLogin(Packet10Login packet, InetAddress address, int port){

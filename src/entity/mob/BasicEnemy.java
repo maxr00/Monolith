@@ -224,7 +224,7 @@ public class BasicEnemy extends Mob {
 					}
 					if(xDir!=0 || yDir!=0){
 						Spell s=spells[(int)(Math.random()*spells.length)];
-						Packet13Projectile projPacket = new Packet13Projectile(x, y, xDir, yDir, s.name,damage,targetMob.identifier);
+						Packet13Projectile projPacket = new Packet13Projectile(x, y, xDir, yDir, s.name,damage,targetMob.identifier,identifier);
 						projPacket.writeData(Game.game.socketClient);
 					}
 				}
@@ -273,7 +273,7 @@ public class BasicEnemy extends Mob {
 		}
 		if(xDir!=0 || yDir!=0){
 			Spell s=spells[(int)(Math.random()*spells.length)];
-			Packet13Projectile projPacket = new Packet13Projectile(x, y, xDir, yDir, s.name,0.5f,null);
+			Packet13Projectile projPacket = new Packet13Projectile(x, y, xDir, yDir, s.name,0.5f,null,identifier);
 			projPacket.writeData(Game.game.socketClient);
 		}
 	}
@@ -290,7 +290,7 @@ public class BasicEnemy extends Mob {
 		if(render){
 			if(lockedOnto){
 				screen.renderBackground(this.x-1, this.y-1, sprites.length*Game.TILE_SIZE+2, sprites[0].length*Game.TILE_SIZE+2, new Color(201,175,40).getRGB());
-				screen.renderBackground(this.x, this.y, sprites.length*Game.TILE_SIZE, sprites[0].length*Game.TILE_SIZE, Color.black.getRGB());
+				screen.renderBackground(this.x, this.y, sprites.length*Game.TILE_SIZE, sprites[0].length*Game.TILE_SIZE, Screen.defaultBackground);
 			}
 			for (int x = 0; x < sprites.length; x++) {
 				for (int y = 0; y < sprites[x].length; y++) {

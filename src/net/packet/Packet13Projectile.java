@@ -5,7 +5,7 @@ import net.GameServer;
 
 public class Packet13Projectile extends Packet {
 	
-	private String spell, mobID;
+	private String spell, mobID, sourceID;
 	private int x,y;
 	private float xDir, yDir;
 	private float damagePercent;
@@ -22,13 +22,14 @@ public class Packet13Projectile extends Packet {
 			this.spell=dataArray[4];
 			this.damagePercent=Float.parseFloat(dataArray[5]);
 			this.mobID=dataArray[6];
+			this.sourceID=dataArray[7];
 		}catch(ArrayIndexOutOfBoundsException e){
 			System.out.println("PROJECTILE PACKET OUT OF BOUNDS");
 		}
 	}
 	
 	//Creating a packet
-	public Packet13Projectile(int x,int y, float xDir, float yDir, String spell, float damagePercent, String mobID){
+	public Packet13Projectile(int x,int y, float xDir, float yDir, String spell, float damagePercent, String mobID, String sourceID){
 		super(13);
 		this.x = x;
 		this.y = y;
@@ -37,6 +38,7 @@ public class Packet13Projectile extends Packet {
 		this.spell=spell;
 		this.damagePercent=damagePercent;
 		this.mobID=mobID;
+		this.sourceID=sourceID;
 	}
 	
 	//Send to server from client
@@ -50,7 +52,7 @@ public class Packet13Projectile extends Packet {
 	}	
 	
 	public byte[] getData(){
-		return ("13" + x+","+y +"," +xDir +"," +yDir +"," +spell +"," +damagePercent+","+mobID).getBytes();
+		return ("13" + x+","+y +"," +xDir +"," +yDir +"," +spell +"," +damagePercent+","+mobID +","+sourceID).getBytes();
 	}
 
 	public int getX(){return x;}
@@ -60,5 +62,5 @@ public class Packet13Projectile extends Packet {
 	public String getSpell() {return spell;}
 	public float getDamagePercent(){return damagePercent;}
 	public String getMobID(){return mobID;}
-
+	public String getSourceID(){return sourceID;}
 }

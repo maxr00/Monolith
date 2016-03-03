@@ -11,15 +11,15 @@ import player.Spell.Rune;
 public class Spell {
 	//Default
 	//									      (name,			type,			chr, Color,       			D, S, 	 L,     hold, shots, runes,									preReq,					Affect, 		time,  amt, unlocked)
-	public static Spell Shock		=new Spell("Shock",			Type.Projectile,'!', Color.cyan,		 	5, 2f,	 1f, 	1.5f,		2, new Rune[]{Rune.Electricity},			null,												true);
+	public static Spell Shock		=new Spell("Shock",			Type.Projectile,'!', Color.cyan,		 	5, 2f,	 1f, 	1.5f,	2, new Rune[]{Rune.Electricity},			null,												true);
 	public static Spell Fireball 	=new Spell("Fireball",		Type.Projectile,'&', Color.orange, 			5, 1f, 	 1.5f,  1f, 	3, new Rune[]{Rune.Fire},					null,												true);
 	public static Spell Splash		=new Spell("Splash",		Type.Projectile,'>', Color.blue, 			1, 1f,	 0.75f,	0.7f, 	8, new Rune[]{Rune.Water},					null,					Affect.Wet,		0.5f,  1,	true);
 	public static Spell Airblast 	=new Spell("Airblast",		Type.Projectile,'=', Color.cyan, 			3, 3f, 	 1f, 	1f, 	4, new Rune[]{Rune.Air}, 					null,					Affect.Slow,	0.25f, 1,	true);
 	public static Spell Earthball	=new Spell("Earthball",		Type.Projectile,'#', new Color(0x8f6b38),	4, 1f, 	 1f, 	1f, 	3, new Rune[]{Rune.Earth},					null,												true);
-	public static Spell Shadowblast =new Spell("Shadowblast",	Type.Projectile,'&', new Color(112,39,195), 3, 1f, 	 1f, 	1f, 	4, new Rune[]{Rune.Shadow},					null,												true);
-	public static Spell Trick		=new Spell("Trick",			Type.Projectile,'?', Color.gray,			3, 0.01f,4f, 	1.5f,		2, new Rune[]{Rune.Darkness},				null,												true);
+	public static Spell Shadowbolt 	=new Spell("Shadowbolt",	Type.Projectile,'&', new Color(112,39,195), 3, 1f, 	 2f, 	1f, 	4, new Rune[]{Rune.Shadow},					null,												true);
+	public static Spell Trick		=new Spell("Trick",			Type.Projectile,'?', Color.gray,			3, 0.01f,4f, 	1.5f,	2, new Rune[]{Rune.Darkness},				null,												true);
 	public static Spell Poisoncloud	=new Spell("Poisoncloud",	Type.Projectile,'*', Color.green,		 	0, 0.01f,5f, 	2f, 	2, new Rune[]{Rune.Poison},					null,					Affect.Poison,	0.25f, 2,	true);
-	public static Spell Sunspot		=new Spell("Earthball",		Type.Projectile,'f', new Color(0x8f6b38),	4, 1f, 	 1f, 	1f, 	3, new Rune[]{Rune.Light},					null,												true);
+	public static Spell Sunspot		=new Spell("Sunspot",		Type.Projectile,'f', Color.yellow,			2, 1.5f, 1f, 	1f, 	5, new Rune[]{Rune.Light},					null,												true);
 	
 	//Level 1 Unlocks
 	public static Spell Lightning	=new Spell("Lightning",		Type.Projectile,'~', Color.yellow, 			3, 3, 	 1f, 	1f, 	6, new Rune[]{Rune.Electricity,Rune.Air},   new Spell[]{Shock},									false);
@@ -27,19 +27,18 @@ public class Spell {
 	public static Spell Waterball	=new Spell("Waterbll",		Type.Projectile,'o', Color.blue, 			3, 2.5f, 1f, 	1f, 	4, new Rune[]{Rune.Water,Rune.Air},			new Spell[]{Splash},	Affect.Wet,		0.5f,  1,	false);
 	public static Spell Airwave		=new Spell("Airwave",		Type.Projectile,')', Color.white, 			3, 3.25f,0.5f, 	0.9f, 	5, new Rune[]{Rune.Air,Rune.Light},   		new Spell[]{Airblast},								false);
 	public static Spell Rockslam	=new Spell("Rockslam",		Type.Projectile,'0', new Color(0x8f6b38),	7, 1f,	 0.1f, 	1f, 	1, new Rune[]{Rune.Earth,Rune.Air},   		new Spell[]{Earthball},								false);
-	public static Spell ShadowPuppet=new Spell("ShadowPuppet",	Type.Projectile,'%', new Color(112,39,195),	4, 2f,	 2f, 	2.5f, 	8, new Rune[]{Rune.Shadow,Rune.Darkness},	new Spell[]{Shadowblast},							false);
+	public static Spell ShadowPuppet=new Spell("ShadowPuppet",	Type.Projectile,'%', new Color(112,39,195),	4, 2f,	 2f, 	2.5f, 	8, new Rune[]{Rune.Shadow,Rune.Darkness},	new Spell[]{Shadowbolt},							false);
 	public static Spell DarkLight	=new Spell("DarkLight",		Type.Projectile,'#', Color.darkGray,		5, 3f,	 1f, 	1.5f, 	5, new Rune[]{Rune.Darkness,Rune.Light},	new Spell[]{Trick},									false);
 	public static Spell PoisonDart	=new Spell("PoisonDart",	Type.Projectile,',', Color.green,			2, 3.5f, 1f, 	2f, 	8, new Rune[]{Rune.Poison,Rune.Air},		new Spell[]{Poisoncloud},Affect.Poison,	0.5f,	1,	false);
 	public static Spell Lightbulb	=new Spell("Lightbulb",		Type.Projectile,'?', Color.yellow,			5, 2f,	 2f, 	1.25f, 	4, new Rune[]{Rune.Light,Rune.Electricity},	new Spell[]{Sunspot},								false);
 	
 	//Level 2 Unlocks
 	
-	
-	//Levels 3-7
+	//Levels 3-7 - dont require new runes
 	//
 	//
 	
-	//Requires additional runes
+	//New Rune Default Spells
 	public static Spell MagmaSnake	=new Spell("MagmaSnake",	Type.Projectile,'%', Color.red,			 	7, 0.5f,4f,		2f,		1, new Rune[]{Rune.Magma},					null,												true);
 	
 	//Next steps:

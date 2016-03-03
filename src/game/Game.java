@@ -335,6 +335,7 @@ public class Game extends Canvas implements Runnable {
 				yScroll = player.y - screen.height/2;
 			}else{
 				UI.combatUI.active=false;
+				UI.combatUIDir.active=false;
 				UI.healthUI.active=false;
 				UI.levelReadyUI.active=false;
 			}

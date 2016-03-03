@@ -2,6 +2,7 @@ package entity;
 
 import java.awt.Color;
 
+import entity.mob.BasicEnemy;
 import entity.mob.Mob;
 import game.Game;
 import graphics.Screen;
@@ -20,6 +21,8 @@ public class Projectile extends Entity{
 	private Level level;
 	private Mob target;
 	
+	public String sourceID;
+	
 	/*public static enum Spell{
 		Fireball	(Sprite.and,	Color.orange, 5, 1, 1.5f),
 		Lightning	(Sprite.tilde,	Color.yellow, 3, 3, 1f),
@@ -36,7 +39,7 @@ public class Projectile extends Entity{
 		}
 	}*/
 	
-	public Projectile(int x,int y, float xDir, float yDir, Spell spell, float damagePercent, Mob target, Level level){
+	public Projectile(int x,int y, float xDir, float yDir, Spell spell, float damagePercent, Mob target, Level level, String source){
 		//this.creator = creator;
 		this.xDir = xDir;
 		this.yDir = yDir;
@@ -52,6 +55,8 @@ public class Projectile extends Entity{
 		this.life=spell.life;
 		this.lifeTime=(int)(life*60);
 		this.target=target;
+		
+		this.sourceID=source;
 		
 		this.level=level;
 		level.entities.add(this);
@@ -84,8 +89,8 @@ public class Projectile extends Entity{
 					removed=true;
 				}else{
 					Entity e = level.getEntityOn((int)((px+cx)/Game.TILE_SIZE),(int)((py+cy)/Game.TILE_SIZE));
-					if(e!=null && e!=this && e instanceof Projectile){
-						((Projectile)e).hitProjectile();
+					if(e!=null && e!=this && e instanceof Projectile && !((Projectile)e).sourceID.equals(sourceID) && ((Projectile)e).target != target){
+						((Projectile) e).hitProjectile();
 						hitProjectile();
 					}
 				}
@@ -127,62 +132,21 @@ public class Projectile extends Entity{
 		
 		px+=xDir * speed;
 		py+=yDir * speed;
+		
 	}
-	/*
-	 if(  Math.abs(target.x-(px-((xDir-correctionAmt)*speed)))> Math.abs(target.x-(px-((xDir)*speed)))  ){//Left
-					xDir-=correctionAmt;
-			}
-			if(  Math.abs(target.x-(px+((xDir+correctionAmt)*speed)))> Math.abs(target.x-(px+((xDir)*speed)))  ){//Right
-					xDir+=correctionAmt;
-			}
-			
-			if(  Math.abs(target.y-(py-((yDir-correctionAmt)*speed)))> Math.abs(target.y-(py-((yDir)*speed)))  ){//Target down
-					yDir-=correctionAmt;
-			}
-			if(  Math.abs(target.y-(py+((yDir+correctionAmt)*speed)))> Math.abs(target.y-(py+((yDir)*speed)))  ){//Target up
-					yDir+=correctionAmt;
-			}
-	 */
-	/*			
-	if(target.x<px-((xDir-correctionAmt)*speed)){//Left
-			xDir-=correctionAmt;
-	}
-	if(target.x>px+((xDir+correctionAmt)*speed)){//Right
-			xDir+=correctionAmt;
-	}
-	
-	if(target.y<py-((yDir-correctionAmt)*speed)){//Down
-			yDir-=correctionAmt;
-	}
-	if(target.y>py+((yDir+correctionAmt)*speed)){//Up
-			yDir+=correctionAmt;
-	}
-	
-	
-	//Diagonals not working
-	//trying to predict where it will be and correcting dir accordingly
-	if(target.x<px-((xDir-correctionAmt)*speed*(lifeTime/(float)corrTime)) ){//Left
-		xDir-=correctionAmt;
-	}
-	if(target.x>px+((xDir+correctionAmt)*speed*(lifeTime/(float)corrTime)) ){//Right
-		xDir+=correctionAmt;
-	}
-
-	if(target.y<py-((yDir-correctionAmt)*speed*(lifeTime/(float)corrTime)) ){//Down
-		yDir-=correctionAmt;
-	}
-	if(target.y>py+((yDir+correctionAmt)*speed*(lifeTime/(float)corrTime)) ){//Up
-		yDir+=correctionAmt;
-	}
-*/
-
 	
 	public void render(Screen screen){
-		screen.renderProjectile((int)px, (int)py, spell.sprite, spell.color.getRGB());
+		if(render){
+			screen.renderProjectile((int)px, (int)py, spell.sprite, spell.color.getRGB());
+			screen.renderGlow(x, y, Game.TILE_SIZE, Game.TILE_SIZE, spell.color, 15, 50);
+			
+			//screen.splitRGB_UL((int)(x-screen.xOffset), (int)(y-screen.yOffset), Game.TILE_SIZE, Game.TILE_SIZE, 10,20,false, 10, true,false,false);
+			
+			//screen.renderGlow(x, y, Game.TILE_SIZE, Game.TILE_SIZE, new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256)), random.nextInt(30), 255);
+			//screen.splitRGB_UL((int)(x-screen.xOffset), (int)(y-screen.yOffset), Game.TILE_SIZE, Game.TILE_SIZE, 30,20,false, 1, random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
+			//screen.splitRGB_UL((int)(x-screen.xOffset), (int)(y-screen.yOffset), Game.TILE_SIZE, Game.TILE_SIZE, 19,20,false, 1, true,false,false);
+		}
 		
-		screen.renderGlow(x, y, Game.TILE_SIZE, Game.TILE_SIZE, new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256)), random.nextInt(30), 255);
-		//screen.splitRGB_UL((int)(x-screen.xOffset), (int)(y-screen.yOffset), Game.TILE_SIZE, Game.TILE_SIZE, 30,20,false, 1, random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
-		screen.splitRGB_UL((int)(x-screen.xOffset), (int)(y-screen.yOffset), Game.TILE_SIZE, Game.TILE_SIZE, 19,20,false, 1, true,false,false);
 	}
 	
 	public String toString(){
