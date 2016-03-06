@@ -43,7 +43,7 @@ public class Game extends Canvas implements Runnable {
 
 	public static int TILE_SIZE=7;
 	
-	private static String title = "Project Monolith vDB_9";
+	private static String title = "Project Monolith vDB_8";
 	
 	private static final int minScale=1, maxScale=4;
 	
@@ -304,7 +304,6 @@ public class Game extends Canvas implements Runnable {
 		renderPixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 		Dimension size = new Dimension(width * scale, height * scale);
 		setPreferredSize(size);
-		frame.pack();
 		screen = new Screen(width, height);
 	}
 	
@@ -386,6 +385,9 @@ public class Game extends Canvas implements Runnable {
 			}
 		}
 		
+		
+		
+		if(renderPixels.length==screen.pixels.length)
 		for (int i = 0; i < renderPixels.length; i++) {
 			if(screen.pixels[i]!=Screen.defaultBackground)
 				renderPixels[i] = screen.pixels[i]; //Copy raw pixels to screen pixels
