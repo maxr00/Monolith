@@ -20,7 +20,6 @@ import net.packet.Packet14AddMob;
 import net.packet.Packet15MobUpdate;
 import net.packet.Packet16RemoveMob;
 import net.packet.Packet17LoadLevel;
-import net.packet.Packet18LevelColors;
 import net.packet.Packet21PlayerPause;
 import player.Spell;
 
@@ -102,10 +101,6 @@ public class GameClient extends Thread{
 			packet = new Packet17LoadLevel(data);
 			handleLoadLevel((Packet17LoadLevel)packet);
 			break;
-		case LEVELCOLORS:
-			packet = new Packet18LevelColors(data);
-			handleLoadLevelColors((Packet18LevelColors)packet);
-			break;
 		case REQUESTLEVEL:
 			//Server recieved packet and sent back confirmation. Now log in
 			Game.game.sendLogin();
@@ -123,13 +118,9 @@ public class GameClient extends Thread{
 		((PlayerMP)game.level.getMob(packet.getID())).paused=packet.getPaused();
 	}
 	 
-	private void handleLoadLevelColors(Packet18LevelColors packet) {
-		Game.game.level.setColor(packet.getColors());
-		Game.game.joinLevel();
-	}
-
 	private void handleLoadLevel(Packet17LoadLevel packet) {
-		Game.game.level=new Level(packet.getWidth(),packet.getHeight(),packet.getWorld(),packet.getSolids());
+		Game.game.level=new Level(packet.getWidth(),packet.getHeight(),packet.getTiles());
+		Game.game.joinLevel();
 	}
 
 	private void handleRemoveMob(Packet16RemoveMob packet){

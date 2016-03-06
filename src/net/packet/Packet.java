@@ -15,7 +15,6 @@ public abstract class Packet {
 		MOBUPDATE(15),
 		REMOVEMOB(16),
 		LOADLEVEL(17),
-		LEVELCOLORS(18),
 		REQUESTLEVEL(19),
 		SERVERENDING(20),
 		PAUSE(21),

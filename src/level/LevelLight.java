@@ -15,13 +15,14 @@ import graphics.Screen;
 public class LevelLight {
 
 	private int width, height;
-	public int[] tiles;
+	public int[] tiles,background;
 	private final Random random = new Random();
 	
 	public LevelLight(int w, int h){
 		width = w;
 		height = h;
 		tiles = new int[w*h];
+		background = new int[w*h];
 		//generateLevel(path);
 		//generateRandomLevel();
 	}
@@ -62,9 +63,23 @@ public class LevelLight {
 		}
 	}
 	
+	public void generateLevel(Color[] cols,Color[] bg){
+		for(int i=0; i<tiles.length;i++){
+			tiles[i]=cols[i].getRGB();
+			background[i]=bg[i].getRGB();
+		}
+	}
+	
 	public void generateLevel(int[] cols){
 		for(int i=0; i<tiles.length;i++){
 			tiles[i]=cols[i];
+		}
+	}
+	
+	public void generateLevel(int[] cols,int[] bgs){
+		for(int i=0; i<tiles.length;i++){
+			tiles[i]=cols[i];
+			background[i]=bgs[i];
 		}
 	}
 	

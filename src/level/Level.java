@@ -14,6 +14,7 @@ import entity.Particle_Exp;
 import entity.mob.Mob;
 import game.Game;
 import graphics.Screen;
+import level.RandomLevel.RTile;
 import net.PlayerMP;
 import player.Player;
 import util.Node;
@@ -35,7 +36,7 @@ public class Level {
 	public String path;
 	
 	public String world, solids;
-	public Color[] colors;
+	public Color[] colors, background;
 	
 	private float[][] lightMap;
 	private int[][][] shadowMap = null;
@@ -56,37 +57,37 @@ public class Level {
 		levelLight = new LevelLight(width,height);
 	}
 	
-	public Level(int width, int height, String world, String solids){
+	public Level(int width, int height, int[] rtiles){
+		
+		
 		this.width = width;
 		this.height = height;
-		this.world=world;
-		this.solids=solids;
 		tiles = new Tile[width * height];
 		levelLight = new LevelLight(width,height);
-		shadowMap = new int[getPlayers().size()][][];
-	}
-	
-	public void setColor(int[] colors){
-		int[][] colorBlemishes = LevelLight.getPossibleBlemishes(100);
 		
-		int whiteSpace = 0;
-		for (int y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				if(world.length()>x+y*width-whiteSpace && solids.length()>x+y*width-whiteSpace){
-					if(world.charAt(x+y*width - whiteSpace)=='\n'){//if is next line
-						whiteSpace += width - x - 1;
-						break;
-					}else{ //if(!Character.isWhitespace(world.charAt(x+y*width - whiteSpace)))//if not space 						  new Color(150,150,150).getRGB()
-						tiles[x+y*width] = new Tile(world.charAt(x+y*width - whiteSpace),solids.charAt(x+y*width-whiteSpace)=='1',colors[x+y*width],colorBlemishes[random.nextInt(colorBlemishes.length)]);
-					}
-				}else break;
+		int[][] colorBlemishes = LevelLight.getPossibleBlemishes(100);
+		int[] colors=new int[width*height],bgs=new int[width*height];
+		
+		for(int i=0;i<rtiles.length;i++){
+			if(rtiles[i]!=-1){
+				RTile t = RTile.values()[rtiles[i]];
+				char c=t.characters[random.nextInt(t.characters.length)];
+				System.out.println(c);
+				int col = t.colors[random.nextInt(t.colors.length)].getRGB();
+				int bg = t.bg[random.nextInt(t.bg.length)].getRGB();
+				world+=c;
+				solids+=t.isWall ? "1" : "0";
+				colors[i]=col;
+				bgs[i]=bg;
+				tiles[i]=new Tile(rtiles[i], c, t.isWall, col, bg, colorBlemishes[random.nextInt(colorBlemishes.length)]);
 			}
 		}
 		
-		levelLight.generateLevel(colors);
+		levelLight.generateLevel(colors,bgs);
 		levelLight.setTilesLight(tiles);
 		shadowMap = new int[getPlayers().size()][][];
 	}
+	
 	
 	public void generateLevel(String path) {
 		String worldPath=path+".txt";
@@ -117,7 +118,7 @@ public class Level {
 						whiteSpace += width - x - 1;
 						break;
 					}else{ //if(!Character.isWhitespace(world.charAt(x+y*width - whiteSpace)))//if not space 						  new Color(150,150,150).getRGB()
-						tiles[x+y*width] = new Tile(world.charAt(x+y*width - whiteSpace),solids.charAt(x+y*width-whiteSpace)=='1',new Color(150,150,150).getRGB(),colorBlemishes[random.nextInt(colorBlemishes.length)]);
+						tiles[x+y*width] = new Tile(-1,world.charAt(x+y*width - whiteSpace),solids.charAt(x+y*width-whiteSpace)=='1',new Color(150,150,150).getRGB(),-1,colorBlemishes[random.nextInt(colorBlemishes.length)]);
 					}
 				}else break;
 			}

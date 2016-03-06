@@ -1,25 +1,26 @@
 package level;
 
-import java.awt.Color;
-
 import graphics.Screen;
 import graphics.Sprite;
 
 public class Tile {
 
-	public int tint;
+	public int tint,background;
 	private Sprite sprite;
 	private char character;
 	private boolean solid;
 	public boolean render=false, renderLight=false, renderGray;
 	public int[] colorBlemishes;
 	public boolean hasBeenSeen;
+	public int type;
 	//private final Random random = new Random();
 	
-	public Tile(char character, boolean solid, int defaultTint, int[] blemishes){//float blemishRate) {
+	public Tile(int type, char character, boolean solid, int defaultTint, int defaultBackground, int[] blemishes){//float blemishRate) {
+		this.type=type;
 		this.character=character;
 		this.solid = solid;
 		this.tint = defaultTint;
+		this.background=defaultBackground;
 		
 		colorBlemishes = blemishes;
 		sprite = Sprite.getSprite(character);
@@ -35,8 +36,11 @@ public class Tile {
 		if(renderLight && sprite!=null){
 			if(renderGray)											//Color.black.getRGB()
 				screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, Screen.defaultBackground, colorBlemishes);
-			else
+			else{
 				screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, tint, colorBlemishes);
+				if(background!=-1)
+					screen.renderBackground(x, y, sprite.WIDTH, sprite.HEIGHT, background);
+			}
 		}
 	}
 	

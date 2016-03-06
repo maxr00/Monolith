@@ -11,6 +11,7 @@ import entity.Projectile;
 import entity.mob.Mob;
 import game.Game;
 import level.Level;
+import level.Tile;
 import net.packet.Packet;
 import net.packet.Packet.PacketType;
 import net.packet.Packet10Login;
@@ -21,7 +22,6 @@ import net.packet.Packet14AddMob;
 import net.packet.Packet15MobUpdate;
 import net.packet.Packet16RemoveMob;
 import net.packet.Packet17LoadLevel;
-import net.packet.Packet18LevelColors;
 import net.packet.Packet19RequestLevel;
 import net.packet.Packet21PlayerPause;
 import player.Spell;
@@ -99,10 +99,6 @@ public class GameServer extends Thread{
         	packet = new Packet17LoadLevel(data);
         	handleLoadLevel((Packet17LoadLevel)packet);
         	break;
-        case LEVELCOLORS:
-        	packet = new Packet18LevelColors(data);
-        	handleLoadLevelColors((Packet18LevelColors)packet);
-        	break;
         case REQUESTLEVEL:
         	if(Game.game.level!=null && Game.game.level.colors!=null){
         		packet = new Packet19RequestLevel(data);
@@ -120,10 +116,6 @@ public class GameServer extends Thread{
     private void handlePause(Packet21PlayerPause packet) {
 		packet.writeData(this);
 		((PlayerMP)game.level.getMob(packet.getID())).paused=packet.getPaused();
-	}
-
-	private void handleLoadLevelColors(Packet18LevelColors packet) {
-		 packet.writeData(this);
 	}
     
     private void handleLoadLevel(Packet17LoadLevel packet) {
@@ -151,17 +143,13 @@ public class GameServer extends Thread{
     	System.out.println("[" + address.getHostAddress() + ":" + port + "] " + packet.getUsername() + " has connected...");
 
     	Level lvl=Game.game.level;
-    	int[] cols=new int[lvl.colors.length];
-    	for(int i=0;i<lvl.colors.length;i++){
-    		if(lvl.colors[i]!=null)
-    			cols[i]=lvl.colors[i].getRGB();
+    	int[] tiles = new int[lvl.width*lvl.height];
+    	for(int i=0;i<lvl.tiles.length;i++){
+    		tiles[i]=lvl.tiles[i].type;
     	}
-
-    	Packet17LoadLevel levelPacket=new Packet17LoadLevel(lvl.width,lvl.height,lvl.world,lvl.solids);//cols
-    	sendData(levelPacket.getData(),address,port);
     	
-    	Packet18LevelColors colorPacket=new Packet18LevelColors(cols);
-    	sendData(colorPacket.getData(),address,port);
+    	Packet17LoadLevel levelPacket=new Packet17LoadLevel(lvl.width,lvl.height,tiles);//cols
+    	sendData(levelPacket.getData(),address,port);
     	
     	//Send existing mobs to connecting player
     	Packet14AddMob mobPacket;

@@ -296,7 +296,7 @@ public class Game extends Canvas implements Runnable {
 					startMenu=startMenu.back();
 		}
 	}
-
+	
 	private void resetZoom(){
 		width = 1200/scale;
 		height = width / 16 * 9;

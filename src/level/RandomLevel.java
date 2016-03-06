@@ -28,6 +28,7 @@ public class RandomLevel extends Level {
 			
 		Stone(new char[]{',','.','`',' ','\'',':',' ',' '},new Color[]{Color.gray},Wall_Stone),
 		Dirt(new char[]{'\\',';',':','=','!','#',']','['},new Color[]{new Color(0x8f6b38)},Wall_Grass),
+		Water(new char[]{' ',' ',' ',' ',' ','.'},new Color[]{Color.white},new Color[]{Color.blue},Wall_Stone),
 		;
 		public static RTile[] tiles(){
 			List<RTile> tileList = new ArrayList<RTile>();
@@ -38,19 +39,37 @@ public class RandomLevel extends Level {
 			return tiles;
 		}
 		char[] characters;
-		Color[] colors;
+		Color[] colors, bg;
 		RTile border;
 		boolean isWall;
 		RTile(char[] characters, Color[] colors, RTile border){
 			this.characters=characters;
 			this.colors=colors;
 			this.border=border;
+			this.bg=new Color[]{Color.black};
 		}
+		RTile(char[] characters, Color[] colors, Color[] bg, RTile border){
+			this.characters=characters;
+			this.colors=colors;
+			this.bg=bg;
+			this.border=border;
+		}
+		
 		RTile(char[] characters, Color[] colors, boolean isWall){
 			this.characters=characters;
 			this.colors=colors;
 			isWall=true;
 			border=null;
+		}
+		
+		static int indexOf(RTile tile){
+			int i=0;
+			for(RTile t : RTile.values()){
+				if(t==tile)
+					return i;
+				i++;
+			}
+			return -1;
 		}
 	}
 	
@@ -79,6 +98,7 @@ public class RandomLevel extends Level {
 		colors = null;
 		
 		colors=new Color[width*height];
+		background = new Color[width*height];
 		
 		boolean border;
 		for(int y=0;y<height;y++){
@@ -91,6 +111,8 @@ public class RandomLevel extends Level {
 						solids+="0";
 					
 					colors[x+y*width]=roomTiles[x][y].colors[rng.nextInt(roomTiles[x][y].colors.length)];
+					if(roomTiles[x][y].bg!=null)
+						background[x+y*width]=roomTiles[x][y].bg[rng.nextInt(roomTiles[x][y].colors.length)];
 				}else{
 					border=false;
 					for(int xx=-1;xx<2;xx++){
@@ -126,7 +148,7 @@ public class RandomLevel extends Level {
 						whiteSpace += width - x - 1;
 						break;
 					}else //if(!Character.isWhitespace(world.charAt(x+y*width - whiteSpace)))//if not space
-						tiles[x+y*width] = new Tile(world.charAt(x+y*width - whiteSpace),solids.charAt(x+y*width-whiteSpace)=='1',colors[x+y*width].getRGB(),colorBlemishes[rng.nextInt(colorBlemishes.length)]);
+						tiles[x+y*width] = new Tile(RTile.indexOf(roomTiles[x][y]),world.charAt(x+y*width - whiteSpace),solids.charAt(x+y*width-whiteSpace)=='1',colors[x+y*width].getRGB(),background[x+y*width]!=null ? background[x+y*width].getRGB() : -1,colorBlemishes[rng.nextInt(colorBlemishes.length)]);
 				}else break;
 			}
 		}
@@ -312,7 +334,7 @@ public class RandomLevel extends Level {
 		}
 		if(!skip){
 			addDoor(doorSizeX,doorSizeY,doorX,doorY,RTile.Dirt);
-			generate(nW,nH,nX+xStart-xOff,nY+yStart-yOff,RTile.Stone);//RTile.tiles()[rng.nextInt(RTile.tiles().length)]);
+			generate(nW,nH,nX+xStart-xOff,nY+yStart-yOff,Math.random()<0.5f ? RTile.Stone : RTile.Water);//RTile.tiles()[rng.nextInt(RTile.tiles().length)]);
 		}
 	}
 	

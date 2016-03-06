@@ -38,7 +38,7 @@ public class Player extends Mob {
 	
 	private boolean hasBlemishes = false;
 	
-	private int Experience, Level, expToNextLevel=15, timesLeveledUp=0;
+	private int Experience, Level, expToNextLevel=50, timesLeveledUp=0;
 	
 	public Player(Keyboard in, MouseHandler mouse, Screen screen, Level lvl, String name, int spawnX, int spawnY, int color) {
 		Health=25;
@@ -149,9 +149,9 @@ public class Player extends Mob {
 			}
 		}
 		
-		if(Key.select.onPress){
-			new Popup("POPUPS ARE COOL",new Color(random.nextInt(150)+100,random.nextInt(150)+100,random.nextInt(150)+100),3f);
-		}
+		//if(Key.select.onPress){
+		//	new Popup("POPUPS ARE COOL",new Color(random.nextInt(150)+100,random.nextInt(150)+100,random.nextInt(150)+100),3f);
+		//}
 		
 		if(inMenu)
 			menuUpdate();

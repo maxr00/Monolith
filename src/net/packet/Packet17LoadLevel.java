@@ -6,7 +6,7 @@ import net.GameServer;
 public class Packet17LoadLevel extends Packet {
 	
 	private int width, height;
-	private String world, solids;
+	private int[] tiles;
 	
 	//Recieved a packet
 	public Packet17LoadLevel(byte[] data) {
@@ -15,22 +15,20 @@ public class Packet17LoadLevel extends Packet {
 		try{
 			this.width=Integer.parseInt(dataArray[0]);
 			this.height=Integer.parseInt(dataArray[1]);
-			this.solids = dataArray[2];
-			this.world = dataArray[3];
-			for(int i=4;i<dataArray.length;i++)//Incase world contains any ,s
-				this.world += ","+dataArray[i];
+			tiles = new int[width*height];
+			for(int i=0;i<dataArray[2].split("/").length;i++)//Incase world contains any ,s
+				this.tiles[i] = Integer.parseInt(dataArray[2].split("/")[i]);
 		}catch(ArrayIndexOutOfBoundsException e){
 			System.out.println("LOAD LEVEL PACKET OUT OF BOUNDS");
 		}
 	}
 	
 	//Creating a packet
-	public Packet17LoadLevel(int width, int height, String world, String solids){//, int[] colors){
+	public Packet17LoadLevel(int width, int height, int[] tiles){//, int[] colors){
 		super(17);
 		this.width=width;
 		this.height=height;
-		this.world=world;
-		this.solids=solids;
+		this.tiles=tiles;
 	}
 	
 	//Send to server from client
@@ -44,15 +42,13 @@ public class Packet17LoadLevel extends Packet {
 	}	
 	
 	public byte[] getData(){
-		return ("17" + width+","+height+","+solids+","+world).getBytes();
-	}
-
-	public String getWorld() {
-		return world;
+		String s="";
+		for(int t : tiles){	s+=t+"/"; }
+		return ("17" + width+","+height+","+s).getBytes();
 	}
 	
-	public String getSolids() {
-		return solids;
+	public int[] getTiles(){
+		return tiles;
 	}
 	
 	public int getWidth(){
