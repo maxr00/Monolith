@@ -13,7 +13,7 @@ import player.Spell;
 
 public abstract class Mob extends Entity {
 	
-	protected Sprite[][] sprites;
+	public Sprite[][] sprites;
 	public char[][] characters;
 	public float updateRange=125*Game.TILE_SIZE;
 	public int Health;
@@ -26,6 +26,8 @@ public abstract class Mob extends Entity {
 	public Spell[] spells;
 	
 	public String identifier, name;
+	
+	public boolean reflected;
 	
 	protected boolean[][] takenPos;
 	
@@ -81,15 +83,21 @@ public abstract class Mob extends Entity {
 	
 	public void moveTo(int x, int y) {
 		this.move(x-this.x, y-this.y);
+		
+		if(level.getTile(this.x/Game.TILE_SIZE, this.y/Game.TILE_SIZE+1).reflectMobs)
+			reflected=true;
+		else
+			reflected=false;
 	}
 		
 	public boolean isOnTile(int tx,int ty){
-		for(int x=0;x<takenPos.length;x++){
-			for(int y=0;y<takenPos[x].length;y++){
-				if(takenPos[x][y] && tx==(this.x/Game.TILE_SIZE)+x && ty==(this.y/Game.TILE_SIZE)+y)
-					return true;
+		if(takenPos!=null)
+			for(int x=0;x<takenPos.length;x++){
+				for(int y=0;y<takenPos[x].length;y++){
+					if(takenPos[x][y] && tx==(this.x/Game.TILE_SIZE)+x && ty==(this.y/Game.TILE_SIZE)+y)
+						return true;
+				}
 			}
-		}
 		return false;//(x/Game.TILE_SIZE==tx && y/Game.TILE_SIZE==ty);
 	}
 

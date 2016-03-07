@@ -194,6 +194,11 @@ public class BasicEnemy extends Mob {
 				move(deltaX * Game.TILE_SIZE, deltaY * Game.TILE_SIZE);
 				Packet15MobUpdate packet=new Packet15MobUpdate(x,y,Health,identifier);
 				packet.writeData(Game.game.socketClient);
+				
+				if(level.getTile(this.x/Game.TILE_SIZE, this.y/Game.TILE_SIZE+1).reflectMobs){
+					reflected=true;
+				}else
+					reflected=false;
 			}
 			if (time % 140*shotSpeed == 0) {
 				if(level.getDistance(vector, target)<=shootRange){
@@ -297,10 +302,19 @@ public class BasicEnemy extends Mob {
 					if (sprites[x][y] != null) {
 						screen.renderSprite(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y]);
 						//new Color(112,39,195)
-						if (colorBlemishes != null && colorBlemishes[x][y] != null)
+						if (colorBlemishes != null && colorBlemishes[x][y] != null){
 							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, colorBlemishes[x][y]);
-						else{
+						}else{
 							screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, null);
+						}
+						
+						if(reflected){
+							screen.renderSpriteReflected(this.x, this.y+Game.TILE_SIZE-1, sprites[x][y]);
+							if (colorBlemishes != null && colorBlemishes[x][y] != null){
+								screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + (y-1) * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, Color.cyan.getRGB(), colorBlemishes[x][y]);
+							}else{
+								screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + (y-1) * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, Color.cyan.getRGB(), null);
+							}
 						}
 					}
 				}

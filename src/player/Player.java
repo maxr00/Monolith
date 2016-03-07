@@ -225,6 +225,11 @@ public class Player extends Mob {
 		if (inputX != 0 || inputY != 0){
 			move(inputX*Game.TILE_SIZE, inputY*Game.TILE_SIZE);
 			
+			if(level.getTile(x/Game.TILE_SIZE, y/Game.TILE_SIZE+1).reflectMobs)
+				reflected=true;
+			else
+				reflected=false;
+			
 			Packet12Move packet = new Packet12Move(getUsername(),x,y);
 			packet.writeData(Game.game.socketClient);
 		}
@@ -354,6 +359,11 @@ public class Player extends Mob {
 		if(render){
 			for(int y=0;y<colorBlemishes.length;y++){
 				for(int x=0;x<colorBlemishes.length;x++){
+					if(reflected){
+						screen.renderSpriteReflected(this.x, this.y+Game.TILE_SIZE-1, sprites[x][y]);
+						screen.renderLight(this.x, this.y+Game.TILE_SIZE-1, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, this.color, Color.blue.getRGB(), colorBlemishes[x][y]);
+					}
+					
 					screen.renderSprite(this.x, this.y, sprites[x][y]);
 					screen.renderLight(this.x, this.y, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, this.color, colorBlemishes[x][y]);
 				}

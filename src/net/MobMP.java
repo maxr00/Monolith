@@ -77,6 +77,12 @@ public class MobMP extends Mob{
 			for (int x = 0; x < sprites.length; x++) {
 				for (int y = 0; y < sprites[x].length; y++) {
 					if (sprites[x][y] != null) {
+						
+						if(reflected){
+							screen.renderSpriteReflected(this.x, this.y+Game.TILE_SIZE-1, sprites[x][y]);
+							screen.renderLight(this.x, this.y + Game.TILE_SIZE-1, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, Color.blue.getRGB(), colorBlemishes[x][y]);
+						}
+						
 						screen.renderSprite(this.x + x * Game.TILE_SIZE, this.y + y * Game.TILE_SIZE, sprites[x][y]);
 						//new Color(112,39,195)
 						if (colorBlemishes != null && colorBlemishes[x][y] != null)

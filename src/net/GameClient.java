@@ -136,6 +136,9 @@ public class GameClient extends Thread{
 		for(Mob mob : game.level.mobs){
 			if(mob.identifier.equals(packet.getID())){
 				mob.moveTo(packet.getX(), packet.getY());
+				
+				
+				
 				mob.Health=packet.getHealth();
 				break;
 			}

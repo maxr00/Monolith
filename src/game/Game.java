@@ -36,7 +36,7 @@ import player.Player;
 public class Game extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L; //Default
 
-	public static int scale = 2; //Pixel density
+	public static int scale = 1; //Pixel density
 	
 	public static int width = 1200/scale;
 	public static int height = width / 16 * 9;
@@ -255,6 +255,8 @@ public class Game extends Canvas implements Runnable {
 				screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
 		}
 		
+
+		
 		if(inGame){
 			//if(keyboard.onSelect)
 			//if(!screen.isShaking)
@@ -276,13 +278,12 @@ public class Game extends Canvas implements Runnable {
 				level.renderUpdate(xScroll, yScroll, screen);
 			}else{
 				if(UI.waitingForServerLevel.standByUpdate()){
-					Packet19RequestLevel request=new Packet19RequestLevel();
-					request.writeData(socketClient);
+//					Packet19RequestLevel request=new Packet19RequestLevel();
+//					request.writeData(socketClient);
 				}
 			}
 			if(player!=null)
 				player.handleStatus(screen);
-			screen.update();
 		}else{
 			//Start Menu controls
 			if (Key.up.onPress)
@@ -295,6 +296,7 @@ public class Game extends Canvas implements Runnable {
 				if(startMenu.back()!=null)
 					startMenu=startMenu.back();
 		}
+		screen.update();
 	}
 	
 	private void resetZoom(){
@@ -362,6 +364,7 @@ public class Game extends Canvas implements Runnable {
 		}
 		
 		if(screen.isRainbow()) screen.renderRainbowEffect();
+		screen.renderSway();
 		
 		if(player!=null){
 			if(player.getUsername().equals("glitch"))

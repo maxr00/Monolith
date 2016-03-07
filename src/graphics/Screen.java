@@ -1,6 +1,7 @@
 package graphics;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Random;
 
 import game.Game;
@@ -51,6 +52,30 @@ public class Screen {
 		}
 	}
 	
+	
+	public void renderSpriteReflected(int xPos, int yPos, Sprite sprite){
+		xPos -= xOffset + shake_xOffset; //Minus because otherwise movement would be reversed
+		yPos -= yOffset + shake_yOffset;
+		if(sprite==null) return;
+		for (int y = 0; y < sprite.HEIGHT; y++) {
+			int ya = yPos + y;
+			if(ya < -sprite.HEIGHT || ya >= height) break;
+			if(ya<0) ya=0;
+			for (int x = 0; x < sprite.WIDTH; x++) {
+				int xa = xPos + x;
+				if(xa < -sprite.WIDTH || xa >= width) break;
+				if(xa<0)xa=0;
+				
+				if(sprite.pixels[x+(sprite.HEIGHT-1-y)*sprite.WIDTH]!=0x00ffffff){ //Don't render transparent pixels
+					pixels [xa + ya * width] = sprite.pixels[x + (sprite.HEIGHT-1-y) * sprite.WIDTH];
+				}else
+					pixels [xa + ya * width] = defaultBackground;
+				
+			}
+		}
+	}
+	
+	
 	public void renderLight(int xPos, int yPos, int w, int h, int color, int[] colBlemishes){
 		//if(rainbow) {color= Color.black.getRGB(); colBlemishes=null;}
 		
@@ -67,6 +92,27 @@ public class Screen {
 						pixels [xa + ya * width] = blend(color, colBlemishes[x+y]);
 					}else
 						pixels [xa + ya * width] = color;
+				}
+			}
+		}
+	}
+	
+	public void renderLight(int xPos, int yPos, int w, int h, int color, int blend, int[] colBlemishes){
+		//if(rainbow) {color= Color.black.getRGB(); colBlemishes=null;}
+		
+		xPos -= xOffset + shake_xOffset; //Minus because otherwise movement would be reversed
+		yPos -= yOffset + shake_yOffset;
+		for (int y = 0; y < h; y++) {
+			int ya = yPos + y;
+			if(ya < -h || ya >= height) break; if(ya<0) ya=0; 
+			for (int x = 0; x < w; x++) {
+				int xa = xPos + x;
+				if(xa < -w || xa >= width) break; if(xa<0)xa=0;
+				if(pixels [xa + ya * width] != defaultBackground){
+					if(colBlemishes != null && colBlemishes[x+y]!=0){
+						pixels [xa + ya * width] = blend(blend(color,blend), colBlemishes[x+y]);
+					}else
+						pixels [xa + ya * width] = blend(color,blend);
 				}
 			}
 		}
@@ -174,6 +220,7 @@ public class Screen {
 					if(xa < -Game.TILE_SIZE || xa >= width) break;
 					if(xa<0)xa=0;
 					pixels [xa + ya * width] = defaultBackground;
+					this.background [xa+ya*width] =defaultBackground;
 				}
 			}
 			return;
@@ -256,6 +303,7 @@ public class Screen {
 		}
 		
 		if(isShaking)updateShake();
+		updateSway();
 	}
 	
 	public static int blend(int colorA, int colorB) {
@@ -450,6 +498,7 @@ public class Screen {
 		isShaking=true;
 		shake_count=0;
 	}
+	
 	private void updateShake(){
 		shake_count++;
 		if(shake_count>shake_duration*60){ shake_xOffset=0; shake_yOffset=0; isShaking=false; return;}
@@ -478,42 +527,78 @@ public class Screen {
 			}
 		}
 	}
+	
+	
+	
+	
+	
+	ArrayList<Sway> sways = new ArrayList<Sway>();
+	public void setSway(int x,int y,int w,int h,int amt,int length, float duration, float speed){
+		sways.add(new Sway(x,y,w,h,amt,length,duration,speed));
+	}
+	public void updateSway(){
+		if(isSwaying()){
+			for(int i=0;i<sways.size();i++){
+				sways.get(i).count++;
+				if(sways.get(i).count%sways.get(i).speed==0){ sways.get(i).off++; }
+				
+				if(sways.get(i).count > sways.get(i).duration*60){
+					sways.remove(i);
+					return;
+				}
+			}
+			
+		}
+	}
+	
+	public boolean isSwaying(){return sways.size()>0;}
+	public void renderSway(){
+		if(!isSwaying()) return;
+		
+		for(int i=0;i<sways.size();i++){
+			
+			for(int y=sways.get(i).y;y<sways.get(i).y+sways.get(i).height;y++){
+				int xOff = (int)(  sways.get(i).amt*Math.cos( ((y/(sways.get(i).length/(float)Game.scale)+sways.get(i).off)/sways.get(i).duration/2)*(2f*Math.PI) )  );
+				if(xOff>0)
+					for(int x=sways.get(i).x+sways.get(i).width-1;x>=sways.get(i).x+sways.get(i).amt;x--){
+						if(x+xOff+y*width<pixels.length && x+xOff+y*width>=0 && x+y*width<pixels.length && x+y*width>=0){
+							pixels[x+xOff+y*width]=pixels[x+y*width];
+							background[x+xOff+y*width]=background[x+y*width];
+						}
+					}
+				else
+					for(int x=sways.get(i).x-sways.get(i).amt;x<sways.get(i).x+sways.get(i).width;x++){
+						if(x+xOff+y*width<pixels.length && x+xOff+y*width>=0 && x+y*width<pixels.length && x+y*width>=0){
+							pixels[x+xOff+y*width]=pixels[x+y*width];
+							background[x+xOff+y*width]=background[x+y*width];
+						}
+					}
+			}
+			
+		}
+	}
+	
 }
-/*
 
+class Sway{
+	public int x,y,width,height,amt,length;
+	public float duration,speed;
+	public int count,off;
+	public Sway(int x,int y,int w,int h,int amt,int length, float duration, float speed){
+		this.x=x;
+		this.y=y;
+		this.width=w;
+		this.height=h;
+		this.amt=amt;
+		this.length=length;
+		this.duration=duration;
+		this.speed=speed;
+	}
+}
+ 
+ 
+/*
 Circle formula:
 
 (dx-x-w/2)*(dx-x-w/2) + (dy-y-h/2)*(dy-y-h/2) < (range)*(range)
-
-/*
- *  Render base and other stuff commented here for future use
- * 
- * 
- * 
-	private final int mapSize = 100;
-	public int[] tiles = new int[mapSize * mapSize];
-	private Random random = new Random();
-	
-	public Screen(int width, int height) {
-		this.width = width;
-		this.height = height;
-		pixels = new int[width * height];
-
-		for (int i = 0; i < tiles.length; i++) {
-			tiles[i] = random.nextInt(0xffffff);
-		}
-	}
-	
-	
-	 	public void render(int xOffset, int yOffset) {//Take in x and y offsets
-		for (int y = 0; y < height; y++) {
-			int yPixel = y + yOffset;
-			if (yPixel < 0 || yPixel >= height) continue;
-			for (int x = 0; x < width; x++) { // Nest x in y, and multiple y by width
-				int xPixel = x + xOffset;
-				if (xPixel < 0 || xPixel >= width) continue;
-				pixels[xPixel + yPixel * width] = Sprite.a.pixels[(x % 6) + (y % 6) * 7];//tiles[tileIndex]; 364,56
-			}
-		}
-	}
  */ 

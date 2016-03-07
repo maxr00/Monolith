@@ -28,7 +28,7 @@ public class RandomLevel extends Level {
 			
 		Stone(new char[]{',','.','`',' ','\'',':',' ',' '},new Color[]{Color.gray},Wall_Stone),
 		Dirt(new char[]{'\\',';',':','=','!','#',']','['},new Color[]{new Color(0x8f6b38)},Wall_Grass),
-		Water(new char[]{' ',' ',' ',' ',' ','.'},new Color[]{Color.white},new Color[]{Color.blue},Wall_Stone),
+		Water(new char[]{' ',' ',' ',' ',' ','.'},new Color[]{Color.white},new Color[]{new Color(47,71,125)},Wall_Stone),
 		;
 		public static RTile[] tiles(){
 			List<RTile> tileList = new ArrayList<RTile>();
@@ -69,6 +69,7 @@ public class RandomLevel extends Level {
 					return i;
 				i++;
 			}
+			//System.out.println(tile);
 			return -1;
 		}
 	}
@@ -83,6 +84,7 @@ public class RandomLevel extends Level {
 			endW=0;
 			endX=0;
 			endY=0;
+			mobs.clear();
 			mobs=new ArrayList<Mob>();
 			roomTiles=new RTile[width][height];
 			generate(10,10,width/2-5,height/2-5,RTile.Dirt);
@@ -148,7 +150,7 @@ public class RandomLevel extends Level {
 						whiteSpace += width - x - 1;
 						break;
 					}else //if(!Character.isWhitespace(world.charAt(x+y*width - whiteSpace)))//if not space
-						tiles[x+y*width] = new Tile(RTile.indexOf(roomTiles[x][y]),world.charAt(x+y*width - whiteSpace),solids.charAt(x+y*width-whiteSpace)=='1',colors[x+y*width].getRGB(),background[x+y*width]!=null ? background[x+y*width].getRGB() : -1,colorBlemishes[rng.nextInt(colorBlemishes.length)]);
+						tiles[x+y*width] = new Tile(RTile.indexOf(roomTiles[x][y]),x,y,world.charAt(x+y*width - whiteSpace),solids.charAt(x+y*width-whiteSpace)=='1',colors[x+y*width].getRGB(),background[x+y*width]!=null ? background[x+y*width].getRGB() : -1,colorBlemishes[rng.nextInt(colorBlemishes.length)]);
 				}else break;
 			}
 		}
@@ -170,7 +172,7 @@ public class RandomLevel extends Level {
 		if(roomCount>maxRooms){
 			for(int x=xStart;x<w+xStart;x++){
 				for(int y=yStart;y<h+yStart;y++){
-					if(x>=0 && y>=0 && x<roomTiles.length && y<roomTiles[x].length)
+					if(x>=0 && y>=0 && x<width && y<height)
 						roomTiles[x][y]=type;
 				}
 			}
