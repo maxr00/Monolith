@@ -53,6 +53,11 @@ public class MobMP extends Mob{
 			}
 		}
 		move(spawnX * Game.TILE_SIZE, spawnY * Game.TILE_SIZE);
+		
+		if(level.getTile(this.x/Game.TILE_SIZE, this.y/Game.TILE_SIZE+1).reflectMobs){
+			reflected=true;
+		}else
+			reflected=false;
 	}
 	
 	int particlesPerDamage=400;
@@ -79,7 +84,7 @@ public class MobMP extends Mob{
 					if (sprites[x][y] != null) {
 						
 						if(reflected){
-							screen.renderSpriteReflected(this.x, this.y+Game.TILE_SIZE-1, sprites[x][y]);
+							screen.renderSpriteReflected(this.x, this.y+Game.TILE_SIZE-1, sprites[x][y],this.color,Color.blue.getRGB());
 							screen.renderLight(this.x, this.y + Game.TILE_SIZE-1, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, Color.blue.getRGB(), colorBlemishes[x][y]);
 						}
 						

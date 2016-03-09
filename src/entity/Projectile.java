@@ -20,8 +20,10 @@ public class Projectile extends Entity{
 	private int damage = 1;
 	private Level level;
 	private Mob target;
+	private boolean reflected;
 	
 	public String sourceID;
+	
 	
 	/*public static enum Spell{
 		Fireball	(Sprite.and,	Color.orange, 5, 1, 1.5f),
@@ -96,6 +98,11 @@ public class Projectile extends Entity{
 				}
 			}
 		}
+		
+		if(level.getTile(this.x/Game.TILE_SIZE, this.y/Game.TILE_SIZE+1).reflectMobs)
+			reflected=true;
+		else
+			reflected=false;
 	}
 	
 	private void hitProjectile() {
@@ -140,6 +147,9 @@ public class Projectile extends Entity{
 			screen.renderProjectile((int)px, (int)py, spell.sprite, spell.color.getRGB());
 			screen.renderGlow(x, y, Game.TILE_SIZE, Game.TILE_SIZE, spell.color, 15, 50);
 			
+			if(reflected){
+				screen.renderSpriteReflected(this.x, this.y+Game.TILE_SIZE-1, spell.sprite, spell.color.getRGB(), Color.blue.getRGB());
+			}
 			//screen.splitRGB_UL((int)(x-screen.xOffset), (int)(y-screen.yOffset), Game.TILE_SIZE, Game.TILE_SIZE, 10,20,false, 10, true,false,false);
 			
 			//screen.renderGlow(x, y, Game.TILE_SIZE, Game.TILE_SIZE, new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256)), random.nextInt(30), 255);

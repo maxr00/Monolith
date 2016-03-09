@@ -90,7 +90,7 @@ public class Combat {
 						if(castSpell.getDamagePercent(heldCount)==1)
 							UI.combatUIDir.colors[(i*2)+1][(j*2)+2]=Color.red;
 					}else{
-							UI.combatUIDir.colors[(i*2)+1][(j*2)+2]=Color.red;
+							UI.combatUIDir.colors[(i*2)+1][(j*2)+2]=Color.gray;
 					}
 				}
 			}
@@ -109,7 +109,7 @@ public class Combat {
 			if(castSpell.getDamagePercent(heldCount)==1)
 				UI.combatUIDir.setDefaultColor(Color.red);
 		}else{
-				UI.combatUIDir.setDefaultColor(Color.red);
+				UI.combatUIDir.setDefaultColor(Color.gray);
 		}
 	}
 	

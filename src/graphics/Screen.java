@@ -52,30 +52,6 @@ public class Screen {
 		}
 	}
 	
-	
-	public void renderSpriteReflected(int xPos, int yPos, Sprite sprite){
-		xPos -= xOffset + shake_xOffset; //Minus because otherwise movement would be reversed
-		yPos -= yOffset + shake_yOffset;
-		if(sprite==null) return;
-		for (int y = 0; y < sprite.HEIGHT; y++) {
-			int ya = yPos + y;
-			if(ya < -sprite.HEIGHT || ya >= height) break;
-			if(ya<0) ya=0;
-			for (int x = 0; x < sprite.WIDTH; x++) {
-				int xa = xPos + x;
-				if(xa < -sprite.WIDTH || xa >= width) break;
-				if(xa<0)xa=0;
-				
-				if(sprite.pixels[x+(sprite.HEIGHT-1-y)*sprite.WIDTH]!=0x00ffffff){ //Don't render transparent pixels
-					pixels [xa + ya * width] = sprite.pixels[x + (sprite.HEIGHT-1-y) * sprite.WIDTH];
-				}else
-					pixels [xa + ya * width] = defaultBackground;
-				
-			}
-		}
-	}
-	
-	
 	public void renderLight(int xPos, int yPos, int w, int h, int color, int[] colBlemishes){
 		//if(rainbow) {color= Color.black.getRGB(); colBlemishes=null;}
 		
@@ -304,6 +280,7 @@ public class Screen {
 		
 		if(isShaking)updateShake();
 		updateSway();
+		updateReflectionSway();
 	}
 	
 	public static int blend(int colorA, int colorB) {
@@ -577,6 +554,42 @@ public class Screen {
 			
 		}
 	}
+	
+	
+	
+	private int ref_count, ref_off, ref_speed=10, ref_amt=2, ref_length=2;
+	public void updateReflectionSway(){
+		ref_count++;
+		if(ref_count%ref_speed==0) ref_off++;
+	}
+	
+	public void renderSpriteReflected(int xPos, int yPos, Sprite sprite, int color, int blend){
+		xPos -= xOffset + shake_xOffset; //Minus because otherwise movement would be reversed
+		yPos -= yOffset + shake_yOffset;
+		int blended = blend(color,blend);
+		if(sprite==null) return;
+		for (int y = 0; y < sprite.HEIGHT; y++) {
+			int ya = yPos + y;if(ya < -sprite.HEIGHT || ya >= height) break;if(ya<0) ya=0;
+			
+			int xOff = (int)(  ref_amt*Math.cos( ((y/(ref_length/(float)Game.scale)+ref_off)/10f/2f)*(2f*Math.PI) )  );
+			
+			for (int x = 0; x < sprite.WIDTH; x++) {
+				int xa = xPos + x;
+				if(xa < -sprite.WIDTH || xa >= width) break;
+				if(xa<0)xa=0;
+				
+				if(sprite.pixels[x+(sprite.HEIGHT-1-y)*sprite.WIDTH]!=0x00ffffff){ //Don't render transparent pixels
+					background [xa +xOff + ya * width] = blended;//sprite.pixels[x + (sprite.HEIGHT-1-y) * sprite.WIDTH];
+				}//else{
+				//	pixels [xa +xOff + ya * width] = defaultBackground;
+				//}
+				
+			}
+		}
+		
+	}
+	
+	
 	
 }
 

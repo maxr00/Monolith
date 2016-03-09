@@ -36,7 +36,7 @@ import player.Player;
 public class Game extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L; //Default
 
-	public static int scale = 1; //Pixel density
+	public static int scale = 2; //Pixel density
 	
 	public static int width = 1200/scale;
 	public static int height = width / 16 * 9;
@@ -93,6 +93,7 @@ public class Game extends Canvas implements Runnable {
 		}else{
 			startClient();
 		}*/
+		
 		startMenu=Menu.START_MENU;
 		inGame=false;
 		startMenu.active=true;
@@ -255,8 +256,6 @@ public class Game extends Canvas implements Runnable {
 				screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
 		}
 		
-
-		
 		if(inGame){
 			//if(keyboard.onSelect)
 			//if(!screen.isShaking)
@@ -304,8 +303,9 @@ public class Game extends Canvas implements Runnable {
 		height = width / 16 * 9;
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB); //Rendered image
 		renderPixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-		Dimension size = new Dimension(width * scale, height * scale);
-		setPreferredSize(size);
+		//Dimension size = new Dimension(width * scale, height * scale);
+		//setPreferredSize(size);
+		frame.pack();
 		screen = new Screen(width, height);
 	}
 	
@@ -369,8 +369,10 @@ public class Game extends Canvas implements Runnable {
 		if(player!=null){
 			if(player.getUsername().equals("glitch"))
 				screen.renderGlitchEffect(1,5);
-			if(player.getUsername().equals("3D"))
+			if(player.getUsername().equals("3D")){
 				screen.splitRGB_UL(0,0,width, height, 0,true, 2, true, false, false);
+				screen.splitRGB_DR(0,0,width, height, 0,true, 2, false, false, true);
+			}
 			if(player.getUsername().equals("icantakeit")){
 				screen.renderGlitchEffect(5,10);
 				screen.splitRGB_UL(0,0,width, height, 0,true, 2, false, true, false);
@@ -385,6 +387,7 @@ public class Game extends Canvas implements Runnable {
 					screen.splitRGB_UL(width/2,	0,		 width/2, height/2, 0,true,		random.nextInt(10), random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
 					screen.splitRGB_UL(0,		height/2,width/2, height/2, 0,true,		random.nextInt(10), random.nextBoolean(), random.nextBoolean(), random.nextBoolean());
 				}
+				if(!screen.isSwaying()) screen.setSway(0, 0, width, height, random.nextInt(20)+1, 3, random.nextInt(15)+1, 2);
 			}
 		}
 		

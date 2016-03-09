@@ -28,7 +28,8 @@ public class RandomLevel extends Level {
 			
 		Stone(new char[]{',','.','`',' ','\'',':',' ',' '},new Color[]{Color.gray},Wall_Stone),
 		Dirt(new char[]{'\\',';',':','=','!','#',']','['},new Color[]{new Color(0x8f6b38)},Wall_Grass),
-		Water(new char[]{' ',' ',' ',' ',' ','.'},new Color[]{Color.white},new Color[]{new Color(47,71,125)},Wall_Stone),
+		Door(new char[]{'[',']',')','(','\\','/','_','='},new Color[]{new Color(0x8f6b38)},Wall_Stone),
+		Water(new char[]{' ',' ',' ',' ',' ','.'},new Color[]{Color.white},new Color[]{new Color(47,71,225)},Wall_Stone),
 		;
 		public static RTile[] tiles(){
 			List<RTile> tileList = new ArrayList<RTile>();
@@ -335,7 +336,7 @@ public class RandomLevel extends Level {
 			}
 		}
 		if(!skip){
-			addDoor(doorSizeX,doorSizeY,doorX,doorY,RTile.Dirt);
+			addDoor(doorSizeX,doorSizeY,doorX,doorY,RTile.Door);
 			generate(nW,nH,nX+xStart-xOff,nY+yStart-yOff,Math.random()<0.5f ? RTile.Stone : RTile.Water);//RTile.tiles()[rng.nextInt(RTile.tiles().length)]);
 		}
 	}

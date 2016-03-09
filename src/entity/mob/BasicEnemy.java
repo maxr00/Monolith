@@ -90,6 +90,11 @@ public class BasicEnemy extends Mob {
 			}
 		}
 		move(spawnX * Game.TILE_SIZE, spawnY * Game.TILE_SIZE);
+		
+		if(level.getTile(this.x/Game.TILE_SIZE, this.y/Game.TILE_SIZE+1)!=null && level.getTile(this.x/Game.TILE_SIZE, this.y/Game.TILE_SIZE+1).reflectMobs){
+			reflected=true;
+		}else
+			reflected=false;
 	}
 	
 	double minRange=35, maxRange=56, shootRange=100;
@@ -309,12 +314,7 @@ public class BasicEnemy extends Mob {
 						}
 						
 						if(reflected){
-							screen.renderSpriteReflected(this.x, this.y+Game.TILE_SIZE-1, sprites[x][y]);
-							if (colorBlemishes != null && colorBlemishes[x][y] != null){
-								screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + (y-1) * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, Color.cyan.getRGB(), colorBlemishes[x][y]);
-							}else{
-								screen.renderLight(this.x + x * Game.TILE_SIZE, this.y + (y-1) * Game.TILE_SIZE, sprites[x][y].WIDTH, sprites[x][y].HEIGHT, color, Color.cyan.getRGB(), null);
-							}
+							screen.renderSpriteReflected(this.x, this.y+Game.TILE_SIZE-1, sprites[x][y],this.color,Color.blue.getRGB());
 						}
 					}
 				}
@@ -340,12 +340,12 @@ public class BasicEnemy extends Mob {
 					}
 				}
 			}
-			new Particle(x + Game.TILE_SIZE/2 + xDir*Game.TILE_SIZE,y + Game.TILE_SIZE/2 + yDir*Game.TILE_SIZE,1,600,0.3f,particlesPerDamage*damage*2,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
+			new Particle(x + Game.TILE_SIZE/2 + xDir*Game.TILE_SIZE,y + Game.TILE_SIZE/2 + yDir*Game.TILE_SIZE,1,600,0.3f,particlesPerDamage*damage*2,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Lighting,150);
 			new Particle(x + Game.TILE_SIZE/2 + xDir*Game.TILE_SIZE,y + Game.TILE_SIZE/2 + yDir*Game.TILE_SIZE,2,1200,0.1f,5*((takenPos.length+takenPos[0].length)/2),level,new Color[]{Color.lightGray},Particle.RenderType.Sprite);
 			
 			new Particle_Exp(x + Game.TILE_SIZE/2 + xDir*Game.TILE_SIZE,y + Game.TILE_SIZE/2 + yDir*Game.TILE_SIZE,1,1200,0.1f,10,level,new Color[]{Color.yellow},1);
 		}else
-			new Particle(x + Game.TILE_SIZE/2 + xDir*Game.TILE_SIZE,y + Game.TILE_SIZE/2 + yDir*Game.TILE_SIZE,1,600,0.1f,particlesPerDamage*damage,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Additive,150);
+			new Particle(x + Game.TILE_SIZE/2 + xDir*Game.TILE_SIZE,y + Game.TILE_SIZE/2 + yDir*Game.TILE_SIZE,1,600,0.1f,particlesPerDamage*damage,level,new Color[]{Color.red,new Color(150,0,0)},Particle.RenderType.Lighting,150);
 		
 		
 		Packet15MobUpdate packet=new Packet15MobUpdate(x,y,Health,identifier);
