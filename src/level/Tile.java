@@ -64,6 +64,10 @@ public class Tile {
 				else
 					screen.renderBackground(x, y, Game.TILE_SIZE, Game.TILE_SIZE, Screen.defaultBackground);
 			}
+/*		if(background!=-1)
+			if(background!=Color.black.getRGB())
+				screen.renderBackground(x, y, Game.TILE_SIZE, Game.TILE_SIZE, background);
+*/
 	}
 	
 	public void renderLight(int x, int y, Screen screen, int manualColor) {

@@ -43,7 +43,7 @@ public class Game extends Canvas implements Runnable {
 
 	public static int TILE_SIZE=7;
 	
-	private static String title = "Project Monolith vDB_8";
+	private static String title = "Project Monolith v_indev_W9";
 	
 	private static final int minScale=1, maxScale=4;
 	
@@ -147,8 +147,9 @@ public class Game extends Canvas implements Runnable {
 		socketServer = new GameServer(this);
 		socketServer.start();
 		
-		level = new RandomLevel(100,100);
-		((RandomLevel)level).generateLevel();
+		level = new RandomLevel(200,200,random.nextLong());
+		((RandomLevel)level).generateEnemies();
+		System.out.println("Enemies Placed");
 		
 		socketClient = new GameClient(this, "localhost");
 		socketClient.start();
@@ -177,7 +178,7 @@ public class Game extends Canvas implements Runnable {
 	}
 	
 	public void joinLevel(){
-		player = new PlayerMP(keyboard,mouse,screen, level,playerStartX,playerStartY,username,playerCol.getRGB(), null, -1);
+		player = new PlayerMP(keyboard,mouse,screen, level,level.width/2,level.height/2,username,playerCol.getRGB(), null, -1);
 		screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
 	}
 	
@@ -283,6 +284,16 @@ public class Game extends Canvas implements Runnable {
 			}
 			if(player!=null)
 				player.handleStatus(screen);
+			
+			if(socketServer!=null){
+				int dx=0,dy=0;
+				if(Key.up.pressed)dy--;
+				if(Key.down.pressed)dy++;
+				if(Key.left.pressed)dx--;
+				if(Key.right.pressed)dx++;
+				screen.setOffset((int)screen.xOffset+dx, (int)screen.yOffset+dy);
+				screen.snapOffsetTo((int)screen.xOffset+dx, (int)screen.yOffset+dy);
+			}
 		}else{
 			//Start Menu controls
 			if (Key.up.onPress)
@@ -340,6 +351,9 @@ public class Game extends Canvas implements Runnable {
 				UI.combatUIDir.active=false;
 				UI.healthUI.active=false;
 				UI.levelReadyUI.active=false;
+				
+				xScroll=(int)screen.xOffset;
+				yScroll=(int)screen.yOffset;
 			}
 				
 			screen.setOffset(xScroll, yScroll);
@@ -390,8 +404,6 @@ public class Game extends Canvas implements Runnable {
 				if(!screen.isSwaying()) screen.setSway(0, 0, width, height, random.nextInt(20)+1, 3, random.nextInt(15)+1, 2);
 			}
 		}
-		
-		
 		
 		if(renderPixels.length==screen.pixels.length)
 		for (int i = 0; i < renderPixels.length; i++) {

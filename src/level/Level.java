@@ -23,6 +23,7 @@ import util.Vector2i;
 public class Level {
 
 	public int width, height;
+	public long seed;
 	public Tile[] tiles;
 	//private LevelLight levelLight;
 	private final int TILE_SIZE = Game.TILE_SIZE; //Space between tile, (size of tiles will have no space between tiles, less will overlap tiles)
@@ -70,7 +71,7 @@ public class Level {
 		colors=new Color[width*height];
 		background = new Color[width*height];
 		
-		int[][] colorBlemishes = LevelLight.getPossibleBlemishes(100);
+		int[][] colorBlemishes = LevelLight.getPossibleBlemishes(100,seed);
 		//int[] colors=new int[width*height],bgs=new int[width*height];
 		
 		RTile[][] roomTiles=new RTile[width][height];
@@ -157,12 +158,11 @@ public class Level {
 		*/
 	}
 	
-	
 	public void generateLevel(String path) {
 		String worldPath=path+".txt";
 		String solidPath=path+"-solid.txt";
 		
-		int[][] colorBlemishes = LevelLight.getPossibleBlemishes(100);
+		int[][] colorBlemishes = LevelLight.getPossibleBlemishes(100,seed);
 		
 		List<String> lines = null, sLines = null;
 		try{
@@ -387,6 +387,7 @@ public class Level {
 		int x1 = (xScroll + screen.width) / TILE_SIZE +1;
 		int y0 = yScroll / TILE_SIZE -1;
 		int y1 = (yScroll + screen.height) / TILE_SIZE +1;
+		System.out.println(x0 +"-"+x1 +"," +y0 +"-" +y1);
 		for (int y = y0; y < y1; y++) {
 			for (int x = x0; x < x1; x++) {
 				Tile tile = getTile(x, y);

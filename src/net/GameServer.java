@@ -148,7 +148,7 @@ public class GameServer extends Thread{
     		tiles[i]=lvl.tiles[i].type;
     	}
     	
-    	Packet17LoadLevel levelPacket=new Packet17LoadLevel(lvl.width,lvl.height,tiles);//cols
+    	Packet17LoadLevel levelPacket=new Packet17LoadLevel(lvl.width,lvl.height,lvl.seed);//cols
     	sendData(levelPacket.getData(),address,port);
     	
     	//Send existing mobs to connecting player

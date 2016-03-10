@@ -11,6 +11,7 @@ import entity.mob.Mob;
 import game.Game;
 import graphics.Popup;
 import level.Level;
+import level.RandomLevel;
 import net.packet.Packet;
 import net.packet.Packet10Login;
 import net.packet.Packet11Disconnect;
@@ -119,7 +120,7 @@ public class GameClient extends Thread{
 	}
 	 
 	private void handleLoadLevel(Packet17LoadLevel packet) {
-		Game.game.level=new Level(packet.getWidth(),packet.getHeight(),packet.getTiles());
+		Game.game.level=new RandomLevel(packet.getWidth(),packet.getHeight(),packet.getSeed());
 		Game.game.joinLevel();
 	}
 

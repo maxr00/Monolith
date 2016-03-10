@@ -54,7 +54,7 @@ public class MobMP extends Mob{
 		}
 		move(spawnX * Game.TILE_SIZE, spawnY * Game.TILE_SIZE);
 		
-		if(level.getTile(this.x/Game.TILE_SIZE, this.y/Game.TILE_SIZE+1).reflectMobs){
+		if(level.getTile(this.x/Game.TILE_SIZE, this.y/Game.TILE_SIZE+1)!=null && level.getTile(this.x/Game.TILE_SIZE, this.y/Game.TILE_SIZE+1).reflectMobs){
 			reflected=true;
 		}else
 			reflected=false;

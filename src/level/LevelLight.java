@@ -104,8 +104,8 @@ public class LevelLight {
 	public void render(Screen screen){
 	}
 	
-	public static int[][] getPossibleBlemishes(int amt){
-		Random r = new Random();
+	public static int[][] getPossibleBlemishes(int amt, long seed){
+		Random r = new Random(seed);
 		int[][] colorBlemishes = new int[amt][];
 		for(int i=0;i<amt;i++){
 			colorBlemishes[i]=new int[Game.TILE_SIZE*Game.TILE_SIZE];
