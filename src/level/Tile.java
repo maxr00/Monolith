@@ -46,6 +46,20 @@ public class Tile {
 	public void render(int x, int y, Screen screen) {
 		if(render){
 			screen.renderSprite(x, y, sprite);
+			//DEBUG
+			if(sprite!=null){
+				if(renderGray)											//Color.black.getRGB()
+					screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, Screen.defaultBackground, colorBlemishes);
+				else{
+					screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, tint, colorBlemishes);
+				}
+			}
+			if(background!=-1){
+				if(background!=Color.black.getRGB())
+					screen.renderBackground(x, y, Game.TILE_SIZE, Game.TILE_SIZE, background);
+				else
+					screen.renderBackground(x, y, Game.TILE_SIZE, Game.TILE_SIZE, Screen.defaultBackground);
+			}
 		}
 	}
 

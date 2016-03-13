@@ -387,7 +387,6 @@ public class Level {
 		int x1 = (xScroll + screen.width) / TILE_SIZE +1;
 		int y0 = yScroll / TILE_SIZE -1;
 		int y1 = (yScroll + screen.height) / TILE_SIZE +1;
-		System.out.println(x0 +"-"+x1 +"," +y0 +"-" +y1);
 		for (int y = y0; y < y1; y++) {
 			for (int x = x0; x < x1; x++) {
 				Tile tile = getTile(x, y);

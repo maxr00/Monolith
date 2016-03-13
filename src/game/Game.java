@@ -147,9 +147,12 @@ public class Game extends Canvas implements Runnable {
 		socketServer = new GameServer(this);
 		socketServer.start();
 		
-		level = new RandomLevel(200,200,random.nextLong());
+		level = new RandomLevel(100,100,random.nextLong());
 		((RandomLevel)level).generateEnemies();
 		System.out.println("Enemies Placed");
+		
+		playerStartX=level.width/2;
+		playerStartY=level.height/2;
 		
 		socketClient = new GameClient(this, "localhost");
 		socketClient.start();
@@ -256,6 +259,8 @@ public class Game extends Canvas implements Runnable {
 			if(player!=null)
 				screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
 		}
+		
+		//if(!screen.isSwaying()) screen.setSway(0, 0, width, height, 5, 3, 10, 5);
 		
 		if(inGame){
 			//if(keyboard.onSelect)
