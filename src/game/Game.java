@@ -5,24 +5,23 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import graphics.Screen;
 import graphics.UI;
 import input.Keyboard;
+import input.Keyboard.Key;
 import input.MouseHandler;
 import input.WindowHandler;
-import input.Keyboard.Key;
 import level.Level;
 import level.RandomLevel;
 import net.GameClient;
@@ -30,7 +29,6 @@ import net.GameServer;
 import net.PlayerMP;
 import net.packet.Packet10Login;
 import net.packet.Packet11Disconnect;
-import net.packet.Packet19RequestLevel;
 import player.Player;
 
 public class Game extends Canvas implements Runnable {
@@ -264,11 +262,11 @@ public class Game extends Canvas implements Runnable {
 		
 		//if(!screen.isDisco) screen.setDisco(0, 0, width, height, 10f, 28, 5, 10, new Color[]{Color.red,Color.blue,Color.green,Color.yellow});
 		
-		if(Key.refresh.onPress){
-			//frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-			//frame.setUndecorated(true);
-			//resetZoom();
-			game.setFullscreen();
+		if(Key.fullscreen.offPress){
+			isFullscreen=!isFullscreen;
+			System.out.println(isFullscreen);
+			setFullscreen();
+			resetZoom();
 		}
 		
 		if(inGame){
@@ -323,7 +321,7 @@ public class Game extends Canvas implements Runnable {
 		screen.update();
 	}
 	
-	boolean isFullscreen=true;
+	boolean isFullscreen=false;
 	
 	private void resetZoom(){
 		if(isFullscreen){
@@ -343,12 +341,51 @@ public class Game extends Canvas implements Runnable {
 		
 	}
 	
+	void setFullscreen() {
+		frame.dispose();
+		
+		if(isFullscreen){
+			width=(int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()/scale);
+			height=(int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()/scale);
+			
+			Dimension size = new Dimension(width * scale, height * scale);
+			setPreferredSize(size);
+			
+			screen = new Screen(width, height);
+			frame = new JFrame();
+			
+			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			frame.setUndecorated(true);
+		}else{
+			width = 1200/scale;
+			height = width / 16 * 9;
+			
+			Dimension size = new Dimension(width * scale, height * scale);
+			setPreferredSize(size);
+
+			screen = new Screen(width, height);
+			frame = new JFrame();
+			
+			frame.setExtendedState(JFrame.NORMAL);
+			frame.setUndecorated(false);
+		}
+		frame.setResizable(false);
+		frame.setTitle(title); //Title of window
+		frame.add(game);
+		frame.pack(); //Pack frame to fit width and height
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//Terminate on application close
+		frame.setLocationRelativeTo(null); //Creates window in center of screen
+		frame.setVisible(true);
+		
+		requestFocus();
+	}
+	
 	int xScroll, yScroll;
 	public void render() {
 		//if(socketServer!=null) return;
 		
 		BufferStrategy bufferStrategy = getBufferStrategy(); //Get buffer strategy from canvas
-		if (bufferStrategy == null) { //Called first time through
+		if (bufferStrategy == null || bufferStrategy.contentsLost()) { //Called first time through or if contents lost (happens when changing fullscreen)
 			createBufferStrategy(3);
 			return;
 		}
@@ -456,27 +493,9 @@ public class Game extends Canvas implements Runnable {
 		game.frame.setLocationRelativeTo(null); //Creates window in center of screen
 		game.frame.setVisible(true);
 		
+		game.setFullscreen();
+		
 		game.start();
-	}
-	
-	void setFullscreen() {
-		width=(int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth()/scale);
-		height=(int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight()/scale);
-		
-		Dimension size = new Dimension(width * scale, height * scale);
-		setPreferredSize(size);
-		screen = new Screen(width, height);
-		frame = new JFrame();
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frame.setUndecorated(true);
-		
-		frame.setResizable(false);
-		frame.setTitle(title); //Title of window
-		frame.add(game);
-		frame.pack(); //Pack frame to fit width and height
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//Terminate on application close
-		frame.setLocationRelativeTo(null); //Creates window in center of screen
-		frame.setVisible(true);
 	}
 	
 }

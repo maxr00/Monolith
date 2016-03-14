@@ -42,6 +42,8 @@ public class Keyboard implements KeyListener {
 		clearSpell	(new int[]{ KeyEvent.VK_DECIMAL}),
 		
 		toggleLock	(new int[]{ KeyEvent.VK_E}),
+		
+		fullscreen  (new int[]{ KeyEvent.VK_F11}),
 		;
 		public boolean pressed;
 		public boolean onPress;
