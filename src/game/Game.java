@@ -43,7 +43,7 @@ public class Game extends Canvas implements Runnable {
 
 	public static int TILE_SIZE=7;
 	
-	private static String title = "Project Monolith v_indev_W9";
+	private static String title = "Project Monolith v_indev_W10";
 	
 	private static final int minScale=1, maxScale=4;
 	
@@ -262,6 +262,15 @@ public class Game extends Canvas implements Runnable {
 		
 		//if(!screen.isSwaying()) screen.setSway(0, 0, width, height, 5, 3, 10, 5);
 		
+		//if(!screen.isDisco) screen.setDisco(0, 0, width, height, 10f, 28, 5, 10, new Color[]{Color.red,Color.blue,Color.green,Color.yellow});
+		
+		if(Key.refresh.onPress){
+			//frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+			//frame.setUndecorated(true);
+			//resetZoom();
+			game.setFullscreen();
+		}
+		
 		if(inGame){
 			//if(keyboard.onSelect)
 			//if(!screen.isShaking)
@@ -314,15 +323,24 @@ public class Game extends Canvas implements Runnable {
 		screen.update();
 	}
 	
+	boolean isFullscreen=true;
+	
 	private void resetZoom(){
-		width = 1200/scale;
-		height = width / 16 * 9;
+		if(isFullscreen){
+			width=(int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth()/scale);
+			height=(int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight()/scale);
+		}else{
+			width = 1200/scale;
+			height = width / 16 * 9;
+		}
+		
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB); //Rendered image
 		renderPixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
-		//Dimension size = new Dimension(width * scale, height * scale);
-		//setPreferredSize(size);
 		frame.pack();
+		Dimension size = new Dimension(width * scale, height * scale);
+		setPreferredSize(size);
 		screen = new Screen(width, height);
+		
 	}
 	
 	int xScroll, yScroll;
@@ -410,6 +428,9 @@ public class Game extends Canvas implements Runnable {
 			}
 		}
 		
+		screen.renderDisco();
+		//screen.renderOutline(0, 0, width, height, 1, 0);
+		
 		if(renderPixels.length==screen.pixels.length)
 		for (int i = 0; i < renderPixels.length; i++) {
 			if(screen.pixels[i]!=Screen.defaultBackground)
@@ -437,5 +458,25 @@ public class Game extends Canvas implements Runnable {
 		
 		game.start();
 	}
-
+	
+	void setFullscreen() {
+		width=(int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth()/scale);
+		height=(int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight()/scale);
+		
+		Dimension size = new Dimension(width * scale, height * scale);
+		setPreferredSize(size);
+		screen = new Screen(width, height);
+		frame = new JFrame();
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setUndecorated(true);
+		
+		frame.setResizable(false);
+		frame.setTitle(title); //Title of window
+		frame.add(game);
+		frame.pack(); //Pack frame to fit width and height
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//Terminate on application close
+		frame.setLocationRelativeTo(null); //Creates window in center of screen
+		frame.setVisible(true);
+	}
+	
 }

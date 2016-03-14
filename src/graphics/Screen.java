@@ -281,6 +281,7 @@ public class Screen {
 		if(isShaking)updateShake();
 		updateSway();
 		updateReflectionSway();
+		updateDisco();
 	}
 	
 	public static int blend(int colorA, int colorB) {
@@ -590,6 +591,62 @@ public class Screen {
 	}
 	
 	
+	private int disco_x,disco_y,disco_w,disco_h,disco_size,disco_ciu,disco_separation;
+	private float disco_dur;
+	private Color[] disco_colors;
+	private int discoCount, discoTotal;
+	public boolean isDisco;
+	public void setDisco(int x,int y,int w,int h,float dur,int size,int separation,int changeInUpdates, Color[] colors){
+		disco_x=x;
+		disco_y=y;
+		disco_w=w;
+		disco_h=h;
+		disco_dur=dur;
+		disco_size=size;
+		disco_ciu=changeInUpdates;
+		disco_colors=colors;
+		disco_separation=separation;
+		isDisco=true;
+		discoTotal=0;
+		discoCount=0;
+	}
+	
+	private void updateDisco(){
+		if(!isDisco) return;
+		
+		discoTotal++;
+		if(discoTotal%disco_ciu==0){
+			discoCount++;
+			if(discoTotal>disco_dur*60)
+				isDisco=false;
+			
+		}
+	}
+	
+	int discoPos=0;
+	public void renderDisco(){
+		if(!isDisco) return;
+		for(int y=disco_y;y<disco_h;y++){
+			for(int x=disco_x;x<disco_w;x++){
+				discoPos=x/disco_size + y/disco_size +discoCount +((y/disco_size)%disco_separation);
+				background[x+y*width]=disco_colors[(discoPos)%disco_colors.length].getRGB();
+			}
+		}
+	}
+	
+	public void renderOutline(int sx,int sy,int w,int h,int amt,int color){
+		for(int x=sx;x<w+sx;x++)
+			for(int y=sy;y<h+sy;y++)
+				if(x+y*width < width*height && x+y*width>=0)
+					if(pixels[x+y*width]!=defaultBackground && pixels[x+y*width]!=color){
+						for(int i=-1*amt;i<amt+1;i++)
+							for(int j=-1*amt;j<amt+1;j++){
+								if(x+i<width && y+j<height && x+i>=0 && y+j>=0 && pixels[(x+i)+(y+j)*width]==defaultBackground)
+									pixels[(x+i)+(y+j)*width]=color;
+							}
+					}
+					
+	}
 	
 }
 
@@ -608,7 +665,6 @@ class Sway{
 		this.speed=speed;
 	}
 }
- 
  
 /*
 Circle formula:

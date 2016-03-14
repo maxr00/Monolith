@@ -319,6 +319,7 @@ public class BasicEnemy extends Mob {
 					}
 				}
 			}
+			screen.renderOutline((int)(x-screen.xOffset-screen.shake_xOffset), (int)(y-screen.yOffset-screen.shake_yOffset), sprites.length*Game.TILE_SIZE, sprites[0].length*Game.TILE_SIZE, 1, 0);
 		}
 	}
 	

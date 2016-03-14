@@ -609,6 +609,7 @@ public class RandomLevel extends Level {
 		Floor++;
 		LevelType LType=getLevelType(Floor);
 		float[] possibleRoomsChances=getRoomChances(LType);
+		int[][] colorBlemishes = LevelLight.getPossibleBlemishes(100,seed);
 		
 		roomTiles=new RTile[width][height];
 		

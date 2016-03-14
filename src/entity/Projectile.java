@@ -23,24 +23,7 @@ public class Projectile extends Entity{
 	private boolean reflected;
 	
 	public String sourceID;
-	
-	
-	/*public static enum Spell{
-		Fireball	(Sprite.and,	Color.orange, 5, 1, 1.5f),
-		Lightning	(Sprite.tilde,	Color.yellow, 3, 3, 1f),
-		Waterball	(Sprite.o,		Color.blue,	  2, 2, 1f),
-		;
-		public Sprite sprite;
-		public Color color;
-		public int damage, speed;
-		public float life;
-		Spell(Sprite s, Color col, int d, int spd, float l){sprite=s; color=col; damage=d; speed=spd; life=l;}
 		
-		public static Spell getSpell(String name){
-			return Spell.valueOf(name);
-		}
-	}*/
-	
 	public Projectile(int x,int y, float xDir, float yDir, Spell spell, float damagePercent, Mob target, Level level, String source){
 		//this.creator = creator;
 		this.xDir = xDir;
