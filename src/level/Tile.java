@@ -47,7 +47,7 @@ public class Tile {
 		if(render){
 			screen.renderSprite(x, y, sprite);
 			//DEBUG
-			/*if(sprite!=null){
+			if(sprite!=null){
 				if(renderGray)											//Color.black.getRGB()
 					screen.renderLight(x, y, sprite.WIDTH, sprite.HEIGHT, Screen.defaultBackground, colorBlemishes);
 				else{
@@ -59,7 +59,7 @@ public class Tile {
 					screen.renderBackground(x, y, Game.TILE_SIZE, Game.TILE_SIZE, background);
 				else
 					screen.renderBackground(x, y, Game.TILE_SIZE, Game.TILE_SIZE, Screen.defaultBackground);
-			}*/
+			}
 		}
 	}
 

@@ -27,7 +27,7 @@ public class RandomLevel extends Level {
 		this.seed=seed;
 		rng.setSeed(seed);
 		
-		maxRooms=50*width/100;
+		maxRooms=50*(int)(width/100f);
 		minRooms=maxRooms-10;
 		
 		//																								   Scale,Smoothness
@@ -705,6 +705,7 @@ public class RandomLevel extends Level {
 	}
 	
 	//Number of rooms left to generate before generation ended is returned
+	//553 Lines of code for room generation
 	int generateRoom(int x,int y,int w,int h,RoomType type,RTile[][] rtiles,float[] roomChances,int numRoomsToGen){
 		
 		if(numRoomsToGen==0) return 0;
@@ -1237,16 +1238,15 @@ public class RandomLevel extends Level {
 			if(canFit(nX-1,nY-1,nW+2,nH+2,rTiles))break;
 		}
 		//Place Hallway
-		for(int i=0;i<hTiles.length;i++)
-			for(int j=0;j<hTiles[i].length;j++)
-				roomTiles[hsX+i][hsY+j]=hTiles[i][j];
-		
 		if(ehTiles!=null)
-			if(hXe+ehTiles.length<roomTiles.length && hXe>0 && hYe>0 && ehTiles.length>0&& hYe+ehTiles[0].length<roomTiles.length)
+			if(hXe+ehTiles.length<roomTiles.length && hXe>0 && hYe>0 && ehTiles.length>0&& hYe+ehTiles[0].length<roomTiles[0].length)
 				for(int i=0;i<ehTiles.length;i++)
 					for(int j=0;j<ehTiles[i].length;j++)
 						roomTiles[hXe+i][hYe+j]=ehTiles[i][j];
 		
+		for(int i=0;i<hTiles.length;i++)
+			for(int j=0;j<hTiles[i].length;j++)
+				roomTiles[hsX+i][hsY+j]=hTiles[i][j];
 		
 		//Decide if next room branches out to multiple rooms
 		if(rng.nextFloat() < 0.03) {//Branching chance

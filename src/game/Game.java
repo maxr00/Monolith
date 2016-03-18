@@ -145,7 +145,7 @@ public class Game extends Canvas implements Runnable {
 		socketServer = new GameServer(this);
 		socketServer.start();
 		
-		level = new RandomLevel(100,100,random.nextLong());
+		level = new RandomLevel(137,77,random.nextLong());//137,77
 		((RandomLevel)level).generateEnemies();
 		System.out.println("Enemies Placed");
 		
@@ -187,7 +187,6 @@ public class Game extends Canvas implements Runnable {
 		player=null;
 		level=null;
 	}
-
 	
 	public synchronized void start() {
 		BufferedImage fileImg = null;
@@ -377,10 +376,20 @@ public class Game extends Canvas implements Runnable {
 		frame.setLocationRelativeTo(null); //Creates window in center of screen
 		frame.setVisible(true);
 		
+		BufferedImage fileImg = null;
+		try{fileImg =ImageIO.read(this.getClass().getResource("/textures/Monolith-Icon.png"));}catch (IOException e) {e.printStackTrace();}
+		game.frame.setIconImage(fileImg);
+		
+		if(player!=null)
+			screen.snapOffsetTo(player.x - screen.width/2,player.y - screen.height/2);
+		
 		requestFocus();
 	}
 	
 	int xScroll, yScroll;
+	//Color[] palette=
+			//Melon: new Color[]{new Color(0xb440a3),new Color(0xff91ab),new Color(0xf1e899),new Color(0x79c220),new Color(0x20798b)};
+			//Grayscale + random color: new Color[]{Color.white,Color.gray,Color.lightGray,new Color(random.nextInt(250),random.nextInt(250),random.nextInt(250)),Color.darkGray,Color.black};//new Color[]{new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt())};
 	public void render() {
 		//if(socketServer!=null) return;
 		
@@ -466,6 +475,7 @@ public class Game extends Canvas implements Runnable {
 		}
 		
 		screen.renderDisco();
+		//screen.renderPalette(palette);
 		//screen.renderOutline(0, 0, width, height, 1, 0);
 		
 		if(renderPixels.length==screen.pixels.length)

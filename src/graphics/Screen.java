@@ -579,7 +579,7 @@ public class Screen {
 				if(xa < -sprite.WIDTH || xa >= width) break;
 				if(xa<0)xa=0;
 				
-				if(sprite.pixels[x+(sprite.HEIGHT-1-y)*sprite.WIDTH]!=0x00ffffff){ //Don't render transparent pixels
+				if(xa +xOff + ya * width>0 && sprite.pixels[x+(sprite.HEIGHT-1-y)*sprite.WIDTH]!=0x00ffffff){ //Don't render transparent pixels
 					background [xa +xOff + ya * width] = blended;//sprite.pixels[x + (sprite.HEIGHT-1-y) * sprite.WIDTH];
 				}//else{
 				//	pixels [xa +xOff + ya * width] = defaultBackground;
@@ -646,6 +646,37 @@ public class Screen {
 							}
 					}
 					
+	}
+	
+	
+	public void renderPalette(Color[] palette){
+		Color[] colors=new Color[pixels.length];
+		for(int i=0;i<pixels.length;i++){
+			colors[i]=new Color(pixels[i]);
+		}
+		int[] distances;
+		for(int i=0;i<pixels.length;i++){
+			distances=new int[palette.length];
+			for(int j=0;j<palette.length;j++){
+				distances[j]=getColorDistance(colors[i],palette[j]);
+			}
+			Color closest=palette[0];
+			int close=distances[0];
+			for(int j=1;j<palette.length;j++){
+				if(distances[j]<close){
+					close=distances[j];
+					closest=palette[j];
+				}
+			}
+			pixels[i]=closest.getRGB();
+		}
+	}
+	
+	private int getColorDistance(Color a,Color b){
+		int dr=a.getRed()-b.getRed();
+		int dg=a.getGreen()-b.getGreen();
+		int db=a.getBlue()-b.getBlue();
+		return Math.abs(dr+dg+db);
 	}
 	
 }
