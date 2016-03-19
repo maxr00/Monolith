@@ -145,7 +145,7 @@ public class Game extends Canvas implements Runnable {
 		socketServer = new GameServer(this);
 		socketServer.start();
 		
-		level = new RandomLevel(137,77,random.nextLong());//137,77
+		level = new RandomLevel(137,77,5);//random.nextLong());//137,77
 		((RandomLevel)level).generateEnemies();
 		System.out.println("Enemies Placed");
 		
@@ -387,9 +387,11 @@ public class Game extends Canvas implements Runnable {
 	}
 	
 	int xScroll, yScroll;
-	//Color[] palette=
+	Color[] palette=//new Color[]{Color.white,Color.gray,Color.lightGray,new Color(200,0,0),Color.darkGray,Color.black};
 			//Melon: new Color[]{new Color(0xb440a3),new Color(0xff91ab),new Color(0xf1e899),new Color(0x79c220),new Color(0x20798b)};
-			//Grayscale + random color: new Color[]{Color.white,Color.gray,Color.lightGray,new Color(random.nextInt(250),random.nextInt(250),random.nextInt(250)),Color.darkGray,Color.black};//new Color[]{new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt()),new Color(random.nextInt())};
+			//Grayscale + random color: new Color[]{Color.white,Color.gray,Color.lightGray,new Color(random.nextInt(250),random.nextInt(250),random.nextInt(250)),Color.darkGray,Color.black};
+			//Vintage/Sepia: new Color[]{new Color(0x734D2B), new Color(0xA27247), new Color(0xE9D7C6), new Color(0xCDA785), new Color(0xB7885D)};
+	new Color[]{new Color(0x0f380f),new Color(0x306230),new Color(0x8bac0f),new Color(0x9bbc0f),};
 	public void render() {
 		//if(socketServer!=null) return;
 		
@@ -475,7 +477,7 @@ public class Game extends Canvas implements Runnable {
 		}
 		
 		screen.renderDisco();
-		//screen.renderPalette(palette);
+		screen.renderPalette(palette);
 		//screen.renderOutline(0, 0, width, height, 1, 0);
 		
 		if(renderPixels.length==screen.pixels.length)
